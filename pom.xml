@@ -1,0 +1,238 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>SF5Angular</groupId>
+  <artifactId>SF5Angular</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>openboxsf5-angular</name>
+  <description>Openbox SF-5 settings editor, AngularJS</description>
+  
+	<properties>
+  		<spring.version>4.2.4.RELEASE</spring.version>
+  		<spring.security.version>4.0.3.RELEASE</spring.security.version>
+  		<hibernate.version>5.0.7.Final</hibernate.version> <!-- Comply with JavaEE 6 -->
+  		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  		<jackson.version>2.5.4</jackson.version>
+  		<jersey.version>2.22.1</jersey.version>
+  		<resteasy.version>3.0.14.Final</resteasy.version>
+  		<moxy.version>2.6.2</moxy.version>
+	</properties>  
+ 
+<build>
+<resources>
+	<resource>
+    	<directory>src/main/java</directory> <!-- This excludes webapp resources from copying to classes! -->
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+	<resource>
+    	<directory>src/main/resources</directory>
+    	<filtering>true</filtering>
+  	</resource>
+</resources>
+ 
+<defaultGoal>install</defaultGoal>
+<testResources>
+	<testResource>
+    	<directory>${project.basedir}/src/test/java</directory>
+  	</testResource>
+  	<testResource>
+    	<directory>${project.basedir}/src/test/resources</directory>
+    	<filtering>true</filtering>
+   	</testResource>
+</testResources>
+
+<plugins>
+	<plugin>
+    	<artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+        	<source>1.8</source>
+          	<target>1.8</target>
+        </configuration>
+    </plugin>   
+
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-plugin</artifactId>
+		<version>2.18.1</version>
+		<configuration>
+			<includes>
+				<include>**/*Tests.java</include>
+			</includes>
+			<excludes>
+            	<exclude>**/*IT.java</exclude>
+            </excludes>
+		</configuration>
+	</plugin>
+	
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
+          <encoding>UTF-8</encoding>
+        </configuration>
+     </plugin>
+	
+     <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+        	<warSourceDirectory>src/main/webapp</warSourceDirectory>
+          	<failOnMissingWebXml>false</failOnMissingWebXml>
+			<packagingExcludes>web.xml</packagingExcludes> <!-- In container test it says duplicate context, it still includes web.xml (( -->
+        	<warName>${rp.build.warname}</warName>
+		<webResources>
+			<resource>
+                <filtering>true</filtering> <!-- THIS IS IMPORTANT! It tells maven to replace your variables with the properties values -->
+                <directory>src/main/resources</directory>
+                <targetPath>WEB-INF/classes/</targetPath>
+                <includes>
+                	<include>**/hibernate.cfg.xml</include> <!-- the path to hibernate.cfg.xml -->
+                </includes>
+            </resource>
+
+            <resource>
+            	<filtering>true</filtering> <!-- THIS IS IMPORTANT! It tells maven to replace your variables with the properties values -->
+            	<directory>src/main/resources/spring</directory>
+             	<targetPath>WEB-INF</targetPath>
+             	<includes>
+					<include>*.xml</include>
+                </includes>
+            </resource>
+            
+            <resource>
+            	<filtering>true</filtering> <!-- THIS IS IMPORTANT! It tells maven to replace your variables with the properties values -->
+            	<directory>src/main/resources/spring/${property.placeholder}/</directory>
+             	<targetPath>WEB-INF/classes/</targetPath>
+             	<includes>
+					<include>application.properties</include>
+                </includes>
+            </resource>
+            <resource>
+            	<filtering>true</filtering>
+                <directory>src/main/resources/web-inf-filter/</directory>
+                <targetPath>WEB-INF/</targetPath>
+                <includes>
+		        	<include>**/jboss-web.xml</include>
+        	    </includes>
+            </resource> 
+            
+        </webResources>
+        	
+        </configuration>
+	</plugin>
+	
+	
+	
+</plugins> 
+</build>  
+ 
+ 
+<dependencies>
+	<!-- Spring -->
+	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-context</artifactId>
+  		<version>${spring.version}</version>
+  	</dependency>
+  	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+ 	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-beans</artifactId>
+    	<version>${spring.version}</version>
+	</dependency>
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
+	</dependency>
+ 	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-config</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+ 	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-core</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-jdbc</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.springframework.security</groupId>
+    	<artifactId>spring-security-taglibs</artifactId>
+    	<version>${spring.security.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-tx</artifactId>
+    	<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-orm</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-oxm</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	
+	<!-- Hibernate -->
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-core</artifactId>
+		<version>${hibernate.version}</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-validator</artifactId>
+		<version>5.2.3.Final</version>
+	</dependency>
+	
+		<!-- Jackson dependencies -->
+	<dependency>
+    	<groupId>com.fasterxml.jackson.core</groupId>
+    	<artifactId>jackson-databind</artifactId>
+    	<version>${jackson.version}</version>
+    	<scope>provided</scope>
+	</dependency>
+	
+		<!--  or we get package javax.ws.rs does not exist -->
+	<dependency>
+    	<groupId>javax</groupId>
+    	<artifactId>javaee-web-api</artifactId>
+    	<version>7.0</version>
+    	<scope>provided</scope>
+	</dependency>
+	
+</dependencies> 
+  
+</project>
