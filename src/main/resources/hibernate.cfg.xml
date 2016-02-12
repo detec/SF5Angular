@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+<session-factory>
+
+  <property name="show_sql">true</property>
+<!--   <property name="hibernate.current_session_context_class">org.hibernate.context.internal.ThreadLocalSessionContext</property> -->
+  <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.${db.dialect}</property>
+
+</session-factory>
+</hibernate-configuration>

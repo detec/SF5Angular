@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd
+ 	http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	 
+
+<context:component-scan base-package="org.openbox.sf5.application" />
+<context:component-scan base-package="org.openbox.sf5.converters" />
+<context:component-scan base-package="org.openbox.sf5.json.endpoints" />
+<context:component-scan base-package="org.openbox.sf5.json.service" />
+
+
+<!--  http://stackoverflow.com/questions/23395984/requestmapping-with-placeholder-not-working   
+No, it gives Could not resolve placeholder 'jaxrs.path?'
+ -->
+<context:property-placeholder location="classpath:application.properties"/>
+
+
+<!-- http://huahsin68.blogspot.com/2014/05/why-secured-and-preauthorize-isnt.html
+
+The following security annotation forces @PreAuthorize to read digest authentication and not use anonymous user.
+ -->
+<security:global-method-security pre-post-annotations="enabled"/>
+
+<!-- http://spring.io/blog/2013/05/11/content-negotiation-using-spring-mvc/ -->
+<!-- <bean id="contentNegotiationManager"
+             class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <property name="favorPathExtension" value="false" />
+    <property name="favorParameter" value="true" />
+    <property name="parameterName" value="mediaType" />
+    <property name="ignoreAcceptHeader" value="false"/>
+    <property name="useJaf" value="false"/>
+    <property name="defaultContentType" value="application/json" />
+ 
+    <property name="mediaTypes">
+        <map>
+        	<entry key="html" value="text/html" />
+            <entry key="json" value="application/json" />
+            <entry key="xml" value="application/xml" />
+       </map>
+    </property>
+</bean> -->
+
+
+<!-- 
+Seems to be a good advice
+
+http://stackoverflow.com/questions/32957367/cannot-respond-with-xml-in-spring
+
+ -->
+<!--  <bean id="stringHttpMessageConverter"
+        class="org.springframework.http.converter.StringHttpMessageConverter"/> -->
+ 
+<!--  <bean id="marshallingHttpMessageConverter"
+        class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+    <property name="marshaller" ref="castorMarshaller" />
+    <property name="unmarshaller" ref="castorMarshaller" />
+</bean> -->
+
+<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+    <property name="messageConverters">
+        <util:list id="beanList">
+            <ref bean="stringHttpMessageConverter"/>
+            <ref bean="marshallingHttpMessageConverter"/>
+        </util:list>
+    </property
+</bean> -->
+ 
+
+<!-- activates annotation driven binding -->
+<!-- http://spring.io/blog/2013/05/11/content-negotiation-using-spring-mvc/ -->
+<!-- content-negotiation-manager="contentNegotiationManager" -->
+
+<!-- This seems stopped working after moving to Java config -->
+<!-- <mvc:annotation-driven enable-matrix-variables="true" >
+    <mvc:message-converters  register-defaults="true">
+        <bean
+             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+             <property name="objectMapper" ref="jacksonObjectMapper" />
+		</bean>
+
+	</mvc:message-converters>
+    
+</mvc:annotation-driven> -->
+
+<!-- https://diterius.wordpress.com/2013/09/11/spring/ -->
+
+
+
+<bean id="viewResolver"
+	class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	<property name="viewClass"
+		value="org.springframework.web.servlet.view.JstlView" />
+	<property name="prefix" value="/" />
+	<property name="suffix" value=".jsp" />
+</bean>
+
+<!--
+        View resolver that delegates to other view resolvers based on the content type
+        
+        http://spring.io/blog/2013/06/03/content-negotiation-using-views/
+-->
+<!--     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"> -->
+       <!-- All configuration is now done by the manager - since Spring V3.2 -->
+       <!-- We create bean in java config -->
+<!--        <property name="contentNegotiationManager" ref="contentNegotiationManager"/> -->
+<!--     </bean> -->
+
+	
+	<!-- Matrix params require this -->
+<!-- <bean id="requestMappingHandlerMapping" 
+	class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+ 	<property name="removeSemicolonContent" value="false" />
+</bean>	 -->
+
+
+	
+</beans>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Repository and Service layers
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/security 
+ 		http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+ <!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+<!-- application.properties are for Eclipse - file contains dev properties 
+It is in root context
+-->
+<context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
+
+<!-- digestFilter and digestEntryPoint have been verified with the official docs -->
+<bean id="digestFilter" class=
+	"org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
+	<property name="userDetailsService" ref="JDBCUserService"/>
+	<property name="authenticationEntryPoint" ref="digestEntryPoint"/>
+
+</bean>
+
+<bean id="digestEntryPoint" class=
+	"org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
+	<property name="realmName" value="Custom Realm Name"/>
+	<property name="key" value="acegi"/>
+	<property name="nonceValiditySeconds" value="60"/>
+</bean>
+
+<bean id="expressionHandler" 
+	class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"/>
+
+
+<!-- http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#basic-processing-filter -->
+
+<bean id="basicAuthenticationEntryPoint"
+	class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+	<property name="realmName" value="SF-5 Realm"/>
+</bean>
+
+
+<!-- http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html -->
+<bean id="basicAuthenticationFilter"
+	class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+<!-- 	<property name="authenticationManager" ref="authenticationManager"/>
+	<property name="authenticationEntryPoint" ref="basicAuthenticationEntryPoint"/> -->
+		<constructor-arg ref="authenticationManager"/>
+		<constructor-arg ref="basicAuthenticationEntryPoint"/>
+	<property name="credentialsCharset" value="UTF-8"/>
+</bean>
+
+<!-- http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#el-access -->
+
+<!-- Global Security Settings  To use expressions like @PreAuthorize-->
+<!-- http://stackoverflow.com/questions/32552528/spring-security-4-preauthorizehasrole-not-working -->
+<!-- This should probably go to MVC config file as JUnit shows Configuration problem: Duplicate <global-method-security> detected. 
+We do not have to load MVC servlet config file
+It used in sf5-servlet.xml
+-->
+<security:global-method-security pre-post-annotations="enabled" >
+	 <security:expression-handler ref="expressionHandler"/>
+</security:global-method-security>
+	 
+
+ 
+<!-- auto-config 
+Automatically registers a login form, BASIC authentication, logout services. If set to "true", all of these capabilities are added 
+(although you can still customize the configuration of each by providing the respective element). If unspecified, defaults to "false". Use of this attribute 
+is not recommended. Use explicit configuration elements instead to avoid confusion. -->  
+ 
+<!-- 
+disable-url-rewriting  
+ Prevents session IDs from being appended to URLs in the application. Clients must use cookies if this attribute is set to true. The default is true.  -->
+ 
+<!-- entry-point-ref 
+Normally the AuthenticationEntryPoint used will be set depending on which authentication mechanisms have been configured. This attribute allows this behaviour 
+to be overridden by defining a customized AuthenticationEntryPoint bean which will start the authentication process. -->
+
+<!-- name 
+A bean identifier, used for referring to the bean elsewhere in the context. -->  
+
+<!-- use-expressions 
+Enables EL-expressions in the access attribute, as described in the chapter on expression-based access-control. The default value is true. -->
+
+<!-- pattern 
+Defining a pattern for the http element controls the requests which will be filtered through the list of filters which it defines. 
+The interpretation is dependent on the configured request-matcher. If no pattern is defined, all requests will be matched, so the most specific patterns should be declared first.  -->
+
+<!-- request-matcher 
+Defines the RequestMatcher strategy used in the FilterChainProxy and the beans created by the intercept-url to match incoming requests. 
+Options are currently ant, regex and ciRegex, for ant, regular-expression and case-insensitive regular-expression repsectively. 
+A separate instance is created for each intercept-url element using its pattern and method attributes. Ant paths are matched using an AntPathRequestMatcher 
+and regular expressions are matched using a RegexRequestMatcher. See the Javadoc for these classes for more details on exactly how the matching is preformed. 
+Ant paths are the default strategy.    -->
+
+<!-- <security:debug/> -->
+
+<!-- http://stackoverflow.com/questions/18722471/when-to-use-double-star-in-glob-syntax-within-java -->
+<!-- Two asterisks, **, works like * but crosses directory boundaries. This syntax is generally used for matching complete paths. 
+
+So when specifying patterns in action-based frameworks we should use only ** 
+
+-->
+
+<!-- REST security -->
+<!-- Be careful to use ** in pattern!!! -->
+<security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
+    	<!-- We do not need sessions in stateless REST API -->
+    	<security:csrf disabled="true"/>
+        <security:custom-filter ref="digestFilter" before="FORM_LOGIN_FILTER" />
+        
+        <security:intercept-url pattern="${jaxrs.path}/satellites/*" access="isAnonymous()"/>
+        <security:intercept-url pattern="${jaxrs.path}/transponders/*" access="isAnonymous()"/>
+        <security:intercept-url pattern="${jaxrs.path}/users/*" access="isAnonymous()"/>
+        <security:intercept-url pattern="${jaxrs.path}/usersettings/*" access="hasRole('ROLE_USER')"/>
+        
+ </security:http>
+ 
+ 
+<!-- http://stackoverflow.com/questions/2952196/learning-ant-path-style
+Ant-style path patterns matching in spring-framework
+•? matches one character
+•* matches zero or more characters
+•** matches zero or more 'directories' in a path
+
+
+ --> 
+<!-- 		entry-point-ref="digestEntryPoint"  
+
+Since JAX-WS RI doesn't support digest authentication, we will use basic.
+--> 
+<!-- Exception for JAX-WS --> 
+
+<!-- <security:http pattern="/OpenboxSF5Service*" name="JAXWSBasicAuthentication" create-session="stateless"
+		entry-point-ref="basicAuthenticationEntryPoint"
+		use-expressions="true"
+		request-matcher="ant">
+		
+		<security:http-basic />
+		
+    	We do not need sessions in stateless REST API
+    	<security:csrf disabled="true"/>
+   	 
+ </security:http> -->
+ 
+<!-- <security:http auto-config="true" use-expressions="true" disable-url-rewriting="true"> -->
+<security:http name="LoginFormAuthentication">
+
+	<security:session-management invalid-session-url="/login?time=1">
+    	<security:concurrency-control max-sessions="1" expired-url="/login?time=1" />
+    </security:session-management>
+
+	<security:intercept-url pattern="/login" access="isAnonymous()"/>
+	
+	<security:intercept-url pattern="/register" access="isAnonymous()"/>
+ 	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+
+	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
+		 
+	<security:form-login 
+		login-page= '/login' 
+		default-target-url="/"
+		authentication-failure-url='/login.jsp?error=true'
+		always-use-default-target='true'
+ 	/>
+	
+	<!-- enable csrf protection -->
+	<security:csrf/>
+</security:http>
+
+
+<security:authentication-manager  alias="authenticationManager">
+	<security:authentication-provider>
+	<security:jdbc-user-service id="JDBCUserService"
+		data-source-ref="dataSource"
+		users-by-username-query="
+			select	username, password, enabled from users	where username =?"
+		authorities-by-username-query="select username, authority from usersauthorities where username =?" />
+	</security:authentication-provider>
+</security:authentication-manager>		 
+	 
+ 
+</beans>  

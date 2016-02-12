@@ -1,0 +1,210 @@
+<sat>
+<satid index="1">
+<tp index="1">
+<LnbFreq>9750</LnbFreq>
+<Freq>11296</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>9750</LnbFreq>
+<Freq>11316</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>9750</LnbFreq>
+<Freq>11334</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>9750</LnbFreq>
+<Freq>11393</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+</satid>
+<satid index="2">
+<tp index="1">
+<LnbFreq>9750</LnbFreq>
+<Freq>11411</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>9750</LnbFreq>
+<Freq>11470</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>9750</LnbFreq>
+<Freq>11585</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>9750</LnbFreq>
+<Freq>11604</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+</satid>
+<satid index="3">
+<tp index="1">
+<LnbFreq>9750</LnbFreq>
+<Freq>11642</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>9750</LnbFreq>
+<Freq>11662</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>9750</LnbFreq>
+<Freq>11681</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>10600</LnbFreq>
+<Freq>11900</Freq>
+<Symbol>29900</Symbol>
+<Polar>1</Polar>
+</tp>
+</satid>
+<satid index="4">
+<tp index="1">
+<LnbFreq>10600</LnbFreq>
+<Freq>11938</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>10600</LnbFreq>
+<Freq>11958</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>10600</LnbFreq>
+<Freq>12130</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>10600</LnbFreq>
+<Freq>12149</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+</satid>
+<satid index="5">
+<tp index="1">
+<LnbFreq>10600</LnbFreq>
+<Freq>12616</Freq>
+<Symbol>29900</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>10600</LnbFreq>
+<Freq>12654</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>9750</LnbFreq>
+<Freq>11334</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>9750</LnbFreq>
+<Freq>11411</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+</satid>
+<satid index="6">
+<tp index="1">
+<LnbFreq>9750</LnbFreq>
+<Freq>11470</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>9750</LnbFreq>
+<Freq>11487</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>10600</LnbFreq>
+<Freq>11996</Freq>
+<Symbol>29900</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>10600</LnbFreq>
+<Freq>12015</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+</satid>
+<satid index="7">
+<tp index="1">
+<LnbFreq>10600</LnbFreq>
+<Freq>12092</Freq>
+<Symbol>29900</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>10600</LnbFreq>
+<Freq>12111</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>10600</LnbFreq>
+<Freq>12130</Freq>
+<Symbol>27500</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>10600</LnbFreq>
+<Freq>12380</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+</satid>
+<satid index="8">
+<tp index="1">
+<LnbFreq>10600</LnbFreq>
+<Freq>12437</Freq>
+<Symbol>29900</Symbol>
+<Polar>1</Polar>
+</tp>
+<tp index="2">
+<LnbFreq>10600</LnbFreq>
+<Freq>12466</Freq>
+<Symbol>29900</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="3">
+<LnbFreq>10600</LnbFreq>
+<Freq>12520</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+<tp index="4">
+<LnbFreq>10600</LnbFreq>
+<Freq>12149</Freq>
+<Symbol>27500</Symbol>
+<Polar>0</Polar>
+</tp>
+</satid>
+</sat>
