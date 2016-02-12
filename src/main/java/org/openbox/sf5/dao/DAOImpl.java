@@ -67,7 +67,7 @@ public class DAOImpl implements DAO, Serializable {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends AbstractDbEntity> List<T> list(Class<T> type) {
+	public <T extends AbstractDbEntity> List<T> ObjectsList(Class<T> type) {
 
 		List<T> list = new ArrayList<>();
 

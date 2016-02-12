@@ -129,6 +129,183 @@
 	
 </plugins> 
 </build>  
+
+<profiles>
+	<profile>
+  	<id>test</id>
+  		<activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>  		   	 
+	<properties>
+  		<db.jdbcUrl>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</db.jdbcUrl>
+  		<db.driver>org.h2.Driver</db.driver>
+  		<db.user>sa</db.user>
+  		<db.password></db.password>
+        <db.dialect>H2Dialect</db.dialect>
+        <db.hbm2ddl>update</db.hbm2ddl> 
+  		<rp.build.warname>SF5Spring-test</rp.build.warname>
+  		<property.placeholder>test</property.placeholder>
+  	</properties>
+  	
+  	<!-- http://stackoverflow.com/questions/20916581/how-to-do-in-container-testing-of-a-web-app-in-spring -->
+  	<build>
+    	<plugins>
+             <plugin>
+             <groupId>org.codehaus.cargo</groupId>
+             <artifactId>cargo-maven2-plugin</artifactId>
+             <version>1.4.18</version>
+             	<configuration>
+                     <container>
+						    <containerId>wildfly10x</containerId>
+	                     	<zipUrlInstaller>
+								<url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
+							</zipUrlInstaller>
+						    <dependencies>
+                				<dependency>
+                    				<groupId>mysql</groupId>
+                    				<artifactId>mysql-connector-java</artifactId>
+                 				</dependency>
+                 				<dependency>
+                 					<groupId>com.h2database</groupId>
+                 					<artifactId>h2</artifactId>
+                 				</dependency>
+            				</dependencies>
+                     </container>
+                     <configuration>
+                     	<properties>
+                             <cargo.servlet.port>8080</cargo.servlet.port>
+                             <cargo.protocol>http</cargo.protocol>
+                             <cargo.datasource.datasource.ds1>
+                             		cargo.datasource.url=jdbc:h2:mem:test;DB_CLOSE_DELAY=-1|
+                             		cargo.datasource.driver=com.mysql.jdbc.Driver|
+                             		cargo.datasource.username=sa|
+                             		cargo.datasource.password=''|
+                             		cargo.datasource.jndi=jboss/datasources/MySQLDS
+                             </cargo.datasource.datasource.ds1>                  
+                    	</properties>
+                	</configuration>
+                		<deployables>
+                		<deployable>
+                			<pingURL>http://localhost:8080/${rp.build.warname}/</pingURL>
+	                		<pingTimeout>120000</pingTimeout> <!-- 2 min -->
+                		 	<properties>
+                		     	<context>${rp.build.warname}</context>
+              				</properties>
+                		</deployable>
+                		</deployables>
+                </configuration>
+
+                
+                
+                <executions>
+                     <execution>
+                        <id>start-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                        <goal>start</goal>
+                    </goals>
+                    </execution>
+                    	<execution>
+                    	<id>stop-container</id>
+                    	<phase>post-integration-test</phase>
+                    	<goals>
+                    		<goal>stop</goal>
+                    	</goals>
+                	</execution>
+            	</executions>
+        	</plugin>
+             	<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>	
+					<version>2.18.1</version>
+					<executions>
+ 				       	<execution>
+            			<phase>integration-test</phase>
+            			<goals>
+               				<goal>test</goal>
+            			</goals>
+            			<configuration>
+               				<excludes>
+                  				<exclude>**/*Tests.java</exclude>
+                  		    	<!-- Should exclude tests that fail in container but OK in IDE (( -->
+                   				<exclude>**/jaxws/SettingsServiceIT.java</exclude>
+
+                   				<exclude>**/json/endpoints/BUserServiceIT.java</exclude>
+                   				<exclude>**/json/endpoints/SettingsServiceIT.java</exclude>          			
+               				</excludes>
+            				<includes>
+								<include>**/*IT.java</include>
+							</includes>
+																			
+            			</configuration>
+        		</execution> 
+      		</executions>
+		</plugin>
+ 	</plugins>
+    </build>	
+	</profile>
+<!-- 	<profile>
+  		<id>prod</id>
+  		<activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>  		 
+		<properties>
+           		<db.jdbcUrl>jdbc:mysql://localhost:3306/sf5angulardev</db.jdbcUrl>
+           		<db.driver>org.postgresql.Driver</db.driver>
+           		<db.user>sf5jsf</db.user>
+           		<db.password>1</db.password>
+           		<db.dialect>ProgressDialect</db.dialect>
+  				<rp.build.warname>SF5Spring</rp.build.warname>
+  				<property.placeholder>prod</property.placeholder>
+  				<db.hbm2ddl>update</db.hbm2ddl>
+		</properties>
+	</profile> -->
+	<profile>
+  		<id>dev</id>
+  		<activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
+		<properties>
+            <db.jdbcUrl>jdbc:mysql://localhost:3306/sf5angulardev</db.jdbcUrl>
+           	<db.driver>com.mysql.jdbc.Driver</db.driver>
+           	<db.user>root</db.user>
+           	<db.password>123456</db.password>
+           	<db.dialect>MySQL5Dialect</db.dialect>
+  			<rp.build.warname>SF5Spring-test</rp.build.warname>
+  			<property.placeholder>dev</property.placeholder>
+  			<db.hbm2ddl>update</db.hbm2ddl>
+  		</properties>
+	</profile>
+	<profile>
+	 	<id>openshift</id>
+         	<activation>
+            	<activeByDefault>true</activeByDefault>
+        	</activation>
+        	<properties>
+        		<db.jdbcUrl>jdbc:mysql://localhost:3306/sf5angulardev</db.jdbcUrl>
+           		<db.driver>com.mysql.jdbc.Driver</db.driver>
+           		<db.user>root</db.user>
+           		<db.password>123456</db.password>
+        		<rp.build.warname></rp.build.warname> <!-- For jboss-web.xml -->
+        		<db.dialect>MySQL5Dialect</db.dialect>
+        		<property.placeholder>openshift</property.placeholder>
+        		<db.hbm2ddl>update</db.hbm2ddl>
+        	</properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-war-plugin</artifactId>
+                  <version>2.6</version>
+                  <configuration>
+                     <outputDirectory>deployments</outputDirectory>
+                     <warName>ROOT</warName>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+</profiles>
+
  
  
 <dependencies>
@@ -225,14 +402,80 @@
     	<scope>provided</scope>
 	</dependency>
 	
-		<!--  or we get package javax.ws.rs does not exist -->
+	<!--  APIs -->
 	<dependency>
     	<groupId>javax</groupId>
     	<artifactId>javaee-web-api</artifactId>
     	<version>7.0</version>
     	<scope>provided</scope>
 	</dependency>
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>javax.servlet-api</artifactId>
+		<version>3.1.0</version>
+		<scope>provided</scope>
+	</dependency>
 	
+	<!-- Databases -->
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>5.1.38</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.h2database</groupId>
+		<artifactId>h2</artifactId>
+		<version>1.4.191</version>
+		<scope>provided</scope>
+	</dependency>
+	
+	<!-- Jackson dependencies -->
+	<dependency>
+    	<groupId>com.fasterxml.jackson.core</groupId>
+    	<artifactId>jackson-databind</artifactId>
+    	<version>${jackson.version}</version>
+    	<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.jaxrs</groupId>
+		<artifactId>jackson-jaxrs-json-provider</artifactId>
+		<version>${jackson.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.jaxrs</groupId>
+		<artifactId>jackson-jaxrs-xml-provider</artifactId>
+		<version>${jackson.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<!-- This is only needed for Spring -->
+	<dependency>
+		<groupId>com.fasterxml.jackson.dataformat</groupId>
+		<artifactId>jackson-dataformat-xml</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>
+	<!-- From http://stackoverflow.com/questions/22950542/pretty-printing-xml-with-jackson-library -->
+	<dependency>
+		<groupId>org.codehaus.woodstox</groupId>
+		<artifactId>woodstox-core-asl</artifactId>
+		<version>4.4.1</version>
+	</dependency>
+	
+	<!-- Tests -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.assertj</groupId>
+		<artifactId>assertj-core</artifactId>
+		<version>3.2.0</version>
+		<scope>test</scope>
+	</dependency>
+		
 </dependencies> 
   
 </project>

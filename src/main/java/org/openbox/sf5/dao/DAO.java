@@ -18,7 +18,7 @@ public interface DAO {
 
 	public <T extends AbstractDbEntity> void saveOrUpdate(T obj);
 
-	public <T extends AbstractDbEntity> List<T> list(Class<T> type);
+	public <T extends AbstractDbEntity> List<T> ObjectsList(Class<T> type);
 
 	public <T extends AbstractDbEntity> List<T> ObjectsCriterionList(Class<T> type, Criterion criterion);
 
