@@ -19,7 +19,8 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
 
 	@Override
 	protected String[] getServletMappings() {
-		return new String[] { "/" };
+		return new String[] { "/${jaxrs.path}/" };
+		// we use Angular application in the root.
 	}
 
 	// next is added from

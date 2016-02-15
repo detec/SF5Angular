@@ -160,15 +160,19 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
     	<security:concurrency-control max-sessions="1" expired-url="/login?time=1" />
     </security:session-management>
 
-	<security:intercept-url pattern="/login" access="isAnonymous()"/>
+	<security:intercept-url pattern="/login.html" access="isAnonymous()"/>
+	
+	<!-- Allowing access to static resources -->
+	<security:intercept-url pattern="/css/**" access="isAnonymous()"/>
+	<security:intercept-url pattern="/js/**" access="isAnonymous()"/>
 	
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 
-	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
+	<security:logout logout-url="/logout" logout-success-url="/login.html" delete-cookies="JSESSIONID" invalidate-session="true"/>
 		 
 	<security:form-login 
-		login-page= '/login' 
+		login-page= '/login.html' 
 		default-target-url="/"
 		authentication-failure-url='/login.jsp?error=true'
 		always-use-default-target='true'
