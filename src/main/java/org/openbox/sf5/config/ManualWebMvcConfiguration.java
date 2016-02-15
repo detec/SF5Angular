@@ -80,7 +80,7 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 	// http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/guides/html5/form.html
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/login").setViewName("login");
+		registry.addViewController("/login").setViewName("login.html");
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 

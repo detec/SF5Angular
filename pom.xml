@@ -3,6 +3,7 @@
   <groupId>SF5Angular</groupId>
   <artifactId>SF5Angular</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
   <name>openboxsf5-angular</name>
   <description>Openbox SF-5 settings editor, AngularJS</description>
   
@@ -28,6 +29,12 @@
 	<resource>
     	<directory>src/main/resources</directory>
     	<filtering>true</filtering>
+  	</resource>
+  	<resource>
+  		<directory>src/main/java</directory>
+  		<excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
   	</resource>
 </resources>
  
@@ -74,6 +81,27 @@
           <!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
           <encoding>UTF-8</encoding>
         </configuration>
+        <executions>
+        	<execution>
+          	<!-- Serves *only* to filter the wro.xml so it can get an absolute
+            	path for the project -->
+          	<id>copy-resources</id>
+          	<phase>validate</phase>
+          	<goals>
+            	<goal>copy-resources</goal>
+          	</goals>
+          	<configuration>
+            	<outputDirectory>${basedir}/target/wro</outputDirectory>
+            	<resources>
+              	<resource>
+                	<directory>src/main/wro</directory>
+                	<filtering>true</filtering>
+              </resource>
+            </resources>
+          	</configuration>
+        	</execution>
+		</executions>
+        
      </plugin>
 	
      <plugin>
@@ -177,7 +205,7 @@
                              <cargo.protocol>http</cargo.protocol>
                              <cargo.datasource.datasource.ds1>
                              		cargo.datasource.url=jdbc:h2:mem:test;DB_CLOSE_DELAY=-1|
-                             		cargo.datasource.driver=com.mysql.jdbc.Driver|
+                             		cargo.datasource.driver=org.h2.Driver|
                              		cargo.datasource.username=sa|
                              		cargo.datasource.password=''|
                              		cargo.datasource.jndi=jboss/datasources/MySQLDS
@@ -241,6 +269,46 @@
         		</execution> 
       		</executions>
 		</plugin>
+		
+		<plugin>
+      		<groupId>ro.isdc.wro4j</groupId>
+      		<artifactId>wro4j-maven-plugin</artifactId>
+      		<version>1.7.6</version>
+      		<executions>
+        		<execution>
+          		<phase>generate-resources</phase>
+          		<goals>
+            		<goal>run</goal>
+          		</goals>
+        		</execution>
+      		</executions>
+      		<configuration>
+        		<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+        		<cssDestinationFolder>${project.build.directory}/generated-resources/css</cssDestinationFolder>
+        		<jsDestinationFolder>${project.build.directory}/generated-resources/js</jsDestinationFolder>
+        		<wroFile>${project.build.directory}/wro/wro.xml</wroFile>
+        		<extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
+        		<contextFolder>${basedir}/src/main/wro</contextFolder>
+      		</configuration>
+      		<dependencies>
+        		<dependency>
+          			<groupId>org.webjars</groupId>
+          			<artifactId>jquery</artifactId>
+          			<version>2.1.1</version>
+        		</dependency>
+        		<dependency>
+          			<groupId>org.webjars</groupId>
+          			<artifactId>angularjs</artifactId>
+          			<version>1.5.0</version>
+        		</dependency>
+        		<dependency>
+          			<groupId>org.webjars</groupId>
+          			<artifactId>bootstrap</artifactId>
+          			<version>3.2.0</version>
+        		</dependency>
+      		</dependencies>
+    	</plugin>
+		
  	</plugins>
     </build>	
 	</profile>
@@ -475,6 +543,14 @@
 		<version>3.2.0</version>
 		<scope>test</scope>
 	</dependency>
+	
+	<!-- java.lang.ClassNotFoundException: org.apache.commons.fileupload.FileItemFactory  -->
+	<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+		<version>1.3.1</version>
+	</dependency>
+	
 		
 </dependencies> 
   

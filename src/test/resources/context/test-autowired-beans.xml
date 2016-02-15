@@ -28,7 +28,7 @@
 <context:component-scan base-package="org.openbox.sf5.dao" /> <!-- Probably this is for autowiring -->
 <!-- <context:component-scan base-package="org.openbox.sf5.service" /> -->
 <context:component-scan base-package="org.openbox.sf5.common" />
-<context:component-scan base-package="org.openbox.sf5.json" />
+<!-- <context:component-scan base-package="org.openbox.sf5.json" /> -->
 <!-- <context:component-scan base-package="org.openbox.sf5.jaxws" /> -->
 
 <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
@@ -47,7 +47,7 @@
 	
 
 	
-<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="packagesToScan" value="org.openbox.sf5.model" />   
     <property name="configLocation"> 
