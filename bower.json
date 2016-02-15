@@ -1,0 +1,27 @@
+{
+  "name": "SF5web",
+  "homepage": "https://github.com/detec/SF5Angular",
+  "authors": [
+    "detec <dlit@yandex.ru>"
+  ],
+  "description": "OpenBox SF-5 settings editor - web implementation",
+  "main": "",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/webapp/js",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone-amd": "~1",
+    "jquery": "~2",
+    "lodash": "~1",
+    "curl": "~0.8"
+  }
+}
