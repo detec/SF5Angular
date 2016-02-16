@@ -14,13 +14,13 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { MvcConfiguration.class };
+		return new Class[] { ManualWebMvcConfiguration.class };
 	}
 
 	@Override
 	protected String[] getServletMappings() {
-		return new String[] { "/${jaxrs.path}/" };
-		// we use Angular application in the root.
+		return new String[] { "/" };
+
 	}
 
 	// next is added from

@@ -153,33 +153,43 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
    	 
  </security:http> -->
  
+<security:http pattern="/css/**" security="none"/>
+<security:http pattern="/js/**" security="none"/>
+ 
+ 
 <!-- <security:http auto-config="true" use-expressions="true" disable-url-rewriting="true"> -->
-<security:http name="LoginFormAuthentication">
+<security:http name="LoginFormAuthentication" use-expressions="true" >
 
 	<security:session-management invalid-session-url="/login?time=1">
     	<security:concurrency-control max-sessions="1" expired-url="/login?time=1" />
     </security:session-management>
 
-	<security:intercept-url pattern="/login.html" access="isAnonymous()"/>
+	<security:intercept-url pattern="/login" access="isAnonymous()"/>
+	<!-- Let's make an experiment and enable anonymous login -->
+<!-- 	<security:intercept-url pattern="/index.html" access="isAnonymous()"/> -->
 	
-	<!-- Allowing access to static resources -->
+	<!-- Allowing access to static resources 
+	Seems it doesn't work
+	-->
 	<security:intercept-url pattern="/css/**" access="isAnonymous()"/>
 	<security:intercept-url pattern="/js/**" access="isAnonymous()"/>
 	
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 
-	<security:logout logout-url="/logout" logout-success-url="/login.html" delete-cookies="JSESSIONID" invalidate-session="true"/>
+	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
 		 
 	<security:form-login 
-		login-page= '/login.html' 
-		default-target-url="/"
-		authentication-failure-url='/login.jsp?error=true'
-		always-use-default-target='true'
+		login-page= '/login' 
+		default-target-url="/index.html"
+		authentication-failure-url='/login.html?error=true'
+		always-use-default-target='false'
+		
  	/>
+ 	<!-- always-use-default-target='false'  - user should get where he wanted -->
 	
 	<!-- enable csrf protection -->
-	<security:csrf/>
+<!-- 	<security:csrf/> -->
 </security:http>
 
 

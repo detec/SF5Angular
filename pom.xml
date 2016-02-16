@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>openboxsf5-angular</name>
-  <description>Openbox SF-5 settings editor, AngularJS</description>
+  <description>Openbox SF-5 settings editor, web implementation with REST</description>
   
 	<properties>
   		<spring.version>4.2.4.RELEASE</spring.version>
@@ -294,9 +294,27 @@
         		<dependency>
           			<groupId>org.webjars</groupId>
           			<artifactId>jquery</artifactId>
-          			<version>2.1.1</version>
+          			<version>2.1.4</version>
         		</dependency>
         		<dependency>
+					<groupId>org.webjars</groupId>
+					<artifactId>backbonejs</artifactId>
+					<version>1.2.3</version>
+				</dependency>
+				<dependency>
+					<groupId>org.webjars</groupId>
+					<artifactId>lodash</artifactId>
+					<version>3.10.1</version>
+				</dependency>
+				<dependency>
+					<groupId>org.webjars</groupId>
+					<artifactId>cujojs-curl</artifactId>
+					<version>0.8.1</version>
+				</dependency>
+				
+				
+        		
+<!--         		<dependency>
           			<groupId>org.webjars</groupId>
           			<artifactId>angularjs</artifactId>
           			<version>1.5.0</version>
@@ -305,7 +323,7 @@
           			<groupId>org.webjars</groupId>
           			<artifactId>bootstrap</artifactId>
           			<version>3.2.0</version>
-        		</dependency>
+        		</dependency> -->
       		</dependencies>
     	</plugin>
 		
@@ -447,6 +465,31 @@
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-oxm</artifactId>
 		<version>${spring.version}</version>
+	</dependency>
+	
+	<!-- Work with JSP - for login -->
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>javax.servlet.jsp.jstl</groupId>
+		<artifactId>javax.servlet.jsp.jstl-api</artifactId>
+		<version>1.2.1</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>javax.servlet.jsp</groupId>
+		<artifactId>jsp-api</artifactId>
+		<version>2.2.1-b03</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.taglibs</groupId>
+		<artifactId>taglibs-standard-impl</artifactId>
+		<version>1.2.5</version>
+		<scope>provided</scope>
 	</dependency>
 	
 	<!-- Hibernate -->

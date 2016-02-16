@@ -24,6 +24,7 @@ import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -33,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Configuration
-@ComponentScan(basePackages = { "org.openbox.sf5.application" })
+@ComponentScan(basePackages = { "org.openbox.sf5.common" })
 public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	@Autowired
@@ -80,8 +81,18 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 	// http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/guides/html5/form.html
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/login").setViewName("login.html");
+		registry.addViewController("/login").setViewName("login");
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+	}
+
+	/*
+	 * Configure ResourceHandlers to serve static resources like CSS/ Javascript
+	 * etc...
+	 */
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
 	}
 
 	@Override
