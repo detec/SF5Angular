@@ -1,26 +1,4 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * Core JavaScript functionality for the application.  Performs the required
- * Restful calls, validates return values, and populates the member table.
- * 
- * @Author: Joshua Wilson
- * @Author: Vineet Reynolds
- */
+
 
 /* Builds the updated table for the member list */
 // Load the application once the DOM is ready, using `jQuery.ready`.
@@ -34,7 +12,7 @@ $(function() {
 	 * provides a basic set of functionality for managing changes.
 	 */
 	// Our basic **Member** model
-	window.Member = Backbone.Model.extend({
+	window.Transponder = Backbone.Model.extend({
         //Intentionally left empty
 	});
 
@@ -49,16 +27,34 @@ $(function() {
 	 * changes to specific attributes in any model in a collection, for example:
 	 * Documents.on("change:selected", ...)
 	 */
-	window.MemberList = Backbone.Collection.extend({
+	window.TransponderList = Backbone.Collection.extend({
 		// Specify the base url to target the REST service
-		url : 'rest/members',
+		url : 'jaxrs/transponders',
 
 		// Reference to this collection's model.
-		model : Member
+		model : Transponder
 	});
 
 	// Create our global collection of **Members**.
-	window.Members = new MemberList();
+	window.Transponders = new TransponderList();
+	
+	// 17.02.2016
+	// Adding OpenBox settings
+	window.Setting = Backbone.Model.extend({
+		
+	});
+	
+	window.SettingList = Backbone.Collection.extend({
+		
+		url : 'jaxrs/usersettings',
+
+		// Reference to this collection's model.
+		model : Setting
+	});
+	
+	window.Settings = new SettingList();
+	
+	// 17.02.2016
 
 	/*
 	 * Backbone Views are almost more convention than they are code — they don't
@@ -85,48 +81,15 @@ $(function() {
         this.undelegateEvents();
     };
 
-    // This Backbone View is used to display the introduction page.
-    window.IntroView = Backbone.View.extend({
-        events : {
-            // Bind the click event on the info button to the 'showInfo' method.
-            "click a.ui-icon-info" : "showInfo"
-        },
 
-        render : function() {
-            // Change to the jQuery Mobile page with id:'intro-art'.
-            // Do not change the hash, since the hashchange was already triggered before navigating to this view.
-            $.mobile.pageContainer.pagecontainer("change", "#intro-art", { reverse: false, changeHash: false, transition: "none"});
-        },
 
-        showInfo: function(event) {
-            event.preventDefault();
-
-            // Display the InfoView that is responsible for displaying the popup.
-            new window.InfoView({el:$("#info-aside")}).render();
-        }
-    });
-
-    window.InfoView = Backbone.View.extend({
-        events : {
-            "click #closePopup" : "closePopup"
-        },
-
-        render: function() {
-            $("#info-aside").popup("open");
-        },
-
-        closePopup: function() {
-            $("#info-aside").popup("close");
-        }
-    });
-
-    window.RegisterMemberView = Backbone.View.extend({
+    window.AddSettingView = Backbone.View.extend({
         events : {
             // Bind the click event on the Cancel button to the 'cancelRegistration' method.
             "click #cancel" : "cancelRegistration",
 
             // Bind the submit event on the Registration form to the 'registerMember' method.
-            "submit #reg" : "registerMember"
+            "submit #reg" : "saveSetting"
         },
 
         initialize: function() {
@@ -153,7 +116,7 @@ $(function() {
             $('#formMsgs').empty();
         },
 
-        registerMember : function(event) {
+        saveSetting : function(event) {
 //        	console.log("RegisterMemberView - registerMember() - start");
             // The event was triggered by clicking on a link.
             // We prevent the browser from navigating to the destination.
@@ -161,8 +124,6 @@ $(function() {
 
             var regForm = $("#reg"),
                 elemName = $("#name"),
-                elemEmail = $("#email"),
-                elemPhoneNumber = $("#phoneNumber"),
                 errors = [];
 
             /*
@@ -178,19 +139,6 @@ $(function() {
                     });
                 }
 
-                // Verify if the email field is valid for the HTML5 constraints specified on it.
-                if (!elemEmail.get(0).checkValidity()) {
-                    errors.push({
-                        $elem : elemEmail
-                    });
-                }
-
-                // Verify if the phone number field is valid for the HTML5 constraints specified on it.
-                if (!elemPhoneNumber.get(0).checkValidity()) {
-                    errors.push({
-                        $elem : elemPhoneNumber
-                    });
-                }
             }
             // Clear existing msgs
             $('span.invalid').remove();
@@ -204,8 +152,7 @@ $(function() {
             } else {
                 var modelToAdd = {
                     name : elemName.val(),
-                    email : elemEmail.val(),
-                    phoneNumber : elemPhoneNumber.val()
+
                 };
                 // Display the loader widget
                 $.mobile.loading("show");
@@ -225,7 +172,7 @@ $(function() {
             this.resetForm();
 
             // Mark success on the registration form
-            $('#formMsgs').append($('<span class="success">Member Registered</span>'));
+            $('#formMsgs').append($('<span class="success">Setting saved</span>'));
         },
 
         // Invoked when a Member was registered unsuccessfully.
@@ -267,14 +214,14 @@ $(function() {
     });
 
     // This Backbone View is used to display a single member in the list of all members.
-	window.MemberView = Backbone.View.extend({
+	window.TransponderView = Backbone.View.extend({
 
 		// The HTML that gets created will be inserted into a parent element defined here.
 		// The default is 'div' so we don't need to list it.
 		tagName : "tr",
 
 		// Cache the template function for a single item.
-		template : _.template($('#member-Body-tmpl').html()),
+		template : _.template($('#transponder-Body-tmpl').html()),
 
 		// The MemberView listens for changes to its model, re-rendering.
 		initialize : function() {
@@ -288,76 +235,214 @@ $(function() {
 		// Re-render the contents of the member item.
 		render : function() {
 //			console.log("MemberView - render() - start");
-            this.$el.html(this.template({member: this.model.toJSON()}));
+            this.$el.html(this.template({transponder: this.model.toJSON()}));
 			return this;
 		}
 	});
 
     // This Backbone View is used to display the list of all members.
-    window.ListAllMembersView = Backbone.View.extend({
+    window.ListAllTranspondersView = Backbone.View.extend({
         events : {
             // Bind the click event on the Refresh Members button to the 'updateMemberTable' method.
-            "click #refreshButton" : "updateMemberTable"
+            "click #refreshButtonTransponders" : "updateTransponderTable"
         },
 
         render : function() {
 //			console.log("ListAllMembersView - render() - start");
             // Change to the jQuery Mobile page with id:'member-art'.
-            $.mobile.pageContainer.pagecontainer("change", "#member-art", { reverse: false, changeHash: false, transition: "none"});
+            $.mobile.pageContainer.pagecontainer("change", "#transponder-art", { reverse: false, changeHash: false, transition: "none"});
 
             // Bind the reset event on the Members collection to the addAllMembers method.
-            Members.on('reset', this.addAllMembers, this);
+            Transponders.on('reset', this.addAllTransponders, this);
 
             // Display all the members
-            this.updateMemberTable();
+            this.updateTransponderTable();
             return this;
         },
 
-        addOneMember : function(member) {
+        addOneTransponder : function(member) {
 //			console.log("AppView - addOneMembers() - start");
             // Create a new instance of a MemberView, designating the member instance as it's model.
-            var view = new MemberView({
-                model : member
+            var view = new TransponderView({
+                model : transponder
             });
 
             // Display the new MemberView as a nested view of the current view
-            this.$("#members").append(view.render().el);
+            this.$("#transponders").append(view.render().el);
         },
 
         // Add all items in the **Members** collection at once.
-        addAllMembers : function() {
+        addAllTransponders : function() {
 //			console.log("AppView - addAllMembers() - start");
 
             // Dsiplay the loader widget
             $.mobile.loading("show");
 
             // For every member in the Members collection, invoke the 'addOneMember' method.
-            Members.each(this.addOneMember);
+            Transponders.each(this.addOneTransponder);
 
             // Update the jQuery Mobile list, since we dynamically added elements to it.
-            $( "#member-table" ).table( "refresh" );
+            $( "#transponder-table" ).table( "refresh" );
 
             // Hide the loader widget
             $.mobile.loading("hide");
         },
 
-        updateMemberTable : function() {
+        updateTransponderTable : function() {
 //			console.log("AppView - Update Member - start");
             // Remove the elements in the table body or else we will have more then one copy of each member.
-            $( "#members" ).empty();
+            $( "#transponders" ).empty();
 
             // Fetch the Collection. This resets the collection and adds all retrieved Members to it.
             // This also triggers the 'reset' event on the collection.
             // Any event listeners associated with this event are invoked.
-            Members.fetch({reset: true, cache: false});
+            Transponders.fetch({reset: true, cache: false});
         },
 
         onClose : function() {
             // Stop listening to the 'reset' event on the collection, when this view is closed.
-            Members.off("reset");
+        	Transponders.off("reset");
         }
     });
 
+    // 17.02.2016  
+    window.ListAllUsersView = Backbone.View.extend({
+    	
+        render : function() {
+//			console.log("ListAllMembersView - render() - start");
+            // Change to the jQuery Mobile page with id:'member-art'.
+            $.mobile.pageContainer.pagecontainer("change", "#user-art", { reverse: false, changeHash: false, transition: "none"});
+
+            // Bind the reset event on the Members collection to the addAllMembers method.
+          //  Transponders.on('reset', this.addAllTransponders, this);
+
+            // Display all the members
+            // this.updateTransponderTable();
+            return this;
+        }
+    	
+    });
+    
+    // This Backbone View is used to display a single member in the list of all members.
+	window.SettingView = Backbone.View.extend({
+
+		// The HTML that gets created will be inserted into a parent element defined here.
+		// The default is 'div' so we don't need to list it.
+		tagName : "tr",
+
+		// Cache the template function for a single item.
+		template : _.template($('#setting-Body-tmpl').html()),
+
+		// The MemberView listens for changes to its model, re-rendering.
+		initialize : function() {
+//			console.log("MemberView - initialize() - start");
+			_.bindAll(this, 'render');
+
+			// Listen to model changes and register the 'render' method as the callback
+			this.model.on('change', this.render, this);
+		},
+
+		// Re-render the contents of the member item.
+		render : function() {
+//			console.log("MemberView - render() - start");
+            this.$el.html(this.template({setting: this.model.toJSON()}));
+			return this;
+		}
+	});
+    
+
+    window.ListAllSettingsView = Backbone.View.extend({
+    	
+        events : {
+            // Bind the click event on the Refresh Members button to the 'updateMemberTable' method.
+            "click #refreshButtonSettings" : "updateSettingsTable"
+        },
+        
+        render : function() {
+//			console.log("ListAllMembersView - render() - start");
+            // Change to the jQuery Mobile page with id:'member-art'.
+            $.mobile.pageContainer.pagecontainer("change", "#settings-art", { reverse: false, changeHash: false, transition: "none"});
+
+            // Bind the reset event on the Members collection to the addAllMembers method.
+            Settings.on('reset', this.addAllSettings, this);
+
+            // Display all the members
+            this.updateSettingsTable();
+            return this;
+        },
+        
+        addOneSetting : function(member) {
+//			console.log("AppView - addOneMembers() - start");
+            // Create a new instance of a MemberView, designating the member instance as it's model.
+            var view = new SettingView({
+                model : setting
+            });
+
+            // Display the new MemberView as a nested view of the current view
+            this.$("#settings").append(view.render().el);
+        },
+        
+        // Add all items in the **Members** collection at once.
+        addAllSettings : function() {
+//			console.log("AppView - addAllMembers() - start");
+
+            // Dsiplay the loader widget
+            $.mobile.loading("show");
+
+            // For every member in the Members collection, invoke the 'addOneMember' method.
+            Settings.each(this.addOneSetting);
+
+            // Update the jQuery Mobile list, since we dynamically added elements to it.
+            $( "#settings-table" ).table( "refresh" );
+
+            // Hide the loader widget
+            $.mobile.loading("hide");
+        },      
+    	
+        updateSettingsTable : function() {
+            // Remove the elements in the table body or else we will have more then one copy of each member.
+        	$("#settings").empty();
+        	
+            // Fetch the Collection. This resets the collection and adds all retrieved Members to it.
+            // This also triggers the 'reset' event on the collection.
+            // Any event listeners associated with this event are invoked.
+            Settings.fetch({reset: true, cache: false});
+        },
+        
+        onClose : function() {
+            // Stop listening to the 'reset' event on the collection, when this view is closed.
+        	Settings.off("reset");
+        }
+    
+    
+    });
+   
+    // http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
+    var FormView = Backbone.View.extends({
+
+    	  // some more code here
+    	  events: {
+    	    'submit form' : 'uploadFile'
+    	  },
+
+    	  uploadFile: function(event) {
+    	    var values = {};
+
+    	    if(event){ event.preventDefault(); }
+
+    	    _.each(this.$('form').serializeArray(), function(input){
+    	      values[ input.name ] = input.value;
+    	    })
+
+    	    this.model.save(values, { iframe: true,
+    	                              files: this.$('form :file'),
+    	                              data: values });
+    	  }
+    	});
+
+ // 17.02.2016
+    
+    
 	window.ViewManager = {
         // A property to store the current view being displayed.
 		currentView : null,
@@ -381,10 +466,11 @@ $(function() {
 	window.Router = Backbone.Router.extend({
 		routes : {
             // Bind various route fragments to methods defined in the Router.
-			"" : "showIntro",
-			"intro" : "showIntro",
-			"register" : "showRegisterMember",
-			"member" : "showAllMembers"
+			"" : "showSettings",
+			"intro" : "showSettings",
+			"addsetting" : "showAddSetting",
+			"transponders" : "showAllTransponders",
+			"users" : "showAllUsers"
 		},
 		
 		initialize : function() {
@@ -393,24 +479,30 @@ $(function() {
 		},
 
         // Navigate to the Intro view.
-		showIntro : function() {
+		showSettings : function() {
             // Bind the 'intro-art' jQuery Mobile page as the 'el' for the Backbone View.
-			var introView = new IntroView({ el: "#intro-art"});
-			ViewManager.showView(introView);
+			var settingsView = new SettingView({ el: "#settings-art"});
+			ViewManager.showView(settingsView);
 		},
 
         // Navigate to the Register Member view.
-		showRegisterMember: function() {
+		showAddSetting: function() {
             // Bind the 'register-art' jQuery Mobile page as the 'el' for the Backbone View.
-			var registerMemberView = new RegisterMemberView({ el: "#register-art"});
+			var registerMemberView = new AddSettingView({ el: "#addsetting-art"});
 			ViewManager.showView(registerMemberView);
 		},
 
         // Navigate to display all the Members.
-		showAllMembers: function() {
+		showAllTransponders: function() {
             // Bind the 'member-art' jQuery Mobile page as the 'el' for the Backbone View.
-			var listMembersView = new ListAllMembersView({ el: "#member-art"});
+			var listMembersView = new ListAllTranspondersView({ el: "#transponder-art"});
 			window.ViewManager.showView(listMembersView);
+		},
+		
+		// Navigate to users
+		showAllUsers: function() {
+			 var listUsers = new ListAllUsersView()el: "#user-art";
+			 window.ViewManager.showView(listUsers);
 		},
 
         // Display the loader widget before executing the method for any Backbone route.
