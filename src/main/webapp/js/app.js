@@ -339,13 +339,15 @@ $(function() {
 			_.bindAll(this, 'render');
 
 			// Listen to model changes and register the 'render' method as the callback
-			this.model.on('change', this.render, this);
+			// IE Debug
+			// this.model.on('change', this.render, this);
 		},
 
 		// Re-render the contents of the member item.
 		render : function() {
 //			console.log("MemberView - render() - start");
-            this.$el.html(this.template({setting: this.model.toJSON()}));
+			// IE Debug
+           //  this.$el.html(this.template({setting: this.model.toJSON()}));
 			return this;
 		}
 	});
@@ -418,27 +420,6 @@ $(function() {
     });
    
     // http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
-    var FormView = Backbone.View.extends({
-
-    	  // some more code here
-    	  events: {
-    	    'submit form' : 'uploadFile'
-    	  },
-
-    	  uploadFile: function(event) {
-    	    var values = {};
-
-    	    if(event){ event.preventDefault(); }
-
-    	    _.each(this.$('form').serializeArray(), function(input){
-    	      values[ input.name ] = input.value;
-    	    })
-
-    	    this.model.save(values, { iframe: true,
-    	                              files: this.$('form :file'),
-    	                              data: values });
-    	  }
-    	});
 
  // 17.02.2016
     
@@ -501,7 +482,7 @@ $(function() {
 		
 		// Navigate to users
 		showAllUsers: function() {
-			 var listUsers = new ListAllUsersView()el: "#user-art";
+			 var listUsers = new ListAllUsersView({el: "#user-art"});
 			 window.ViewManager.showView(listUsers);
 		},
 
