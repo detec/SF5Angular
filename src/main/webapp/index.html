@@ -109,16 +109,7 @@
                             </tr>
                             </thead>
                             <tbody id="settings">
-                            <!-- This is where the list of members gets populated by the templates. This row is only
-                                here as an example of the code that will be inserted.
-                            <tr>
-                                <th>0</td>
-                                <td>John Smith</td>
-                                <td><a href="mailto:john.smith@mailinator.com" class="ui-link">john.smith@mailinator.com</a></td>
-                                <td><a href="tel:2125551212" class="ui-link">Call</a> or <a href="sms:2125551212" class="ui-link">SMS</a> 2125551212</td>
-                                <td><a href="rest/members/0" rel="external" target="_blank" class="resturl ui-link">JSON</a></td>
-                            </tr>
-                            -->
+
                             </tbody>
                         </table>
                    </div>
@@ -128,7 +119,7 @@
 	        </article>
 	
 	        <!-- New HTML5 article tag -->
-	        <article id="addsetting-art" data-role="page" data-title="Add a etting">
+	        <article id="addsetting-art" data-role="page" data-title="Add a setting">
 	            <!-- Header -->
 	            <div data-role="header" class="header">
 	                <h3>OpenBox SF-5 settings editor</h3>
@@ -168,24 +159,16 @@
 	            <div class="ui-content" role="main">
                     <div class="wrap">
                         <button id="refreshButtonTransponders" data-role="button" data-inline="true" data-icon="refresh">Refresh transponders</button>
-                        $.ajax('/some/path', {
-  							iframe: true,
-  						files: $("form :file")
-						});
                         
-						<form enctype="multipart/form-data">
+<!-- 						<form enctype="multipart/form-data">
 						    <label>
 						      File
 						      <input name='file' type='file' />
 						    </label>
-						    <br>
-						    <label>
-						      Name
-						      <input name='name' type='text' />
-						    </label>
+
 						    <br>
 						    <input type="submit" value="Upload">
-						</form>
+						</form> -->
 
                         <table data-role="table" id="transponder-table" data-mode="reflow" class="app-responsive table-stroke">
                             <thead>
@@ -254,6 +237,7 @@
 	<script type="text/template" id="setting-Body-tmpl">
         <th><%=setting.id%></td>
         <td><%=setting.name%></td>
+		<td><%=setting.theLastEntry%></td>
 	</script>
 
 </body>

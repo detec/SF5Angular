@@ -347,7 +347,7 @@ $(function() {
 		render : function() {
 //			console.log("MemberView - render() - start");
 			// IE Debug
-           //  this.$el.html(this.template({setting: this.model.toJSON()}));
+             this.$el.html(this.template({setting: this.model.toJSON()}));
 			return this;
 		}
 	});
