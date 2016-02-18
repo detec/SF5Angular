@@ -340,14 +340,15 @@ $(function() {
 
 			// Listen to model changes and register the 'render' method as the callback
 			// IE Debug
-			// this.model.on('change', this.render, this);
+			 this.model.on('change', this.render, this);
 		},
 
 		// Re-render the contents of the member item.
 		render : function() {
 //			console.log("MemberView - render() - start");
 			// IE Debug
-             this.$el.html(this.template({setting: this.model.toJSON()}));
+			// settings comes from router
+             this.$el.html(this.template({settings: this.model.toJSON()}));
 			return this;
 		}
 	});
@@ -448,7 +449,7 @@ $(function() {
 		routes : {
             // Bind various route fragments to methods defined in the Router.
 			"" : "showSettings",
-			"intro" : "showSettings",
+			"settings" : "showSettings",
 			"addsetting" : "showAddSetting",
 			"transponders" : "showAllTransponders",
 			"users" : "showAllUsers"
