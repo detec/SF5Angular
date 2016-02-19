@@ -13,7 +13,20 @@ $(function() {
 	 */
 	// Our basic **Member** model
 	window.Transponder = Backbone.Model.extend({
-        //Intentionally left empty
+        
+		defaults: {
+			id: '',
+			carrier: '',
+			FEC: '',
+			frequency: '',
+			polarization: '',
+			rangeOfDVB: '',
+			satellite: '',
+			speed: '',
+			versionOfTheDVB: ''
+		
+		}
+		
 	});
 
 	/*
@@ -41,6 +54,13 @@ $(function() {
 	// 17.02.2016
 	// Adding OpenBox settings
 	window.Setting = Backbone.Model.extend({
+		
+		defaults: {
+			id: '',
+			name: '',
+			theLastEntry: '',
+			user: ''
+		}
 		
 	});
 	
@@ -324,35 +344,46 @@ $(function() {
     });
     
     // This Backbone View is used to display a single member in the list of all members.
-	window.SettingView = Backbone.View.extend({
-
-		// The HTML that gets created will be inserted into a parent element defined here.
-		// The default is 'div' so we don't need to list it.
-		tagName : "tr",
-
-		// Cache the template function for a single item.
-		template : _.template($('#setting-Body-tmpl').html()),
-
-		// The MemberView listens for changes to its model, re-rendering.
-		initialize : function() {
-//			console.log("MemberView - initialize() - start");
-			_.bindAll(this, 'render');
-
-			// Listen to model changes and register the 'render' method as the callback
-			// IE Debug
-			 this.model.on('change', this.render, this);
-		},
-
-		// Re-render the contents of the member item.
-		render : function() {
-//			console.log("MemberView - render() - start");
-			// IE Debug
-			// settings comes from router
-             this.$el.html(this.template({settings: this.model.toJSON()}));
-			return this;
-		}
-	});
+//	window.SettingView = Backbone.View.extend({
+//
+//		// The HTML that gets created will be inserted into a parent element defined here.
+//		// The default is 'div' so we don't need to list it.
+//		tagName : "tr",
+//
+//		// Cache the template function for a single item.
+//		template : _.template($('#setting-Body-tmpl').html()),
+//
+//		// The MemberView listens for changes to its model, re-rendering.
+//		initialize : function() {
+////			console.log("MemberView - initialize() - start");
+//			_.bindAll(this, 'render');
+//
+//			// Listen to model changes and register the 'render' method as the callback
+//			// IE Debug
+//			// this.model.on('change', this.render, this);
+//		},
+//
+//		// Re-render the contents of the member item.
+//		render : function() {
+////			console.log("MemberView - render() - start");
+//			// IE Debug
+//			// settings comes from template, doesn't work
+//             this.$el.html(this.template({setting: this.model.toJSON()}));
+//			return this;
+//		}
+//	});
     
+    
+	window.SettingView = Backbone.View.extend({
+    
+    		// The HTML that gets created will be inserted into a parent element defined here.
+    		// The default is 'div' so we don't need to list it.
+    		tagName : "tr",
+    		
+    		// Cache the template function for a single item.
+    		template : _.template($('#setting-Body-tmpl').html())
+    
+	});
 
     window.ListAllSettingsView = Backbone.View.extend({
     	
