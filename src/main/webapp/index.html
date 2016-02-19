@@ -88,6 +88,10 @@
 
 </head>
 <body>
+
+<script type="text/javascript" src="js/upload.js"></script>
+<!-- <script>window.parent.backgroundUploadComplete();</script> -->
+
 	<div id="container">
 	    <section>
 
@@ -173,6 +177,7 @@
 						    <input type="submit" value="Upload">
 						</form> -->
 
+
                         <table data-role="table" id="transponder-table" data-mode="reflow" class="app-responsive table-stroke">
                             <thead>
                             <tr>
@@ -200,6 +205,14 @@
                             </tbody>
                         </table>
 
+						<div id="documents"> 
+						<form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data" data-role="form">
+							<input type="file" name="file"/>
+							<!-- and other fields as needed -->
+							<input type="button" onClick="backgroundUpload(this.form, $('#documents'));" value="Upload" />
+						</form>
+						
+						</div>
                     </div>
 	            </div>
 	        </article>

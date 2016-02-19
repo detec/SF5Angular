@@ -318,6 +318,8 @@ $(function() {
             // Any event listeners associated with this event are invoked.
             Transponders.fetch({reset: true, cache: false});
         },
+        
+
 
         onClose : function() {
             // Stop listening to the 'reset' event on the collection, when this view is closed.
