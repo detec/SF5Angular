@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Backbone QuickStarts</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- Disable phone number detection on iOS.  -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Set the tab, home page, shortcut icons -->
+	<!-- <link rel="Shortcut Icon" href="img/"> -->
+	<!-- <link rel="apple-touch-icon" href="img/"/> -->
+
+    <!-- CSS styles -->
+    <!-- For minification, comment out this link -->
+<!--     <link rel="stylesheet" href="css/jquery.mobile-1.4.2.css"/> -->
+    <!-- For minification, uncomment out this file -->
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css"/>
+
+    <!-- For minification, comment out this link -->
+    <link rel="stylesheet" href="css/screen.css"/>
+    <!-- For minification, uncomment out this file -->
+    <!--<link rel="stylesheet" href="css/screen.min.css"/>-->
+
+    <!-- Set viewport scaling and zoom features -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- For minification, comment out this file -->
+    <script type="text/javascript" src="js/libs/jquery.min.js"></script>
+    <!-- For minification, uncomment out this file -->
+    <!--<script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>-->
+    
+    	<!-- 18.02.2016, Added manually underscore -->
+	<script type="text/javascript" src="js/libs/underscore-min.js"></script>
+
+    <script type="text/javascript">
+		$( document ).on( "mobileinit",
+			// Set up the "mobileinit" handler before loading jQuery Mobile
+			function() {
+				// Prevents all anchor click handling including the addition of active button state and alternate link bluring.
+				$.mobile.linkBindingEnabled = false;
+
+				// Disabling this will prevent jQuery Mobile from handling hash changes
+				$.mobile.hashListeningEnabled = false;
+			}
+		);
+
+        $(function() {
+            // Enhance the footer since it is present outside the page definition and hence not enhanced automatically.
+            $( "[data-role='footer']" ).toolbar();
+            $( "[data-role='navbar']" ).navbar();
+        });
+        // Update the contents of the toolbars
+        $( document ).on( "pageshow", "[data-role='page']", function() {
+            var current = $( this ).jqmData( "title" );
+            // Remove active class from nav buttons
+            $( "[data-role='navbar'] a.ui-btn-active" ).removeClass( "ui-btn-active" );
+            // Add active class to current nav button
+            $( "[data-role='navbar'] a" ).each(function() {
+                if ( $( this ).text() === current ) {
+                    $( this ).addClass( "ui-btn-active" );
+                }
+            });
+        });
+	</script>
+
+    <!-- For minification, comment out this file -->
+    <script type="text/javascript" src="js/libs/jquery.mobile.min.js"></script>
+    <!-- For minification, uncomment out this file -->
+    <!--<script type="text/javascript" src="js/libs/jquery.mobile-1.4.2.min.js"></script>-->
+
+    <!-- For minification, comment out this file -->
+    <script type="text/javascript" src="js/libs/lodash.min.js"></script>
+    <!-- For minification, uncomment out this file -->
+    <!--<script type="text/javascript" src="js/libs/lodash-2.4.1.min.js"></script>-->
+
+    <!-- For minification, comment out this file -->
+    <script type="text/javascript" src="js/libs/backbone-min.js"></script>
+    <!-- For minification, uncomment out this file -->
+    <!--<script type="text/javascript" src="js/libs/backbone-1.1.2.min.js"></script>-->
+
+    <!-- For minification, comment out this file -->
+    <script type="text/javascript" src="js/app.js"></script>
+    <!-- For minification, uncomment out this file -->
+    <!-- <script type="text/javascript" src="js/app.min.js"></script> -->
+    
+
+
+</head>
+<body>
+
+
+<!-- <script>window.parent.backgroundUploadComplete();</script> -->
+
+	<div id="container">
+	    <section>
+
+	        <article id="settings-art" data-role="page" data-title="Home">
+	            <!-- Header -->
+	            <div data-role="header" class="header">
+	                <h3>OpenBox SF-5 settings editor</h3>
+	                
+	            </div>
+	            <!-- /Header -->
+	
+	            <div class="ui-content" role="main">
+                   <div class="wrap">
+                   <button id="refreshButtonSettings" data-role="button" data-inline="true" data-icon="refresh">Refresh settings</button>
+                    <table data-role="table" id="settings-table" data-mode="reflow" class="app-responsive table-stroke">
+                            <thead>
+                            <tr>
+                                <th data-priority="1">Id</th>
+                                <th data-priority="persist">Name</th>
+                                <th data-priority="2">Last update date</th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="settings">
+
+                            </tbody>
+                        </table>
+                   </div>
+	            </div>
+
+
+	        </article>
+	
+	        <!-- New HTML5 article tag -->
+	        <article id="addsetting-art" data-role="page" data-title="Add a setting">
+	            <!-- Header -->
+	            <div data-role="header" class="header">
+	                <h3>OpenBox SF-5 settings editor</h3>
+	            </div>
+	            <!-- /Header -->
+	
+	            <div class="ui-content" role="main">
+                    <div class="wrap">
+                        <!-- For now mapping bean validation constraints from server side model is a manual task -->
+                        <form name="reg" id="reg" data-ajax="false">
+                            <fieldset>
+                                <legend>Add a setting:</legend>
+                                <div class="ui-field-contain">
+                                    <label for="name">Name:</label>
+                                    <input type="text" name="name" id="name" placeholder="Name" required autofocus/>
+                                </div>
+
+                                <div id="formMsgs"></div>
+                                <div class="ui-grid-a app-responsive">
+                                    <div class="ui-block-a"><input type="submit" id="register" value="Save" data-theme="b"/></div>
+                                    <div class="ui-block-b"><input type="button" name="cancel" id="cancel" value="Reset"/></div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+	            </div>
+	        </article>
+	
+	        <!-- New HTML5 article tag -->
+	        <article id="transponder-art" data-role="page" data-title="Transponders">
+	            <!-- Header -->
+	            <div data-role="header" class="header" data-position="fixed">
+	                <h3>OpenBox SF-5 settings editor</h3>
+	            </div>
+	            <!-- /Header -->
+
+	            <div class="ui-content" role="main">
+                    <div class="wrap">
+                        <button id="refreshButtonTransponders" data-role="button" data-inline="true" data-icon="refresh">Refresh transponders</button>
+                        
+<!-- 						<form enctype="multipart/form-data">
+						    <label>
+						      File
+						      <input name='file' type='file' />
+						    </label>
+
+						    <br>
+						    <input type="submit" value="Upload">
+						</form> -->
+
+
+                        <table data-role="table" id="transponder-table" data-mode="reflow" class="app-responsive table-stroke">
+                            <thead>
+                            <tr>
+                                <th data-priority="1">Frequency</th>
+                                <th data-priority="1">Speed</th>
+                                <th data-priority="2">Pol.</th>
+                                <th data-priority="2">FEC</th>
+                                <th data-priority="3">Carrier</th>
+                                <th data-priority="3">DVB ver.</th>
+                                <th data-priority="4">DVB range</th>
+                                <th data-priority="4">Satellite</th>
+                            </tr>
+                            </thead>
+                            <tbody id="transponders">
+                            <!-- This is where the list of members gets populated by the templates. This row is only
+                                here as an example of the code that will be inserted.
+                            <tr>
+                                <th>0</td>
+                                <td>John Smith</td>
+                                <td><a href="mailto:john.smith@mailinator.com" class="ui-link">john.smith@mailinator.com</a></td>
+                                <td><a href="tel:2125551212" class="ui-link">Call</a> or <a href="sms:2125551212" class="ui-link">SMS</a> 2125551212</td>
+                                <td><a href="rest/members/0" rel="external" target="_blank" class="resturl ui-link">JSON</a></td>
+                            </tr>
+                            -->
+                            </tbody>
+                        </table>
+
+						<div id="documents"> 
+						<form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data" data-role="form">
+							<input type="file" name="file"/>
+							<!-- and other fields as needed -->
+							<input type="button" onClick="backgroundUpload(this.form, $('#documents'));" value="Upload" />
+						</form>
+						
+						</div>
+                    </div>
+	            </div>
+	        </article>
+	        
+	        <article id="user-art" data-role="page" data-title="Transponders">
+	            <!-- Header -->
+	            <div data-role="header" class="header" data-position="fixed">
+	                <h3>OpenBox SF-5 settings editor</h3>
+	            </div>
+	            <!-- /Header -->
+	            <div class="ui-content" role="main">
+                    <div class="wrap">
+                    
+                    </div>
+	            </div>	            	        
+	        </article>
+
+            <!-- Footer -->
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" data-theme="a">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#intro" data-icon="home" class="ui-button-active">Settings</a></li>
+                        <li><a href="#addsetting" data-icon="plus">Add setting</a></li>
+                        <li><a href="#transponders" data-icon="grid">Transponders</a></li>
+                        <li><a href="#users" data-icon="grid">Users</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /Footer -->
+	    </section>
+	</div>
+    
+	<script type="text/template" id="transponder-Body-tmpl">
+        <th><%=transponder.frequency%></td>
+        <td><%=transponder.speed%></td>
+
+	</script>
+	<script type="text/template" id="setting-Body-tmpl">
+        <th><%=setting.id%></td>
+        <td><%=setting.name%></td>
+		<td><%=setting.theLastEntry%></td>
+	</script>
+
+</body>
+</html>

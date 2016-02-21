@@ -115,8 +115,8 @@ So when specifying patterns in action-based frameworks we should use only **
 <!-- REST security -->
 <!-- Be careful to use ** in pattern!!! -->
 <!-- We disabled it because with Javascropt we use login form -->
-<!-- <security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
-    	We do not need sessions in stateless REST API
+<security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
+
     	<security:csrf disabled="true"/>
         <security:custom-filter ref="digestFilter" before="FORM_LOGIN_FILTER" />
         
@@ -125,8 +125,11 @@ So when specifying patterns in action-based frameworks we should use only **
         <security:intercept-url pattern="${jaxrs.path}/users/*" access="isAnonymous()"/>
         <security:intercept-url pattern="${jaxrs.path}/usersettings/*" access="hasRole('ROLE_USER')"/>
         
- </security:http> -->
+ </security:http>
  
+ 
+ <!-- We have to open at least something to do test upload -->
+<!--  <security:http pattern="/${jaxrs.path}/**" security="none"/> -->
  
 <!-- http://stackoverflow.com/questions/2952196/learning-ant-path-style
 Ant-style path patterns matching in spring-framework
@@ -172,8 +175,10 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
 	<!-- Allowing access to static resources 
 	Seems it doesn't work
 	-->
-	<security:intercept-url pattern="/css/**" access="isAnonymous()"/>
-	<security:intercept-url pattern="/js/**" access="isAnonymous()"/>
+	<!-- <security:intercept-url pattern="/css/**" access="isAnonymous()"/>
+	<se curity:intercept-url pattern="/js/**" access="isAnonymous()"/>
+	
+	-->
 	
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />

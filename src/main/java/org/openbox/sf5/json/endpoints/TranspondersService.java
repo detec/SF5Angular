@@ -68,7 +68,7 @@ public class TranspondersService {
 		return new ResponseEntity<List<Transponders>>(transList, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Transponders>> getTransponders() {
 		List<Transponders> transList = objectController.ObjectsList(Transponders.class);
 		if (transList.isEmpty()) {
