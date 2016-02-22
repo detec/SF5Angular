@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Configuration
-@ComponentScan(basePackages = { "org.openbox.sf5.common" })
+@ComponentScan(basePackages = { "org.openbox.sf5.common", "org.openbox.sf5.json" })
 public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	@Autowired

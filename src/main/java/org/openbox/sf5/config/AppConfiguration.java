@@ -10,9 +10,14 @@ import org.springframework.context.annotation.ImportResource;
 @Import({
 		// MvcConfiguration.class
 
+		// let's exclude it from the root config
+		// after excluding ManualWebMvcConfiguration even index.html stops
+		// resolving.
 		ManualWebMvcConfiguration.class
 
-		, SecurityConfiguration.class
+		,
+
+		SecurityConfiguration.class
 
 })
 @ImportResource({ "/WEB-INF/root-context.xml"

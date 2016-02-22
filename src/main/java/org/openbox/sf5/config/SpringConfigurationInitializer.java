@@ -14,7 +14,13 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { ManualWebMvcConfiguration.class };
+		return new Class[] {
+				// let's use "erroneous" class MvcConfiguration, as in the
+				// original Spring project
+				// ManualWebMvcConfiguration.class
+				MvcConfiguration.class
+
+		};
 	}
 
 	@Override
