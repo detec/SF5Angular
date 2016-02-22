@@ -36,9 +36,20 @@ var transponder = Backbone.Model.extend({
 
 // variable for collection shown
 var TransponderPresentations = Backbone.Collection.extend({
-	model : transponderPresentation,	
+	// model : transponderPresentation,
+	
+	// will use strict transponder
+	model : transponder,
 	// Specify the base url to target the REST service
-	url : 'jaxrs/transponders'
+	url : '/jaxrs/transponders/'
+		
+		
+		
+		,
+		parse: function (response) { 
+		 	console.log('Collection - parse'); 
+		 	this.reset(response);				 
+		 }, 
 	
 });
 
@@ -47,7 +58,13 @@ var Transponders = Backbone.Collection.extend({
 	model : transponder,
 	
 	// Specify the base url to target the REST service
-	url : 'jaxrs/transponders'
+	url : '/jaxrs/transponders/'
+		
+		,
+		parse: function (response) { 
+		 	console.log('Collection - parse'); 
+		 	this.reset(response);				 
+		 },	
 	
 });
 
@@ -58,15 +75,18 @@ var transponders = new Transponders();
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
 	
-	model: new transponderPresentation(),
+	// model: new transponderPresentation(),
+	model: new transponder(),
 	
 	tagName: 'tr',
 	
 	initialize: function() {
+	//	console.log("transponderPresentationView initialize called!");
 		this.template = _.template($('.transponder-Body-tmpl').html());
 	},
 	
 	render: function() {
+		// console.log("transponderPresentationView render called!");
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	}
@@ -78,15 +98,104 @@ var transpondersPresentationView = Backbone.View.extend({
 	model: transponderPresentations,
 	el: $('.transponders-list'),
 	
+	initialize: function() {
+		// console.log("transponderSPresentationView initialize called!");
+		
+		var self = this;
+		
+		// this.model.on('add', this.render, this); 
+		
+		// May be this freezes the browser
+//		this.model.on('change', function() { 
+//				setTimeout(function() { 
+//		 				self.render(); 
+//		 			}, 30); 
+//			},this); 
+		this.model.on('remove', this.render, this);
+
+		
+		this.model.fetch({
+			success: function(response) {
+				_.each(response.toJSON(), function(item) {
+					console.log('Successfully GOT transponder with id: ' + item.id);
+				})
+				
+		
+			},
+			error: function() {
+				console.log('Failed to get transponders!');
+			}
+			
+			
+		});
+		
+		
+		/* 
+ 		 * listen to the reset event on the collection and  
+ 		 * call render when the collection changes. 
+ 		 * However, reset is not triggered by default, the fetch 
+ 		 * method should pass the key 'reset' as true. 
+ 		*/ 
+ 		this.listenTo(this.model, 'reset', this.render); 
+
+		
+//		this.collection = transponderPresentations;
+//		this.collection.bind("reset", _.bind(this.render, this));
+//		this.collection.fetch({
+//			success: function(response) {
+//				_.each(response.toJSON(), function(item) {
+//					console.log('Successfully GOT transponder with id: ' + item.id);
+//				})
+//				
+//		
+//			},
+//			error: function() {
+//				console.log('Failed to get transponders!');
+//			}
+//			
+//		});
+//		
+		
+		// this.render();
+		
+        // _.bindAll(this, "render");
+       
+
+		
+		// trying to render rows.
+		// It didn't help
+	
+
+		console.log("transponderSPresentationView initialize finished!");
+	},
+	
 	render: function() {
+		console.log("transponderSPresentationView render called!");
+
 		var self = this;
 		this.$el.html('');
-		_.each(this.model.toArray(), function(blog) {
-			self.$el.append((new transponderPresentationView({model: blog})).render().$el);
+		_.each(this.model.toArray(), function(transponderPresentation) {
+			 self.$el.append((new transponderPresentationView({model: transponderPresentation})).render().$el);
+			//self.$el.append((new transponderPresentationView({model: transponderPresentation})).render().el);
 		});
 		return this;
-	}
+	},
 	
+	// http://www.sagarganatra.com/2013/06/backbone-collections-do-not-emit-reset-event-after-fetch.html
+	fetch: function (options) { 
+	 	options.reset = true; 
+	 	return Backbone.Collection.prototype.fetch.call(this, options); 
+	 } 
 });
 
+// var TPsView = new transpondersPresentationView({collection: transponderPresentations });
 var TPsView = new transpondersPresentationView();
+
+
+
+
+// transponderPresentations.fetch();
+
+//$(document).ready(function() {
+//	
+//})
