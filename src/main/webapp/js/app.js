@@ -1,37 +1,82 @@
 // http://stijndewitt.com/2014/01/26/enums-in-javascript/
 
+// Models
 
+var Satellite = Backbone.Model.extend({
+	idAttribute: 'id',
+	
+	defaults: {
+		name: ''
+	}
+	
+});
 
 // Define a view model with selection checkbox
 var transponderPresentation = Backbone.Model.extend({
+	idAttribute: 'id',
 	
 	defaults: {
-		id: 0,
 		carrier: '',
 		FEC: '',
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: '',
+		satellite: new Satellite(),
 		speed: 0,
-		versionOfTheDVB: '',
-		selection: false
+		versionOfTheDVB: ''
+			
+		//	,
+		// selection: false
 		}
+
+	,
+	parse: function (response) {
+		// Create a Author model on the Post Model
+		this.satellite = new Satellite(response.satellite || null, {
+			parse: true
+		});
+		// 	Delete from the response object as the data is
+		// 	alredy available on the  model
+		delete response.satellite;
+
+		// 	return the response object 
+		return response;
+	}
 });
 
 var transponder = Backbone.Model.extend({
-	
+
+	idAttribute: 'id',
 	defaults: {
-		id: 0,
 		carrier: '',
 		FEC: '',
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: '',
+		satellite: new Satellite(),
 		speed: 0,
 		versionOfTheDVB: ''
 		}
+
+
+
+
+	// http://jsfiddle.net/sushanth009/bBtgt/1/
+	// Parsing complex objects
+	,
+	parse: function (response) {
+        // Create a Author model on the Post Model
+        this.satellite = new Satellite(response.satellite || null, {
+            parse: true
+        });
+        // Delete from the response object as the data is
+        // alredy available on the  model
+        delete response.satellite;
+
+        // return the response object 
+        return response;
+	}
+
 });
 
 // variable for collection shown
@@ -45,7 +90,7 @@ var TransponderPresentations = Backbone.Collection.extend({
 		
 		
 	
-	// this thing really helps but the script "hangs".	
+	// this thing really helps
 	,
 	parse: function (response) { 
 	 	console.log('Collection - parse'); 
@@ -53,6 +98,8 @@ var TransponderPresentations = Backbone.Collection.extend({
 	}, 
 	
 });
+
+// Collections
 
 // variable for collection sent
 var Transponders = Backbone.Collection.extend({
@@ -62,7 +109,7 @@ var Transponders = Backbone.Collection.extend({
 	url : '/jaxrs/transponders/'
 		
 	
-	// this thing really helps but the script "hangs".	
+	// this thing really helps	
 	,
 	parse: function (response) { 
 	 	console.log('Collection - parse'); 
@@ -71,9 +118,17 @@ var Transponders = Backbone.Collection.extend({
 	
 });
 
+var Satellites = Backbone.Collection.extend({
+	model : Satellite
+	
+});
+
 var transponderPresentations = new TransponderPresentations();
 
-var transponders = new Transponders();
+var transponders = new Transponders(
+// 		{parse: true}
+		
+);
 
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
@@ -124,7 +179,7 @@ var transpondersPresentationView = Backbone.View.extend({
 //				})
 			success: function(collection){
 			    // Callback triggered only after receiving the data.
-			    console.log(collection.length); 
+			    console.log('Retrieved collection length: ' + collection.length); 
 				
 		
 			},
@@ -169,4 +224,5 @@ var transpondersPresentationView = Backbone.View.extend({
 // var TPsView = new transpondersPresentationView({collection: transponderPresentations });
 var TPsView = new transpondersPresentationView();
 
-
+// added from http://jsfiddle.net/sushanth009/bBtgt/1/
+TPsView.render();
