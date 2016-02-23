@@ -16,6 +16,7 @@ var transponderPresentation = Backbone.Model.extend({
 	idAttribute: 'id',
 	
 	defaults: {
+		id : 0,
 		carrier: '',
 		FEC: '',
 		frequency: 0,
@@ -48,6 +49,7 @@ var transponder = Backbone.Model.extend({
 
 	idAttribute: 'id',
 	defaults: {
+		id : 0,
 		carrier: '',
 		FEC: '',
 		frequency: 0,
