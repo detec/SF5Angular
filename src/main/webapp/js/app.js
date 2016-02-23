@@ -44,12 +44,13 @@ var TransponderPresentations = Backbone.Collection.extend({
 	url : '/jaxrs/transponders/'
 		
 		
-		
-		,
-		parse: function (response) { 
-		 	console.log('Collection - parse'); 
-		 	this.reset(response);				 
-		 }, 
+	
+	// this thing really helps but the script "hangs".	
+	,
+	parse: function (response) { 
+	 	console.log('Collection - parse'); 
+	 	this.reset(response);				 
+	}, 
 	
 });
 
@@ -60,11 +61,13 @@ var Transponders = Backbone.Collection.extend({
 	// Specify the base url to target the REST service
 	url : '/jaxrs/transponders/'
 		
-		,
-		parse: function (response) { 
-		 	console.log('Collection - parse'); 
-		 	this.reset(response);				 
-		 },	
+	
+	// this thing really helps but the script "hangs".	
+	,
+	parse: function (response) { 
+	 	console.log('Collection - parse'); 
+	 	this.reset(response);				 
+	}, 
 	
 });
 
@@ -111,14 +114,17 @@ var transpondersPresentationView = Backbone.View.extend({
 //		 				self.render(); 
 //		 			}, 30); 
 //			},this); 
-		this.model.on('remove', this.render, this);
+//		this.model.on('remove', this.render, this);
 
 		
 		this.model.fetch({
-			success: function(response) {
-				_.each(response.toJSON(), function(item) {
-					console.log('Successfully GOT transponder with id: ' + item.id);
-				})
+//			success: function(response) {
+//				_.each(response.toJSON(), function(item) {
+//					console.log('Successfully GOT transponder with id: ' + item.id);
+//				})
+			success: function(collection){
+			    // Callback triggered only after receiving the data.
+			    console.log(collection.length); 
 				
 		
 			},
@@ -137,34 +143,6 @@ var transpondersPresentationView = Backbone.View.extend({
  		 * method should pass the key 'reset' as true. 
  		*/ 
  		this.listenTo(this.model, 'reset', this.render); 
-
-		
-//		this.collection = transponderPresentations;
-//		this.collection.bind("reset", _.bind(this.render, this));
-//		this.collection.fetch({
-//			success: function(response) {
-//				_.each(response.toJSON(), function(item) {
-//					console.log('Successfully GOT transponder with id: ' + item.id);
-//				})
-//				
-//		
-//			},
-//			error: function() {
-//				console.log('Failed to get transponders!');
-//			}
-//			
-//		});
-//		
-		
-		// this.render();
-		
-        // _.bindAll(this, "render");
-       
-
-		
-		// trying to render rows.
-		// It didn't help
-	
 
 		console.log("transponderSPresentationView initialize finished!");
 	},
@@ -192,10 +170,3 @@ var transpondersPresentationView = Backbone.View.extend({
 var TPsView = new transpondersPresentationView();
 
 
-
-
-// transponderPresentations.fetch();
-
-//$(document).ready(function() {
-//	
-//})
