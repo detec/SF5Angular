@@ -1,5 +1,13 @@
 // http://stijndewitt.com/2014/01/26/enums-in-javascript/
 
+var Satellite = Backbone.Model.extend({
+
+	defaults: {
+		id : 0,
+		name : ''
+	}
+	
+});
 
 
 // Define a view model with selection checkbox
@@ -13,12 +21,25 @@ var transponderPresentation = Backbone.Model.extend({
 		polarization: '',
 		rangeOfDVB: '',
 
-		satellite: '',
+		satellite: new Satellite(),
 		speed: 0,
 		versionOfTheDVB: '',
 		selection: false
 		}
 
+		,
+		parse: function (response) {
+			// Create a Author model on the Post Model
+			this.satellite = new Satellite(response.satellite || null, {
+				parse: true
+			});
+			// 	Delete from the response object as the data is
+			// 	alredy available on the  model
+			delete response.satellite;
+		
+			// 	return the response object 
+			return response;
+		}
 
 });
 
@@ -33,9 +54,23 @@ var transponder = Backbone.Model.extend({
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: '',
+		satellite: new Satellite(),
 		speed: 0,
 		versionOfTheDVB: ''
+		}
+
+		,
+		parse: function (response) {
+			// Create a Author model on the Post Model
+			this.satellite = new Satellite(response.satellite || null, {
+				parse: true
+			});
+			// 	Delete from the response object as the data is
+			// 	alredy available on the  model
+			delete response.satellite;
+		
+			// 	return the response object 
+			return response;
 		}
 
 });
