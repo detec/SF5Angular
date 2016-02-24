@@ -22,7 +22,8 @@ var transponderPresentation = Backbone.Model.extend({
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: new Satellite(),
+		satellite: Satellite,
+		// satellite: '',
 		speed: 0,
 		versionOfTheDVB: ''
 			
@@ -30,19 +31,19 @@ var transponderPresentation = Backbone.Model.extend({
 		// selection: false
 		}
 
-	,
-	parse: function (response) {
+//	,
+//	parse: function (response) {
 		// Create a Author model on the Post Model
-		this.satellite = new Satellite(response.satellite || null, {
-			parse: true
-		});
+		// this.satellite = new Satellite(response.satellite || null, {
+			//parse: true
+		//});
 		// 	Delete from the response object as the data is
 		// 	alredy available on the  model
-		delete response.satellite;
+		//delete response.satellite;
 
 		// 	return the response object 
-		return response;
-	}
+		//return response;
+	//}
 });
 
 var transponder = Backbone.Model.extend({
@@ -55,7 +56,8 @@ var transponder = Backbone.Model.extend({
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: new Satellite(),
+		satellite: Satellite,
+		// satellite: '',
 		speed: 0,
 		versionOfTheDVB: ''
 		}
@@ -65,19 +67,19 @@ var transponder = Backbone.Model.extend({
 
 	// http://jsfiddle.net/sushanth009/bBtgt/1/
 	// Parsing complex objects
-	,
-	parse: function (response) {
+//	,
+//	parse: function (response) {
         // Create a Author model on the Post Model
-        this.satellite = new Satellite(response.satellite || null, {
-            parse: true
-        });
+//      this.satellite = new Satellite(response.satellite || null, {
+  //          parse: true
+  //      });
         // Delete from the response object as the data is
         // alredy available on the  model
-        delete response.satellite;
+//        delete response.satellite;
 
         // return the response object 
-        return response;
-	}
+  //      return response;
+//	}
 
 });
 
@@ -227,4 +229,4 @@ var transpondersPresentationView = Backbone.View.extend({
 var TPsView = new transpondersPresentationView();
 
 // added from http://jsfiddle.net/sushanth009/bBtgt/1/
-TPsView.render();
+// TPsView.render();
