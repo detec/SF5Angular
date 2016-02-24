@@ -20,14 +20,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 // http://stackoverflow.com/questions/17128463/overriding-requestmapping-on-springmvc-controller
 @RestController
 @EnableWebMvc
-@RequestMapping(value = "${jaxrs.path}/satellites/", produces = { "application/xml", "application/json" })
+@RequestMapping(value = "${jaxrs.path}/satellites/", produces = { "application/json" })
 public class SatellitesService {
 
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<List<Satellites>> getAllSatellites() {
 		List<Satellites> satList = objectController.ObjectsList(Satellites.class);
 		if (satList.isEmpty()) {
-			return new ResponseEntity<List<Satellites>>(HttpStatus.NO_CONTENT);//
+			return new ResponseEntity<List<Satellites>>(HttpStatus.NO_CONTENT);
 		}
 
 		return new ResponseEntity<List<Satellites>>(satList, HttpStatus.OK);

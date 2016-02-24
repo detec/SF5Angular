@@ -1,5 +1,7 @@
 // http://stijndewitt.com/2014/01/26/enums-in-javascript/
 
+// Models
+
 var Satellite = Backbone.Model.extend({
 	idAttribute: 'id',
 	
@@ -115,6 +117,14 @@ var Transponders = Backbone.Collection.extend({
 	
 });
 
+var Satellites = Backbone.Collection.extend({
+	model : Satellite,
+	
+	url : '/jaxrs/satellites/'
+});
+
+var satellitesCollection = new Satellites();
+
 var transponderPresentations = new TransponderPresentations();
 
 var transponders = new Transponders();
@@ -208,6 +218,64 @@ var transpondersPresentationView = Backbone.View.extend({
 	 } 
 });
 
-// var TPsView = new transpondersPresentationView({collection: transponderPresentations });
-var TPsView = new transpondersPresentationView();
+// http://stackoverflow.com/questions/18900686/common-pattern-for-populating-select-list-data-in-backbone-views
+var SatelliteView = Backbone.View.extend({
+    tagName: 'option',
+    initialize:function(){        
+        this.template= _.template($('.satellite-option-tmpl').html());    
+    },    
+    render:function(){        
+        this.$el.html(this.template(this.model.toJSON()));
+//        console.log("in render");
+//        $(this.el).attr('value',
+//        		this.model.get('id')).html(this.model.get('name'));
+        return this;        
+    }
+});
 
+var SatelliteDropdownView = Backbone.View.extend({
+	 el: $('.satellites-dropdown'),
+	
+    tagName: 'select',
+    initialize: function(){
+    	this.template= _.template($('.satellite-select-tmpl').html());  
+    	
+        this.collection = satellitesCollection;            
+        this.collection.on('sync',this.render,this);            
+        this.collection.fetch({
+
+		success: function(collection){
+		},
+		error: function() {
+			console.log('Failed to get satellites!');
+		}
+				
+        });
+        
+        this.render();
+    },    
+    render:function(){        
+    	
+		var self = this;
+		this.$el.html('');
+		
+        _.each(this.collection.models,function( item ){            
+        	 self.$el.append((new SatelliteView({model: item})).render().$el);
+        	
+        },this);      
+        return this;        
+    }
+    
+    // http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list
+//    render: function() {
+//        var rate_select_template = _.template($(".satellite-select-tmpl").html(), 
+//        		{satellites: this.collection.toJSON(), labelValue: 'Something' });
+//        $('.satellites-dropdown').html(rate_select_template);
+//      },
+//
+      }
+	);
+
+// var TPsView = new transpondersPresentationView({collection: transponderPresentations });
+var TPsView = new transpondersPresentationView(); // show table
+var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
