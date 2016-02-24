@@ -1,19 +1,9 @@
 // http://stijndewitt.com/2014/01/26/enums-in-javascript/
 
-// Models
 
-var Satellite = Backbone.Model.extend({
-	idAttribute: 'id',
-	
-	defaults: {
-		name: ''
-	}
-	
-});
 
 // Define a view model with selection checkbox
 var transponderPresentation = Backbone.Model.extend({
-	idAttribute: 'id',
 	
 	defaults: {
 		id : 0,
@@ -22,64 +12,31 @@ var transponderPresentation = Backbone.Model.extend({
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: Satellite,
-		// satellite: '',
+
+		satellite: '',
 		speed: 0,
-		versionOfTheDVB: ''
-			
-		//	,
-		// selection: false
+		versionOfTheDVB: '',
+		selection: false
 		}
 
-//	,
-//	parse: function (response) {
-		// Create a Author model on the Post Model
-		// this.satellite = new Satellite(response.satellite || null, {
-			//parse: true
-		//});
-		// 	Delete from the response object as the data is
-		// 	alredy available on the  model
-		//delete response.satellite;
 
-		// 	return the response object 
-		//return response;
-	//}
 });
 
 var transponder = Backbone.Model.extend({
-
-	idAttribute: 'id',
+	
 	defaults: {
-		id : 0,
+
+		id: 0,
+
 		carrier: '',
 		FEC: '',
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: Satellite,
-		// satellite: '',
+		satellite: '',
 		speed: 0,
 		versionOfTheDVB: ''
 		}
-
-
-
-
-	// http://jsfiddle.net/sushanth009/bBtgt/1/
-	// Parsing complex objects
-//	,
-//	parse: function (response) {
-        // Create a Author model on the Post Model
-//      this.satellite = new Satellite(response.satellite || null, {
-  //          parse: true
-  //      });
-        // Delete from the response object as the data is
-        // alredy available on the  model
-//        delete response.satellite;
-
-        // return the response object 
-  //      return response;
-//	}
 
 });
 
@@ -94,7 +51,7 @@ var TransponderPresentations = Backbone.Collection.extend({
 		
 		
 	
-	// this thing really helps
+	// this thing really helps but the script "hangs".	
 	,
 	parse: function (response) { 
 	 	console.log('Collection - parse'); 
@@ -102,8 +59,6 @@ var TransponderPresentations = Backbone.Collection.extend({
 	}, 
 	
 });
-
-// Collections
 
 // variable for collection sent
 var Transponders = Backbone.Collection.extend({
@@ -113,7 +68,7 @@ var Transponders = Backbone.Collection.extend({
 	url : '/jaxrs/transponders/'
 		
 	
-	// this thing really helps	
+	// this thing really helps but the script "hangs".	
 	,
 	parse: function (response) { 
 	 	console.log('Collection - parse'); 
@@ -122,17 +77,9 @@ var Transponders = Backbone.Collection.extend({
 	
 });
 
-var Satellites = Backbone.Collection.extend({
-	model : Satellite
-	
-});
-
 var transponderPresentations = new TransponderPresentations();
 
-var transponders = new Transponders(
-// 		{parse: true}
-		
-);
+var transponders = new Transponders();
 
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
@@ -164,8 +111,7 @@ var transpondersPresentationView = Backbone.View.extend({
 		// console.log("transponderSPresentationView initialize called!");
 		
 		var self = this;
-		
-		// this.model.on('add', this.render, this); 
+
 		
 		// May be this freezes the browser
 //		this.model.on('change', function() { 
@@ -173,7 +119,7 @@ var transpondersPresentationView = Backbone.View.extend({
 //		 				self.render(); 
 //		 			}, 30); 
 //			},this); 
-//		this.model.on('remove', this.render, this);
+
 
 		
 		this.model.fetch({
@@ -183,7 +129,7 @@ var transpondersPresentationView = Backbone.View.extend({
 //				})
 			success: function(collection){
 			    // Callback triggered only after receiving the data.
-			    console.log('Retrieved collection length: ' + collection.length); 
+			    console.log(collection.length); 
 				
 		
 			},
@@ -228,5 +174,3 @@ var transpondersPresentationView = Backbone.View.extend({
 // var TPsView = new transpondersPresentationView({collection: transponderPresentations });
 var TPsView = new transpondersPresentationView();
 
-// added from http://jsfiddle.net/sushanth009/bBtgt/1/
-// TPsView.render();
