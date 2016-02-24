@@ -1,9 +1,9 @@
 // http://stijndewitt.com/2014/01/26/enums-in-javascript/
 
 var Satellite = Backbone.Model.extend({
-
+	idAttribute: 'id',
+	
 	defaults: {
-		id : 0,
 		name : ''
 	}
 	
@@ -12,9 +12,11 @@ var Satellite = Backbone.Model.extend({
 
 // Define a view model with selection checkbox
 var transponderPresentation = Backbone.Model.extend({
+
+	idAttribute: 'id',
 	
 	defaults: {
-		id : 0,
+		//id : 0,
 		carrier: '',
 		FEC: '',
 		frequency: 0,
@@ -44,10 +46,11 @@ var transponderPresentation = Backbone.Model.extend({
 });
 
 var transponder = Backbone.Model.extend({
+	idAttribute: 'id',
 	
 	defaults: {
 
-		id: 0,
+		//id: 0,
 
 		carrier: '',
 		FEC: '',
@@ -89,7 +92,7 @@ var TransponderPresentations = Backbone.Collection.extend({
 	// this thing really helps but the script "hangs".	
 	,
 	parse: function (response) { 
-	 	console.log('Collection - parse'); 
+	 //	console.log('Collection - parse'); 
 	 	this.reset(response);				 
 	}, 
 	
@@ -106,7 +109,7 @@ var Transponders = Backbone.Collection.extend({
 	// this thing really helps but the script "hangs".	
 	,
 	parse: function (response) { 
-	 	console.log('Collection - parse'); 
+	 	// console.log('Collection - parse'); 
 	 	this.reset(response);				 
 	}, 
 	
@@ -164,7 +167,7 @@ var transpondersPresentationView = Backbone.View.extend({
 //				})
 			success: function(collection){
 			    // Callback triggered only after receiving the data.
-			    console.log(collection.length); 
+			 //   console.log(collection.length); 
 				
 		
 			},
@@ -184,17 +187,16 @@ var transpondersPresentationView = Backbone.View.extend({
  		*/ 
  		this.listenTo(this.model, 'reset', this.render); 
 
-		console.log("transponderSPresentationView initialize finished!");
+		// console.log("transponderSPresentationView initialize finished!");
 	},
 	
 	render: function() {
-		console.log("transponderSPresentationView render called!");
+		// console.log("transponderSPresentationView render called!");
 
 		var self = this;
 		this.$el.html('');
 		_.each(this.model.toArray(), function(transponderPresentation) {
 			 self.$el.append((new transponderPresentationView({model: transponderPresentation})).render().$el);
-			//self.$el.append((new transponderPresentationView({model: transponderPresentation})).render().el);
 		});
 		return this;
 	},
