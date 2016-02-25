@@ -280,11 +280,11 @@ var SatelliteDropdownView = Backbone.View.extend({
     
     events: {
     	
-    	"onchange .satellite-selector " : "refetchTransponders"
+    	"change select" : "refetchTransponders"
     },
     
-    refetchTransponders : function() {
-    	var e = $('.satellite-selector');
+    refetchTransponders : function(e) {
+    	// var e = $('.satellite-selector');
     	var satId = e.options[e.selectedIndex].value;
     	console.log(satId);
     }
