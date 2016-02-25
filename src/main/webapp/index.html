@@ -60,20 +60,27 @@
 <!-- 	<select name="satellites-dropdown" id="satellites-dropdown" class="satellites-select">
 		</select>
 		 -->	
-		 <!-- http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list -->
-	<script type="text/template" class="satellite-select-tmpl">
-	
-    	<select id="satellite-selector">
+		 
+<!-- 	<select id="satellite-selector">
         <% _(satellites).each(function(satellite) { %>
             <option value="<%= satellite.id %>"><%= satellite.name %></option>
         <% }); %>
-    </select>
-
+    </select> -->
+    
+		 <!-- http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list -->
+	 
+	<script type="text/template" class="satellite-select-tmpl">
+		<select id="satellite-selector">
+	<% _(satellites).each(function(t) { %>
+    	<option value="<%= t.id %>"><%= t.name %></option> 
+	<% }); %>
+		</select>
 	</script>
+
 	
 	<!-- <option value="volvo">Volvo</option> -->
 	<script type="text/template" class="satellite-option-tmpl">
-		<option value="<%= id  %>"><%= name %></option>
+		<option value="<%= id %>"><%= name %></option>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>
