@@ -276,7 +276,19 @@ var SatelliteDropdownView = Backbone.View.extend({
         }));
         $('.satellites-dropdown').append(this.el);
         return this;
+    },
+    
+    events: {
+    	
+    	"onchange .satellite-selector " : "refetchTransponders"
+    },
+    
+    refetchTransponders : function() {
+    	var e = $('.satellite-selector');
+    	var satId = e.options[e.selectedIndex].value;
+    	console.log(satId);
     }
+    
     
 });
 

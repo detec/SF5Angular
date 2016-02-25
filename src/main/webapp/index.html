@@ -70,7 +70,7 @@
 		 <!-- http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list -->
 	 
 	<script type="text/template" class="satellite-select-tmpl">
-		<select id="satellite-selector">
+		<select id="satellite-selector" class="satellite-selector">
 	<% _(satellites).each(function(t) { %>
     	<option value="<%= t.id %>"><%= t.name %></option> 
 	<% }); %>
