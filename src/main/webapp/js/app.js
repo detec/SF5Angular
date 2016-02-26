@@ -117,6 +117,8 @@ var Transponders = Backbone.Collection.extend({
 	
 });
 
+
+
 var Satellites = Backbone.Collection.extend({
 	model : Satellite,
 	
@@ -159,17 +161,7 @@ var transpondersPresentationView = Backbone.View.extend({
 		// console.log("transponderSPresentationView initialize called!");
 		
 		var self = this;
-
-		
-		// May be this freezes the browser
-//		this.model.on('change', function() { 
-//				setTimeout(function() { 
-//		 				self.render(); 
-//		 			}, 30); 
-//			},this); 
-
-
-		
+	
 		this.model.fetch({
 //			success: function(response) {
 //				_.each(response.toJSON(), function(item) {
@@ -220,17 +212,17 @@ var transpondersPresentationView = Backbone.View.extend({
 
 // http://stackoverflow.com/questions/18900686/common-pattern-for-populating-select-list-data-in-backbone-views
 var SatelliteView = Backbone.View.extend({
-  //  tagName: 'option',
+    tagName: 'option',
     initialize:function(){        
         this.template= _.template($('.satellite-option-tmpl').html());    
     },    
     render:function(){        
         this.$el.html(this.template(this.model.toJSON()));
         console.log("sat render");
-//        $(this.el).attr('value',
-//        		this.model.get('id')).html(this.model.get('name'));
         return this;        
     }
+    
+    
 });
 
 var SatelliteDropdownView = Backbone.View.extend({
@@ -241,7 +233,9 @@ var SatelliteDropdownView = Backbone.View.extend({
     	this.template= _.template($('.satellite-select-tmpl').html());  
     	
         this.collection = satellitesCollection;            
-        this.collection.on('sync',this.render,this);            
+        this.collection.on('sync',this.render,this);
+        
+        
         this.collection.fetch({
 
 		success: function(collection){
@@ -252,21 +246,8 @@ var SatelliteDropdownView = Backbone.View.extend({
 				
         });
         
-        // this.render();
     },    
  
-//    render:function(){        
-//    	
-//		var self = this;
-//		this.$el.html('');
-//		
-//        _.each(this.collection.models,function( item ){            
-//        	 self.$el.append((new SatelliteView({model: item})).render().$el);
-//        	
-//        },this);      
-//        return this;        
-//    }
-    
 
     // working solution
     // http://jsfiddle.net/ambiguous/6VeXk/
@@ -280,13 +261,31 @@ var SatelliteDropdownView = Backbone.View.extend({
     
     events: {
     	
-    	"change select" : "refetchTransponders"
+    	"change select.satellite-selector" : "refetchTransponders"
     },
     
-    refetchTransponders : function(e) {
-    	// var e = $('.satellite-selector');
-    	var satId = e.options[e.selectedIndex].value;
-    	console.log(satId);
+    // only working solution
+    // http://stackoverflow.com/questions/15867721/backbone-html-select-value
+    refetchTransponders : function(event) {
+       	var satId = event.target.value;
+       	if (satId == 0 && transponderPresentations.url == '/jaxrs/transponders/') {
+       		return;
+       	}
+       	
+       	else if (satId == 0 && transponderPresentations.url != '/jaxrs/transponders/') {
+       		transponderPresentations.url = '/jaxrs/transponders/';
+       	}
+       	
+       	else {
+       		transponderPresentations.url = '/jaxrs/transponders/filter;satId=' + satId;		
+       	}
+       
+       transponderPresentations.fetch();
+       TPsView.render();
+       console.log("End of refetch");
+       	// TPsView.model.fetch();
+       	//console.log(transponders.url);
+       //	var TPsView = new transpondersPresentationView();
     }
     
     

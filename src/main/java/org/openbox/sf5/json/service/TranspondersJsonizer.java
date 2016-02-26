@@ -52,7 +52,7 @@ public class TranspondersJsonizer {
 		if (filterSatellite == null) {
 			return transList;
 		}
-		Criterion criterion = Restrictions.eq("Satellite", filterSatellite);
+		Criterion criterion = Restrictions.eq("satellite", filterSatellite);
 
 		transList = objectsController.ObjectsCriterionList(Transponders.class, criterion);
 

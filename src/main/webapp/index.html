@@ -71,6 +71,7 @@
 	 
 	<script type="text/template" class="satellite-select-tmpl">
 		<select id="satellite-selector" class="satellite-selector">
+		<option value="0">Filter by satellite</option>
 	<% _(satellites).each(function(t) { %>
     	<option value="<%= t.id %>"><%= t.name %></option> 
 	<% }); %>

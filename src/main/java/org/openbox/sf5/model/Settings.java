@@ -40,6 +40,32 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Settings extends AbstractDbEntity implements Serializable {
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Settings other = (Settings) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
 	private static final long serialVersionUID = 7055744176770843683L;
 
 	@Id

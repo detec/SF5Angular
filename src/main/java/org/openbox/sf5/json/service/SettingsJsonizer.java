@@ -31,12 +31,10 @@ public class SettingsJsonizer {
 	}
 
 	@SuppressWarnings("unchecked")
-	// public List<Settings> getSettingsByArbitraryFilter(String fieldName,
-	// String typeValue, String login) {
 	public List<Settings> getSettingsByArbitraryFilter(String fieldName, String typeValue, Users user) {
 		List<Settings> settList = new ArrayList<>();
 
-		Criterion userCriterion = Restrictions.eq("User", user);
+		Criterion userCriterion = Restrictions.eq("user", user);
 
 		// building arbitrary criterion
 		Criterion arbitraryCriterion = criterionService.getCriterionByClassFieldAndStringValue(Settings.class,
@@ -61,7 +59,7 @@ public class SettingsJsonizer {
 	public List<Settings> getSettingsByUser(Users user) {
 		List<Settings> settList = new ArrayList<>();
 
-		Criterion userCriterion = Restrictions.eq("User", user);
+		Criterion userCriterion = Restrictions.eq("user", user);
 		settList = objectsController.ObjectsCriterionList(Settings.class, userCriterion);
 
 		return settList;
@@ -84,7 +82,7 @@ public class SettingsJsonizer {
 	public Settings getSettingById(long settingId, Users user) {
 		Settings setting = null;
 
-		Criterion userCriterion = Restrictions.eq("User", user);
+		Criterion userCriterion = Restrictions.eq("user", user);
 
 		Criterion settingIdCriterion = Restrictions.eq("id", settingId);
 

@@ -114,7 +114,7 @@ So when specifying patterns in action-based frameworks we should use only **
 
 <!-- REST security -->
 <!-- Be careful to use ** in pattern!!! -->
-<!-- We disabled it because with Javascropt we use login form -->
+
 <security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
 
     	<security:csrf disabled="true"/>
