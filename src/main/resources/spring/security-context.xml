@@ -169,17 +169,6 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
     </security:session-management>
 
 	<security:intercept-url pattern="/login" access="isAnonymous()"/>
-	<!-- Let's make an experiment and enable anonymous login -->
-<!-- 	<security:intercept-url pattern="/index.html" access="isAnonymous()"/> -->
-	
-	<!-- Allowing access to static resources 
-	Seems it doesn't work
-	-->
-	<!-- <security:intercept-url pattern="/css/**" access="isAnonymous()"/>
-	<se curity:intercept-url pattern="/js/**" access="isAnonymous()"/>
-	
-	-->
-	
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 
@@ -189,7 +178,7 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
 		login-page= '/login' 
 		default-target-url="/index.html"
 		authentication-failure-url='/login.html?error=true'
-		always-use-default-target='false'
+		always-use-default-target='true'
 		
  	/>
  	<!-- always-use-default-target='false'  - user should get where he wanted -->
