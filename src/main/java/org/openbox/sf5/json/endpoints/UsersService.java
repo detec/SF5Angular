@@ -1,5 +1,10 @@
 package org.openbox.sf5.json.endpoints;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openbox.sf5.common.SF5SecurityContext;
+import org.openbox.sf5.json.exceptions.NotAuthenticatedException;
 import org.openbox.sf5.json.service.UsersJsonizer;
 import org.openbox.sf5.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +86,23 @@ public class UsersService {
 		return new ResponseEntity<Boolean>(result, HttpStatus.ACCEPTED);
 	}
 
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "currentuser", method = RequestMethod.GET)
+	public ResponseEntity<List<Users>> getCurrentlyAuthenticatedUser() throws NotAuthenticatedException {
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+
+		if (currentUser == null) {
+
+			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
+			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
+		}
+
+		List<Users> listOfUsers = new ArrayList<Users>();
+		listOfUsers.add(currentUser);
+		return new ResponseEntity<List<Users>>(listOfUsers, HttpStatus.OK);
+
+	}
+
 	public UsersJsonizer getUsersJsonizer() {
 		return usersJsonizer;
 	}
@@ -91,5 +113,8 @@ public class UsersService {
 
 	@Autowired
 	private UsersJsonizer usersJsonizer;
+
+	@Autowired
+	private SF5SecurityContext securityContext;
 
 }

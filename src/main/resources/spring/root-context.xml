@@ -48,8 +48,10 @@
 
 <tx:annotation-driven/>
 
-
-<tx:jta-transaction-manager />
+<!-- From http://stackoverflow.com/questions/9649318/how-can-i-config-to-turn-off-autocommit-in-spring-jdbc 
+But it doesn't help
+-->
+<tx:jta-transaction-manager transaction-manager="transactionManager"/>
 
 
 <import resource="autowired-beans.xml"/>

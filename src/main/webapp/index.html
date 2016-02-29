@@ -15,6 +15,24 @@
 			<!-- 
 			Placeholder for setting edit pane
 			 -->
+			<table  class="table"> 
+			<thead>
+            	<tr>
+            	<th>ID</th>
+            	<th>Name</th>
+            	<th>Last update date</th>
+            	<th>Action</th>
+				</tr>
+				<tr>
+				<td></td>
+				<td><input class="form-control name-input"></td>
+				<td></td>
+				<td><button class="btn btn-primary add-setting">Add</button></td>
+				</tr>
+            </thead>
+            <tbody class="settings-list"></tbody>
+             
+			</table>
 			</td>
 			<td>
 			<div class="satellites-dropdown">
@@ -57,15 +75,6 @@
         <td><span class="id"><%= id %></span></td>
 	</script>
 
-<!-- 	<select name="satellites-dropdown" id="satellites-dropdown" class="satellites-select">
-		</select>
-		 -->	
-		 
-<!-- 	<select id="satellite-selector">
-        <% _(satellites).each(function(satellite) { %>
-            <option value="<%= satellite.id %>"><%= satellite.name %></option>
-        <% }); %>
-    </select> -->
     
 		 <!-- http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list -->
 	 
@@ -82,6 +91,13 @@
 	<!-- <option value="volvo">Volvo</option> -->
 	<script type="text/template" class="satellite-option-tmpl">
 		<option value="<%= id %>"><%= name %></option>
+	</script>
+	
+	<script type="text/template" class="settings-list-template">
+		<td><span class="id"><%= id %></span></td>
+		<td><span class="name"><%= name %></span></td>
+		<td><span class="theLastEntry"><%= theLastEntry %></span></td>
+		<td><button class="btn btn-warning edit-blog">Edit</button> <button class="btn btn-danger delete-blog">Delete</button><button class="btn btn-success update-blog" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>

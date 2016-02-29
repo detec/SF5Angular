@@ -46,7 +46,7 @@ public class SettingsService {
 	// it should be empty or produces = "application/json".
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "create", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Long> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
 
@@ -88,7 +88,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Settings>> getSettingsByUserLogin() throws NotAuthenticatedException {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();

@@ -115,7 +115,7 @@ So when specifying patterns in action-based frameworks we should use only **
 <!-- REST security -->
 <!-- Be careful to use ** in pattern!!! -->
 
-<security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
+<!-- <security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
 
     	<security:csrf disabled="true"/>
         <security:custom-filter ref="digestFilter" before="FORM_LOGIN_FILTER" />
@@ -125,7 +125,7 @@ So when specifying patterns in action-based frameworks we should use only **
         <security:intercept-url pattern="${jaxrs.path}/users/*" access="isAnonymous()"/>
         <security:intercept-url pattern="${jaxrs.path}/usersettings/*" access="hasRole('ROLE_USER')"/>
         
- </security:http>
+ </security:http> -->
  
  
  <!-- We have to open at least something to do test upload -->

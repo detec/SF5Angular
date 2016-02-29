@@ -11,6 +11,73 @@ var Satellite = Backbone.Model.extend({
 	
 });
 
+var User = Backbone.Model.extend({
+	idAttribute: 'id',
+	
+	defaults: {
+		username : ''
+	}
+
+});
+
+var ConversionLine = Backbone.Model.extend({
+//	idAttribute: 'id',
+//	
+//	defaults: {
+//		lineNumber : 0,
+//		note : '',
+//		parent_id : new Setting(),
+//		satindex : 0,
+//		tpindex : 0,
+//		theLineOfIntersection : 0,
+//		transponder: new transponder()
+//	}
+//	,
+//	parse: function (response) {
+//		this.parent_id = new Setting(response.conversion.parent_id || null, {
+//			parse : true
+//		});
+//		
+//		this.transponder = new transponder(response.conversion.transponder || null, {
+//			parse : true
+//		});
+//		
+//		delete response.conversion.parent_id;
+//		delete response.conversion.transponder;
+//		return response;
+//	}
+	
+});
+
+
+var Setting = Backbone.Model.extend({
+//	idAttribute: 'id',
+//
+//	defaults: {
+//		name : '',
+//		theLastEntry : new Date(0),
+//		user : new User(),
+//		conversion : new Conversion()
+//		
+//	}
+//	,
+//	parse: function (response) {
+//		
+//		this.user = new User(response.user || null, {
+//			parse : true
+//		});
+//		
+//		this.conversion = new Conversion(response.conversion || null, {
+//			parse : true
+//		});
+//		
+//		delete response.user;
+//		delete response.conversion;
+//		return response;
+//	}
+
+	
+});
 
 // Define a view model with selection checkbox
 var transponderPresentation = Backbone.Model.extend({
@@ -51,9 +118,6 @@ var transponder = Backbone.Model.extend({
 	idAttribute: 'id',
 	
 	defaults: {
-
-		//id: 0,
-
 		carrier: '',
 		FEC: '',
 		frequency: 0,
@@ -63,7 +127,6 @@ var transponder = Backbone.Model.extend({
 		speed: 0,
 		versionOfTheDVB: ''
 		}
-
 		,
 		parse: function (response) {
 			// Create a Author model on the Post Model
@@ -82,16 +145,12 @@ var transponder = Backbone.Model.extend({
 
 // variable for collection shown
 var TransponderPresentations = Backbone.Collection.extend({
-	// model : transponderPresentation,
-	
 	// will use strict transponder
 	model : transponder,
 	// Specify the base url to target the REST service
 	url : '/jaxrs/transponders/'
-		
-		
-	
-	// this thing really helps but the script "hangs".	
+
+		// this thing really helps but the script "hangs".	
 	,
 	parse: function (response) { 
 	 //	console.log('Collection - parse'); 
@@ -117,7 +176,9 @@ var Transponders = Backbone.Collection.extend({
 	
 });
 
-
+var Conversion = Backbone.Collection.extend({
+	model : ConversionLine
+});
 
 var Satellites = Backbone.Collection.extend({
 	model : Satellite,
@@ -125,11 +186,54 @@ var Satellites = Backbone.Collection.extend({
 	url : '/jaxrs/satellites/'
 });
 
+
+var CurrentUsers = Backbone.Collection.extend({
+	
+	model : User,
+	url : '/jaxrs/users/currentuser'
+	,
+	parse: function (response) { 
+		this.reset(response);				 
+	}, 
+
+	
+});
+
+
+var Settings = Backbone.Collection.extend({
+	model : Setting,
+	url : '/jaxrs/usersettings/'
+	,
+	parse: function (response) { 
+		this.reset(response);				 
+	},		
+	
+});
+
 var satellitesCollection = new Satellites();
 
 var transponderPresentations = new TransponderPresentations();
 
 var transponders = new Transponders();
+
+var settingsCollection = new Settings();
+
+// https://github.com/fiznool/backbone.basicauth
+
+// getting currently authenticated user
+var currentUsers = new CurrentUsers();
+currentUsers.fetch({
+	success: function(collection){
+    // Callback triggered only after receiving the data.
+    console.log(collection.length); 
+},
+error: function() {
+	console.log('Failed to get current user!');
+}
+});
+// var currentUser = currentUsers.at(0);
+// console.log(currentUser);
+// console.log(currentUsers.length);
 
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
@@ -168,17 +272,11 @@ var transpondersPresentationView = Backbone.View.extend({
 //					console.log('Successfully GOT transponder with id: ' + item.id);
 //				})
 			success: function(collection){
-			    // Callback triggered only after receiving the data.
-			 //   console.log(collection.length); 
-				
-		
 			},
 			error: function() {
 				console.log('Failed to get transponders!');
 			}
-			
-			
-		});
+			});
 		
 		
 		/* 
@@ -188,8 +286,6 @@ var transpondersPresentationView = Backbone.View.extend({
  		 * method should pass the key 'reset' as true. 
  		*/ 
  		this.listenTo(this.model, 'reset', this.render); 
-
-		// console.log("transponderSPresentationView initialize finished!");
 	},
 	
 	render: function() {
@@ -222,7 +318,6 @@ var SatelliteView = Backbone.View.extend({
         return this;        
     }
     
-    
 });
 
 var SatelliteDropdownView = Backbone.View.extend({
@@ -242,13 +337,10 @@ var SatelliteDropdownView = Backbone.View.extend({
 		},
 		error: function() {
 			console.log('Failed to get satellites!');
-		}
-				
-        });
+		}});
         
     },    
  
-
     // working solution
     // http://jsfiddle.net/ambiguous/6VeXk/
     render:function(){
@@ -282,15 +374,140 @@ var SatelliteDropdownView = Backbone.View.extend({
        
        transponderPresentations.fetch();
        TPsView.render();
-       console.log("End of refetch");
-       	// TPsView.model.fetch();
-       	//console.log(transponders.url);
-       //	var TPsView = new transpondersPresentationView();
+
     }
     
     
 });
 
+// single setting view
+var SettingView = Backbone.View.extend({
+	
+	model: new Setting(),
+	
+	tagName: 'tr',
+	initialize: function() {
+		this.template = _.template($('.settings-list-template').html());
+	},
+	events: {
+		'click .edit-setting': 'edit',
+		'click .update-setting': 'update',
+		'click .cancel': 'cancel',
+		'click .delete-setting': 'delete'
+	},
+	
+	edit: function() {
+		$('.edit-setting').hide();
+		$('.delete-setting').hide();
+		this.$('.update-setting').show();
+		this.$('.cancel').show();
+
+		var name = this.$('.name').html();
+		var theLastEntry = new Date();
+
+		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
+		this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
+	},
+	
+	update: function() {
+		this.model.set('name', $('.name-update').val());
+		this.model.set('theLastEntry', $('.theLastEntry-update').val());
+
+		this.model.save(null, {
+			success: function(response) {
+				console.log('Successfully UPDATED setting with _id: ' + response.toJSON().id);
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+	},
+	
+	cancel: function() {
+		// blogsView.render();
+	},
+	delete: function() {
+		this.model.destroy({
+			success: function(response) {
+				console.log('Successfully DELETED setting with _id: ' + response.toJSON().id);
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
+});
+
+
+var SettingsView = Backbone.View.extend({
+	model: settingsCollection,
+	el: $('.settings-list'),
+	initialize: function() {
+		var self = this;
+		this.model.on('add', this.render, this);
+		this.model.on('change', function() {
+			setTimeout(function() {
+				self.render();
+			}, 30);
+		},this);
+		this.model.on('remove', this.render, this);
+
+		this.model.fetch({
+			success: function(response) {
+				_.each(response.toJSON(), function(setting) {
+					console.log('Successfully GOT setting with _id: ' + item.id);
+				})
+			},
+			error: function() {
+				console.log('Failed to get settings!');
+			}
+		});
+		
+		this.listenTo(this.model, 'reset', this.render); 
+	},
+	render: function() {
+		var self = this;
+		this.$el.html('');
+		_.each(this.model.toArray(), function(setting) {
+			self.$el.append((new SettingView({model: setting})).render().$el);
+		});
+		return this;
+	}
+	,
+	// http://www.sagarganatra.com/2013/06/backbone-collections-do-not-emit-reset-event-after-fetch.html
+	fetch: function (options) { 
+	 	options.reset = true; 
+	 	return Backbone.Collection.prototype.fetch.call(this, options); 
+	 } 
+});
+
 // var TPsView = new transpondersPresentationView({collection: transponderPresentations });
 var TPsView = new transpondersPresentationView(); // show table
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
+
+var SettingsViewItem = new SettingsView();
+
+$(document).ready(function() {
+	$('.add-setting').on('click', function() {
+		var setting = new Setting({
+			id : 0,
+			name: $('.name-input').val(),
+			theLastEntry : new Date()
+		});
+		$('.name-input').val('');
+
+		settingsCollection.add(setting);
+		setting.save(null, {
+			success: function(response) {
+				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
+			},
+			error: function() {
+				console.log('Failed to save setting!');
+			}
+		});
+	});
+})
