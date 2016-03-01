@@ -16,25 +16,28 @@ var User = Backbone.Model.extend({
 	,
   
 	initialize: function() {
+		// this.forward("authorities", new UserAuthorityCollection());
     },
     
 	defaults: {
 		username : '',
 		password : '',
 		enabled : false
-		// , authorities: new UserAuthorityCollection
+		//, authorities: new UserAuthorityCollection()
 	},
     // http://stackoverflow.com/questions/17451831/backbone-nested-collection
     
     parse: function(response) {
-        if (_.has(response, "authorities")) {
+    //	console.log('Parse in user called');
+        // if (_.has(response, "authorities")) {
             this.authorities = new UserAuthorityCollection(response.authorities, {
                 parse: true
             });
-            delete response.authorities;
-        }
+           // This line deleted user roles 
+         //   delete response.authorities;
+       // }
         return response;
-    },
+    }
 	
 	// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 //	   parse: function(response){
@@ -50,13 +53,12 @@ var User = Backbone.Model.extend({
 //	        }
 //	        return response;
 //	    },
-    
-    toJSON: function() {
-        var json = _.clone(this.attributes);
-        // says error, it is absent
-     //   json.authorities = this.authorities.toJSON();
-        return json;
-    }
+//    ,
+//    toJSON: function() {
+//        var json = _.clone(this.attributes);
+//        json.authorities = this.authorities.toJSON();
+//        return json;
+//    }
 
 
 });
@@ -185,7 +187,6 @@ var transponderPresentation = Backbone.Model.extend({
 		versionOfTheDVB: '',
 		selection: false
 		}
-
 		,
 		parse: function (response) {
 			// Create a Author model on the Post Model
@@ -630,13 +631,14 @@ $(document).ready(function() {
 		$('.name-input').val('');
 
 		settingsCollection.add(setting);
-		setting.save(null, {
-			success: function(response) {
-				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
-			},
-			error: function() {
-				console.log('Failed to save setting!');
-			}
-		});
+		console.log( JSON.stringify(setting));
+//		setting.save(null, {
+//			success: function(response) {
+//				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
+//			},
+//			error: function() {
+//				console.log('Failed to save setting!');
+//			}
+//		});
 	});
 })
