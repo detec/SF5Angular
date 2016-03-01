@@ -15,12 +15,8 @@ var User = Backbone.Model.extend({
 	idAttribute: 'id'
 	,
   
-//	initialize: function() {
-//        // because initialize is called after parse
-//        defaults(this, {
-//        	authorities: new UserAuthorityCollection
-//        });
-//    },
+	initialize: function() {
+    },
     
 	defaults: {
 		username : '',
@@ -30,35 +26,41 @@ var User = Backbone.Model.extend({
 	},
     // http://stackoverflow.com/questions/17451831/backbone-nested-collection
     
-//    parse: function(response) {
-//        if (_.has(response, "authorities")) {
-//            this.authorities = new UserAuthorityCollection(response.authorities, {
-//                parse: true
-//            });
-//            delete response.authorities;
-//        }
-//        return response;
-//    },
+    parse: function(response) {
+        if (_.has(response, "authorities")) {
+            this.authorities = new UserAuthorityCollection(response.authorities, {
+                parse: true
+            });
+            delete response.authorities;
+        }
+        return response;
+    },
 	
 	// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
-	   parse: function(response){
-	        for(var key in this.model)
-	        {
-	            var embeddedClass = this.model[key];
-	            var embeddedData = response[key];
-	            response[key] = new embeddedClass(embeddedData, {parse:true});
-	        }
-	        return response;
-	    },
+//	   parse: function(response){
+//		   // It is actually not called
+//		  // console.log('User parse called');
+//	        for(var key in this.model)
+//	        {
+//	            var embeddedClass = this.model[key];
+//	            var embeddedData = response[key];
+//	            response[key] = new embeddedClass(embeddedData, {parse:true});
+//	            
+//	            console.log(embeddedClass + ' ' + embeddedData);
+//	        }
+//	        return response;
+//	    },
     
     toJSON: function() {
         var json = _.clone(this.attributes);
-        json.authorities = this.authorities.toJSON();
+        // says error, it is absent
+     //   json.authorities = this.authorities.toJSON();
         return json;
     }
 
 
 });
+
 
 var UserAuthority = Backbone.Model.extend({
 	idAttribute: 'id',
@@ -123,6 +125,7 @@ var ConversionLine = Backbone.Model.extend({
 	
 });
 
+
 var Setting = Backbone.Model.extend({
 	idAttribute: 'id'
 //	,
@@ -162,6 +165,7 @@ var Setting = Backbone.Model.extend({
 
 	
 });
+
 
 // Define a view model with selection checkbox
 var transponderPresentation = Backbone.Model.extend({
@@ -287,10 +291,11 @@ var CurrentUsersCollection = Backbone.Collection.extend({
 	
 	model : User,
 	url : '/jaxrs/users/currentuser'
-	,
-	parse: function (response) { 
-		this.reset(response);				 
-	} 
+	// It started to parse user when we commented it	
+//	,
+//	parse: function (response) { 
+//		this.reset(response);				 
+//	} 
 	
 });
 
@@ -325,17 +330,30 @@ var settingsCollection = new Settings();
 
 // getting currently authenticated user
 var currentUsers = new CurrentUsersCollection();
+var currentUser = null;
 currentUsers.fetch({
 	success: function(collection){
     // Callback triggered only after receiving the data.
-    console.log(collection.length); 
+ //  console.log(collection.length);
+	currentUser = currentUsers.at(0);
+  // console.log(currentUser.get("username"));
+  
 },
 error: function() {
 	console.log('Failed to get current user!');
 }
 });
-var currentUser = currentUsers.at(0);
-// console.log(currentUser);
+
+//Cannot get user out of collection
+ 
+// currentUsers.at(0);
+//console.log(currentUser.get("username"));
+
+//console.log(currentUsers.username);
+
+// we should call it may be later
+// var currentUser = currentUsers.at(0);
+
 // console.log(currentUsers.length);
 
 // single transponder view
@@ -519,7 +537,7 @@ var SettingView = Backbone.View.extend({
 
 		this.model.save(null, {
 			success: function(response) {
-				console.log('Successfully UPDATED setting with _id: ' + response.toJSON().id);
+				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
 			},
 			error: function(err) {
 				console.log(err);
@@ -545,6 +563,7 @@ var SettingView = Backbone.View.extend({
 		return this;
 	}
 });
+
 
 
 var SettingsView = Backbone.View.extend({
@@ -594,6 +613,9 @@ var TPsView = new transpondersPresentationView(); // show table
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
 
 var SettingsViewItem = new SettingsView();
+
+
+// console.log(currentUser.get("username"));
 
 $(document).ready(function() {
 	$('.add-setting').on('click', function() {
