@@ -12,26 +12,89 @@ var Satellite = Backbone.Model.extend({
 });
 
 var User = Backbone.Model.extend({
-	idAttribute: 'id',
-	
+	idAttribute: 'id'
+	,
+  
+//	initialize: function() {
+//        // because initialize is called after parse
+//        defaults(this, {
+//        	authorities: new UserAuthorityCollection
+//        });
+//    },
+    
 	defaults: {
-		username : ''
-	}
+		username : '',
+		password : '',
+		enabled : false
+		// , authorities: new UserAuthorityCollection
+	},
+    // http://stackoverflow.com/questions/17451831/backbone-nested-collection
+    
+//    parse: function(response) {
+//        if (_.has(response, "authorities")) {
+//            this.authorities = new UserAuthorityCollection(response.authorities, {
+//                parse: true
+//            });
+//            delete response.authorities;
+//        }
+//        return response;
+//    },
+	
+	// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
+	   parse: function(response){
+	        for(var key in this.model)
+	        {
+	            var embeddedClass = this.model[key];
+	            var embeddedData = response[key];
+	            response[key] = new embeddedClass(embeddedData, {parse:true});
+	        }
+	        return response;
+	    },
+    
+    toJSON: function() {
+        var json = _.clone(this.attributes);
+        json.authorities = this.authorities.toJSON();
+        return json;
+    }
+
 
 });
 
+var UserAuthority = Backbone.Model.extend({
+	idAttribute: 'id',
+	
+	defaults: {
+		authority : '',
+		lineNumber : 0,
+		username : '',
+		parent_id : new User()
+	}
+
+	// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
+	, parse: function(response){
+		for(var key in this.model)
+		{
+			var embeddedClass = this.model[key];
+			var embeddedData = response[key];
+			response[key] = new embeddedClass(embeddedData, {parse:true});
+		}
+		return response;
+	}
+	
+});
+
 var ConversionLine = Backbone.Model.extend({
-//	idAttribute: 'id',
-//	
-//	defaults: {
-//		lineNumber : 0,
-//		note : '',
-//		parent_id : new Setting(),
-//		satindex : 0,
-//		tpindex : 0,
-//		theLineOfIntersection : 0,
-//		transponder: new transponder()
-//	}
+	idAttribute: 'id'
+	,
+	defaults: {
+		lineNumber : 0,
+		note : ''
+		, satindex : 0,
+		tpindex : 0,
+		theLineOfIntersection : 0
+//		, parent_id : new Setting()
+//		, transponder: new transponder()
+	}
 //	,
 //	parse: function (response) {
 //		this.parent_id = new Setting(response.conversion.parent_id || null, {
@@ -46,13 +109,23 @@ var ConversionLine = Backbone.Model.extend({
 //		delete response.conversion.transponder;
 //		return response;
 //	}
+
+	// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
+	, parse: function(response){
+		for(var key in this.model)
+		{
+			var embeddedClass = this.model[key];
+			var embeddedData = response[key];
+			response[key] = new embeddedClass(embeddedData, {parse:true});
+		}
+		return response;
+	}
 	
 });
 
-
 var Setting = Backbone.Model.extend({
-//	idAttribute: 'id',
-//
+	idAttribute: 'id'
+//	,
 //	defaults: {
 //		name : '',
 //		theLastEntry : new Date(0),
@@ -75,6 +148,17 @@ var Setting = Backbone.Model.extend({
 //		delete response.conversion;
 //		return response;
 //	}
+		
+		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
+		, parse: function(response){
+			for(var key in this.model)
+			{
+				var embeddedClass = this.model[key];
+				var embeddedData = response[key];
+				response[key] = new embeddedClass(embeddedData, {parse:true});
+			}
+			return response;
+		}
 
 	
 });
@@ -128,18 +212,30 @@ var transponder = Backbone.Model.extend({
 		versionOfTheDVB: ''
 		}
 		,
-		parse: function (response) {
-			// Create a Author model on the Post Model
-			this.satellite = new Satellite(response.satellite || null, {
-				parse: true
-			});
-			// 	Delete from the response object as the data is
-			// 	alredy available on the  model
-			delete response.satellite;
+//		parse: function (response) {
+//			// Create a Author model on the Post Model
+//			this.satellite = new Satellite(response.satellite || null, {
+//				parse: true
+//			});
+//			// 	Delete from the response object as the data is
+//			// 	alredy available on the  model
+//			delete response.satellite;
+//		
+//			// 	return the response object 
+//			return response;
+//		}
 		
-			// 	return the response object 
-			return response;
-		}
+		// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
+	   parse: function(response){
+	        for(var key in this.model)
+	        {
+	            var embeddedClass = this.model[key];
+	            var embeddedData = response[key];
+	            response[key] = new embeddedClass(embeddedData, {parse:true});
+	        }
+	        return response;
+	    }
+
 
 });
 
@@ -155,7 +251,7 @@ var TransponderPresentations = Backbone.Collection.extend({
 	parse: function (response) { 
 	 //	console.log('Collection - parse'); 
 	 	this.reset(response);				 
-	}, 
+	} 
 	
 });
 
@@ -172,11 +268,11 @@ var Transponders = Backbone.Collection.extend({
 	parse: function (response) { 
 	 	// console.log('Collection - parse'); 
 	 	this.reset(response);				 
-	}, 
+	}
 	
 });
 
-var Conversion = Backbone.Collection.extend({
+var ConversionCollection = Backbone.Collection.extend({
 	model : ConversionLine
 });
 
@@ -187,15 +283,14 @@ var Satellites = Backbone.Collection.extend({
 });
 
 
-var CurrentUsers = Backbone.Collection.extend({
+var CurrentUsersCollection = Backbone.Collection.extend({
 	
 	model : User,
 	url : '/jaxrs/users/currentuser'
 	,
 	parse: function (response) { 
 		this.reset(response);				 
-	}, 
-
+	} 
 	
 });
 
@@ -206,8 +301,16 @@ var Settings = Backbone.Collection.extend({
 	,
 	parse: function (response) { 
 		this.reset(response);				 
-	},		
+	}		
 	
+});
+
+var UserAuthorityCollection = Backbone.Collection.extend({
+	model : UserAuthority
+	,
+	parse: function (response) { 
+		this.reset(response);				 
+	}
 });
 
 var satellitesCollection = new Satellites();
@@ -221,7 +324,7 @@ var settingsCollection = new Settings();
 // https://github.com/fiznool/backbone.basicauth
 
 // getting currently authenticated user
-var currentUsers = new CurrentUsers();
+var currentUsers = new CurrentUsersCollection();
 currentUsers.fetch({
 	success: function(collection){
     // Callback triggered only after receiving the data.
