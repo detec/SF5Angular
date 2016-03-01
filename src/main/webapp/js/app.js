@@ -130,6 +130,8 @@ var ConversionLine = Backbone.Model.extend({
 
 var Setting = Backbone.Model.extend({
 	idAttribute: 'id'
+		
+	// , urlRoot : '/jaxrs/usersettings/'	
 //	,
 //	defaults: {
 //		name : '',
@@ -156,6 +158,7 @@ var Setting = Backbone.Model.extend({
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 		, parse: function(response){
+			console.log('Setting parse called');
 			for(var key in this.model)
 			{
 				var embeddedClass = this.model[key];
@@ -167,6 +170,7 @@ var Setting = Backbone.Model.extend({
 
 	
 });
+
 
 
 // Define a view model with selection checkbox
@@ -202,6 +206,7 @@ var transponderPresentation = Backbone.Model.extend({
 		}
 
 });
+
 
 var transponder = Backbone.Model.extend({
 	idAttribute: 'id',
@@ -244,6 +249,7 @@ var transponder = Backbone.Model.extend({
 
 });
 
+
 // variable for collection shown
 var TransponderPresentations = Backbone.Collection.extend({
 	// will use strict transponder
@@ -259,6 +265,7 @@ var TransponderPresentations = Backbone.Collection.extend({
 	} 
 	
 });
+
 
 // variable for collection sent
 var Transponders = Backbone.Collection.extend({
@@ -276,6 +283,7 @@ var Transponders = Backbone.Collection.extend({
 	}
 	
 });
+
 
 var ConversionCollection = Backbone.Collection.extend({
 	model : ConversionLine
@@ -304,10 +312,10 @@ var CurrentUsersCollection = Backbone.Collection.extend({
 var Settings = Backbone.Collection.extend({
 	model : Setting,
 	url : '/jaxrs/usersettings/'
-	,
-	parse: function (response) { 
-		this.reset(response);				 
-	}		
+//	,
+//	parse: function (response) { 
+//		this.reset(response);				 
+//	}		
 	
 });
 
@@ -631,14 +639,19 @@ $(document).ready(function() {
 		$('.name-input').val('');
 
 		settingsCollection.add(setting);
-		console.log( JSON.stringify(setting));
-//		setting.save(null, {
-//			success: function(response) {
-//				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
-//			},
-//			error: function() {
-//				console.log('Failed to save setting!');
-//			}
-//		});
+		// console.log( JSON.stringify(setting));
+		setting.save(null, {
+			success: function(response) {
+				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
+			},
+	    error: function(model, error) {
+	  //      console.log(model.toJSON());
+	        console.log(error.responseText);
+	    }
+
+		});
+
+//		setting.save();	
+		
 	});
 })

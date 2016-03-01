@@ -54,6 +54,11 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		return xmlMapper;
 	}
 
+	// @Override
+	// public void addInterceptors(InterceptorRegistry registry) {
+	// registry.addInterceptor(new RequestProcessingTimeInterceptor());
+	// }
+
 	// http://stackoverflow.com/questions/22267191/is-it-possible-to-extend-webmvcconfigurationsupport-and-use-webmvcautoconfigurat
 	@Override
 	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
