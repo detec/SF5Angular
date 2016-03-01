@@ -334,7 +334,7 @@ error: function() {
 	console.log('Failed to get current user!');
 }
 });
-// var currentUser = currentUsers.at(0);
+var currentUser = currentUsers.at(0);
 // console.log(currentUser);
 // console.log(currentUsers.length);
 
@@ -509,12 +509,13 @@ var SettingView = Backbone.View.extend({
 		var theLastEntry = new Date();
 
 		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
-		this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
+		// this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
 	},
 	
 	update: function() {
 		this.model.set('name', $('.name-update').val());
 		this.model.set('theLastEntry', $('.theLastEntry-update').val());
+		this.model.set('user' , currentUser);
 
 		this.model.save(null, {
 			success: function(response) {
@@ -599,7 +600,10 @@ $(document).ready(function() {
 		var setting = new Setting({
 			id : 0,
 			name: $('.name-input').val(),
-			theLastEntry : new Date()
+			theLastEntry : new Date(),
+			user : currentUser,
+			conversion : new ConversionCollection()
+			
 		});
 		$('.name-input').val('');
 
