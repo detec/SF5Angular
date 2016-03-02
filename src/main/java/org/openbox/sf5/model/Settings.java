@@ -104,7 +104,12 @@ public class Settings extends AbstractDbEntity implements Serializable {
 	@Column(name = "theLastEntry", unique = false, nullable = true)
 	@XmlJavaTypeAdapter(TimestampAdapter.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Kiev")
-	@NotNull
+	// Will try to use Javascript's milliseconds
+	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
+	// "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Europe/Kiev")
+	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
+	// "yyyy-MM-dd'T'HH:mm:ss")
+	// @NotNull
 	private Timestamp theLastEntry;
 
 	public Timestamp getTheLastEntry() {

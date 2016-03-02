@@ -29,8 +29,9 @@ public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		System.out.println("Request URL::" + request.getRequestURL().toString() + ", Method: "
-				+ " Sent to Handler :: Current Time=" + System.currentTimeMillis());
+		System.out.println("Request URL::" + request.getRequestURL().toString() + ", Response status: "
+				+ response.getStatus() + ", Method: " + request.getMethod() + " Sent to Handler :: Current Time="
+				+ System.currentTimeMillis());
 		// we can add attributes in the modelAndView and use that in the view
 		// page
 	}
@@ -39,9 +40,10 @@ public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter 
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		long startTime = (Long) request.getAttribute("startTime");
-		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + ":: End Time="
-				+ System.currentTimeMillis());
-		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + ":: Time Taken="
+		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + request.getMethod()
+				+ ", Response status: " + response.getStatus() + ":: End Time=" + System.currentTimeMillis());
+		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + request.getMethod()
+				+ ", Response status: " + response.getStatus() + ":: Time Taken="
 				+ (System.currentTimeMillis() - startTime));
 	}
 

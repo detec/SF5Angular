@@ -534,7 +534,7 @@ var SettingView = Backbone.View.extend({
 		this.$('.cancel').show();
 
 		var name = this.$('.name').html();
-		var theLastEntry = new Date();
+		// var theLastEntry = new Date();
 
 		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
 		// this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
@@ -542,7 +542,8 @@ var SettingView = Backbone.View.extend({
 	
 	update: function() {
 		this.model.set('name', $('.name-update').val());
-		this.model.set('theLastEntry', $('.theLastEntry-update').val());
+		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
+		this.model.set('theLastEntry', null);
 		this.model.set('user' , currentUser);
 
 		this.model.save(null, {
@@ -632,7 +633,8 @@ $(document).ready(function() {
 		var setting = new Setting({
 			id : 0,
 			name: $('.name-input').val(),
-			theLastEntry : new Date(),
+			// theLastEntry : new Date(),
+			theLastEntry : null,  // because we may have trouble parsing it
 			user : currentUser,
 			conversion : new ConversionCollection()
 			
@@ -641,19 +643,25 @@ $(document).ready(function() {
 
 		settingsCollection.add(setting);
 		console.log( JSON.stringify(setting));
+		
 		setting.save(null, {
 			success: function(response) {
 				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
 			},
 	    error: function(model, error) {
 	  //      console.log(model.toJSON());
-	        console.log(error.responseText);
+	  //      console.log(error.responseText);
 	     //   console.log(setting.urlRoot);
 	    }
-
+		
+		,
+		headers: {'Content-Type' :'application/json', 'Accept' : 'application/json'}
+		
 		});
 
 //		setting.save();	
+		
+		// MyCollection.fetch( { headers: {'Authorization' :'Basic USERNAME:PASSWORD'} } );
 		
 	});
 })

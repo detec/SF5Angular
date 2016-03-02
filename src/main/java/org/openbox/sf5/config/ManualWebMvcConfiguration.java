@@ -23,7 +23,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -102,29 +101,30 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
 	}
 
-	@Override
-	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer
-
-				.favorPathExtension(false)
-
-				.favorParameter(true)
-
-				.parameterName("mediaType")
-
-				.ignoreAcceptHeader(false)
-
-				.useJaf(false)
-
-				.defaultContentType(MediaType.APPLICATION_JSON)
-
-				.mediaType("xml", MediaType.APPLICATION_XML)
-
-				.mediaType("json", MediaType.APPLICATION_JSON)
-
-				.mediaType("html", MediaType.TEXT_HTML);
-		;
-	}
+	// @Override
+	// public void configureContentNegotiation(ContentNegotiationConfigurer
+	// configurer) {
+	// configurer
+	//
+	// .favorPathExtension(false)
+	//
+	// .favorParameter(true)
+	//
+	// .parameterName("mediaType")
+	//
+	// .ignoreAcceptHeader(false)
+	//
+	// .useJaf(false)
+	//
+	// .defaultContentType(MediaType.APPLICATION_JSON)
+	//
+	// .mediaType("xml", MediaType.APPLICATION_XML)
+	//
+	// .mediaType("json", MediaType.APPLICATION_JSON)
+	//
+	// .mediaType("html", MediaType.TEXT_HTML);
+	//
+	// }
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

@@ -33,8 +33,11 @@ public class TimestampAdapter extends XmlAdapter<String, Timestamp> {
 	public static SimpleDateFormat getJsonDateFormatter() {
 		// SimpleDateFormat formatter = new
 		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		// formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		// Will try to use Javascript format with milliseconds.
+		// SimpleDateFormat formatter = new
+		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
 		formatter.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
 
 		return formatter;

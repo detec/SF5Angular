@@ -6,12 +6,10 @@ import org.openbox.sf5.common.JsonObjectFiller;
 import org.openbox.sf5.json.service.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -92,42 +90,29 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	// </property>
 	// </bean>
 
-	@Override
-	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer
-
-				.favorPathExtension(false)
-
-				.favorParameter(true)
-
-				.parameterName("mediaType")
-
-				.ignoreAcceptHeader(false)
-
-				.useJaf(false)
-
-				.defaultContentType(MediaType.APPLICATION_JSON)
-
-				.mediaType("xml", MediaType.APPLICATION_XML)
-
-				.mediaType("json", MediaType.APPLICATION_JSON)
-
-				.mediaType("html", MediaType.TEXT_HTML);
-		;
-	}
-
-	// @Bean
-	// public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+	// @Override
+	// public void configureContentNegotiation(ContentNegotiationConfigurer
+	// configurer) {
+	// configurer
 	//
-	// RequestMappingHandlerMapping handlerMapping =
-	// super.requestMappingHandlerMapping();
+	// .favorPathExtension(false)
 	//
-	// handlerMapping.setUseSuffixPatternMatch(false);
+	// .favorParameter(true)
 	//
-	// handlerMapping.setUseTrailingSlashMatch(false);
+	// .parameterName("mediaType")
 	//
-	// return handlerMapping;
+	// .ignoreAcceptHeader(false)
 	//
+	// .useJaf(false)
+	//
+	// .defaultContentType(MediaType.APPLICATION_JSON)
+	//
+	// .mediaType("xml", MediaType.APPLICATION_XML)
+	//
+	// .mediaType("json", MediaType.APPLICATION_JSON)
+	//
+	// .mediaType("html", MediaType.TEXT_HTML);
+	// ;
 	// }
 
 }
