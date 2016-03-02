@@ -131,7 +131,8 @@ var ConversionLine = Backbone.Model.extend({
 var Setting = Backbone.Model.extend({
 	idAttribute: 'id'
 		
-	// , urlRoot : '/jaxrs/usersettings/'	
+	, urlRoot : '/jaxrs/usersettings/'
+	, url : '/jaxrs/usersettings/'	
 //	,
 //	defaults: {
 //		name : '',
@@ -639,7 +640,7 @@ $(document).ready(function() {
 		$('.name-input').val('');
 
 		settingsCollection.add(setting);
-		// console.log( JSON.stringify(setting));
+		console.log( JSON.stringify(setting));
 		setting.save(null, {
 			success: function(response) {
 				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
@@ -647,6 +648,7 @@ $(document).ready(function() {
 	    error: function(model, error) {
 	  //      console.log(model.toJSON());
 	        console.log(error.responseText);
+	     //   console.log(setting.urlRoot);
 	    }
 
 		});

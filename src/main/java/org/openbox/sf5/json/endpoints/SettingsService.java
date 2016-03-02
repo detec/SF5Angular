@@ -46,10 +46,10 @@ public class SettingsService {
 	// it should be empty or produces = "application/json".
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT }, consumes = "application/json")
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Long> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
-
+		System.out.println("Post setting called");
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 
 		if (currentUser == null) {
@@ -85,6 +85,17 @@ public class SettingsService {
 
 		}
 		return new ResponseEntity<Long>(new Long(setting.getId()), headers, HttpStatus.CREATED);
+	}
+
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(
+			// value = "{settingId}",
+
+			method = RequestMethod.PUT)
+	public ResponseEntity<Long> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
+			@PathVariable("settingId") long settingId) throws NotAuthenticatedException, UsersDoNotCoincideException {
+		System.out.println("Put setting called");
+		return createSetting(setting, ucBuilder);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")

@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SettingsConversion")
@@ -112,14 +111,6 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 
 	public void setTheLineOfIntersection(long TheLineOfIntersection) {
 		this.theLineOfIntersection = TheLineOfIntersection;
-	}
-
-	public Settings getparent_id() {
-		return parent_id;
-	}
-
-	public void setparent_id(Settings parent_id) {
-		this.parent_id = parent_id;
 	}
 
 	public long getLineNumber() {
