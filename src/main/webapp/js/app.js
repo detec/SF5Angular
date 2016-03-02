@@ -159,7 +159,7 @@ var Setting = Backbone.Model.extend({
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 		, parse: function(response){
-			console.log('Setting parse called');
+			// console.log('Setting parse called');
 			for(var key in this.model)
 			{
 				var embeddedClass = this.model[key];
@@ -534,7 +534,7 @@ var SettingView = Backbone.View.extend({
 		this.$('.cancel').show();
 
 		var name = this.$('.name').html();
-		// var theLastEntry = new Date();
+		var theLastEntry = new Date();
 
 		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
 		// this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
@@ -543,7 +543,8 @@ var SettingView = Backbone.View.extend({
 	update: function() {
 		this.model.set('name', $('.name-update').val());
 		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
-		this.model.set('theLastEntry', null);
+		this.model.set('theLastEntry', new Date());
+		// this.model.set('theLastEntry', null);
 		this.model.set('user' , currentUser);
 
 		this.model.save(null, {
@@ -593,7 +594,7 @@ var SettingsView = Backbone.View.extend({
 		this.model.fetch({
 			success: function(response) {
 				_.each(response.toJSON(), function(setting) {
-					console.log('Successfully GOT setting with _id: ' + item.id);
+					// console.log('Successfully GOT setting with id: ' + item.id);
 				})
 			},
 			error: function() {
@@ -626,27 +627,27 @@ var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satelli
 var SettingsViewItem = new SettingsView();
 
 
-// console.log(currentUser.get("username"));
-
 $(document).ready(function() {
 	$('.add-setting').on('click', function() {
 		var setting = new Setting({
-			id : 0,
+			id : null,  // let's try to pretend it is new
 			name: $('.name-input').val(),
 			// theLastEntry : new Date(),
-			theLastEntry : null,  // because we may have trouble parsing it
+			//theLastEntry : null,  // because we may have trouble parsing it, error 500
+			// we will use a trick and place a fixed string value in order to push it to the server
+			theLastEntry : '2016-02-10T16:28:23+0200',
 			user : currentUser,
 			conversion : new ConversionCollection()
 			
 		});
 		$('.name-input').val('');
 
-		settingsCollection.add(setting);
-		console.log( JSON.stringify(setting));
+		
+		// console.log( JSON.stringify(setting));
 		
 		setting.save(null, {
 			success: function(response) {
-				console.log('Successfully SAVED setting with id: ' + response.toJSON().id);
+				// console.log('Successfully SAVED new setting');
 			},
 	    error: function(model, error) {
 	  //      console.log(model.toJSON());
@@ -662,6 +663,10 @@ $(document).ready(function() {
 //		setting.save();	
 		
 		// MyCollection.fetch( { headers: {'Authorization' :'Basic USERNAME:PASSWORD'} } );
+		// will refetch collection; Doesn't work
+		setting.set('theLastEntry', new Date());
+		settingsCollection.add(setting);
+		// settingsCollection.fetch();
 		
 	});
 })

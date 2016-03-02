@@ -109,7 +109,7 @@ public class Settings extends AbstractDbEntity implements Serializable {
 	// "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Europe/Kiev")
 	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
 	// "yyyy-MM-dd'T'HH:mm:ss")
-	// @NotNull
+	@NotNull
 	private Timestamp theLastEntry;
 
 	public Timestamp getTheLastEntry() {

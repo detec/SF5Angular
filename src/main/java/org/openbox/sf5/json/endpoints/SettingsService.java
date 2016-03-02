@@ -46,10 +46,10 @@ public class SettingsService {
 	// it should be empty or produces = "application/json".
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = { RequestMethod.POST })
 	public ResponseEntity<Long> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
-		System.out.println("Post setting called");
+		// System.out.println("Post setting called");
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 
 		if (currentUser == null) {
@@ -64,6 +64,9 @@ public class SettingsService {
 			throw new UsersDoNotCoincideException("Authenticated user " + currentUser.getId()
 					+ " and the one in setting - " + setting.getUser().getId() + " do not coincide!");
 		}
+
+		// assigning current date to setting
+		setting.setTheLastEntry(new java.sql.Timestamp(System.currentTimeMillis()));
 
 		try {
 			HttpStatus statusResult = settingsJsonizer.saveNewSetting(setting);
@@ -87,16 +90,18 @@ public class SettingsService {
 		return new ResponseEntity<Long>(new Long(setting.getId()), headers, HttpStatus.CREATED);
 	}
 
-	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(
-			// value = "{settingId}",
-
-			method = RequestMethod.PUT)
-	public ResponseEntity<Long> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
-			@PathVariable("settingId") long settingId) throws NotAuthenticatedException, UsersDoNotCoincideException {
-		System.out.println("Put setting called");
-		return createSetting(setting, ucBuilder);
-	}
+	// @PreAuthorize("hasRole('ROLE_USER')")
+	// @RequestMapping(
+	// // value = "{settingId}",
+	//
+	// method = RequestMethod.PUT)
+	// public ResponseEntity<Long> putSetting(@RequestBody Settings setting,
+	// UriComponentsBuilder ucBuilder,
+	// @PathVariable("settingId") long settingId) throws
+	// NotAuthenticatedException, UsersDoNotCoincideException {
+	// System.out.println("Put setting called");
+	// return createSetting(setting, ucBuilder);
+	// }
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
