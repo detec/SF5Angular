@@ -132,7 +132,7 @@ var Setting = Backbone.Model.extend({
 	idAttribute: 'id'
 		
 	, urlRoot : '/jaxrs/usersettings/'
-	, url : '/jaxrs/usersettings/'	
+	// , url : '/jaxrs/usersettings/'	
 //	,
 //	defaults: {
 //		name : '',
@@ -551,8 +551,8 @@ var SettingView = Backbone.View.extend({
 			success: function(response) {
 				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
 			},
-			error: function(err) {
-				console.log(err);
+			error: function(error) {
+				console.log(error.responseText);
 			}
 		});
 	},
@@ -563,10 +563,10 @@ var SettingView = Backbone.View.extend({
 	delete: function() {
 		this.model.destroy({
 			success: function(response) {
-				console.log('Successfully DELETED setting with _id: ' + response.toJSON().id);
+				console.log('Successfully DELETED setting with id: ' + response.toJSON().id);
 			},
-			error: function(err) {
-				console.log(err);
+			error: function(error) {
+				console.log(error.responseText);
 			}
 		});
 	},
@@ -647,11 +647,11 @@ $(document).ready(function() {
 		
 		setting.save(null, {
 			success: function(response) {
-				// console.log('Successfully SAVED new setting');
+				console.log('Successfully SAVED new setting');
 			},
 	    error: function(model, error) {
 	  //      console.log(model.toJSON());
-	  //      console.log(error.responseText);
+	        console.log(error.responseText);
 	     //   console.log(setting.urlRoot);
 	    }
 		

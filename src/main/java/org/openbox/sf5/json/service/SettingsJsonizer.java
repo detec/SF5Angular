@@ -102,6 +102,10 @@ public class SettingsJsonizer {
 		return setting;
 	}
 
+	public void deleteSetting(long id) {
+		objectsController.remove(Settings.class, id);
+	}
+
 	@Autowired
 	private CriterionService criterionService;
 

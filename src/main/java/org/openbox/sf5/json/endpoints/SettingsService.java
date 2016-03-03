@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.openbox.sf5.common.SF5SecurityContext;
 import org.openbox.sf5.common.XMLExporter;
+import org.openbox.sf5.json.exceptions.ItemNotFoundException;
 import org.openbox.sf5.json.exceptions.NotAuthenticatedException;
 import org.openbox.sf5.json.exceptions.UsersDoNotCoincideException;
 import org.openbox.sf5.json.service.SettingsJsonizer;
@@ -28,10 +29,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@EnableWebMvc
+// @EnableWebMvc  // This annotation limits to HEAD, POST, GET
 @RestController
 // @PreAuthorize("hasRole('ROLE_USER')")
 // Be careful not to use annotations produces, consumes - it kicks away
@@ -102,6 +102,35 @@ public class SettingsService {
 	// System.out.println("Put setting called");
 	// return createSetting(setting, ucBuilder);
 	// }
+
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "{settingId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Settings> deleteSetting(@PathVariable("settingId") long settingId)
+			throws NotAuthenticatedException, ItemNotFoundException {
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		if (currentUser == null) {
+
+			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
+			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
+		}
+
+		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
+		if (setting == null) {
+			// return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+			throw new ItemNotFoundException(
+					"Unable to delete. Setting with id " + settingId + " not found for user " + currentUser);
+		}
+
+		settingsJsonizer.deleteSetting(settingId);
+		return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+	}
+
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(method = RequestMethod.DELETE)
+	public ResponseEntity<Settings> deleteStub() {
+		System.out.println("Delete setting stub accessed!");
+		return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
