@@ -47,7 +47,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<Long> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
+	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
 		// System.out.println("Post setting called");
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
@@ -87,7 +87,11 @@ public class SettingsService {
 		} catch (Exception e) {
 
 		}
-		return new ResponseEntity<Long>(new Long(setting.getId()), headers, HttpStatus.CREATED);
+
+		// return new ResponseEntity<Long>(new Long(setting.getId()), headers,
+		// HttpStatus.CREATED);
+		// Backbone requires return of the whole object to get id.
+		return new ResponseEntity<Settings>(setting, headers, HttpStatus.CREATED);
 	}
 
 	// @PreAuthorize("hasRole('ROLE_USER')")
@@ -125,12 +129,12 @@ public class SettingsService {
 		return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
 	}
 
-	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(method = RequestMethod.DELETE)
-	public ResponseEntity<Settings> deleteStub() {
-		System.out.println("Delete setting stub accessed!");
-		return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
-	}
+	// @PreAuthorize("hasRole('ROLE_USER')")
+	// @RequestMapping(method = RequestMethod.DELETE)
+	// public ResponseEntity<Settings> deleteStub() {
+	// System.out.println("Delete setting stub accessed!");
+	// return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+	// }
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
