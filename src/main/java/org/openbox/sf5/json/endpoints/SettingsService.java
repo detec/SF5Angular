@@ -94,18 +94,13 @@ public class SettingsService {
 		return new ResponseEntity<Settings>(setting, headers, HttpStatus.CREATED);
 	}
 
-	// @PreAuthorize("hasRole('ROLE_USER')")
-	// @RequestMapping(
-	// // value = "{settingId}",
-	//
-	// method = RequestMethod.PUT)
-	// public ResponseEntity<Long> putSetting(@RequestBody Settings setting,
-	// UriComponentsBuilder ucBuilder,
-	// @PathVariable("settingId") long settingId) throws
-	// NotAuthenticatedException, UsersDoNotCoincideException {
-	// System.out.println("Put setting called");
-	// return createSetting(setting, ucBuilder);
-	// }
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "{settingId}", method = RequestMethod.PUT)
+	public ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
+			@PathVariable("settingId") long settingId) throws NotAuthenticatedException, UsersDoNotCoincideException {
+		System.out.println("Put setting called");
+		return createSetting(setting, ucBuilder);
+	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.DELETE)

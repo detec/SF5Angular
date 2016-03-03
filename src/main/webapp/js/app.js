@@ -372,6 +372,10 @@ var transponderPresentationView = Backbone.View.extend({
 	// model: new transponderPresentation(),
 	model: new transponder(),
 	
+	events: {
+		'click .use-transponder' : 'addtransponder'
+	},
+	
 	tagName: 'tr',
 	
 	initialize: function() {
@@ -383,6 +387,10 @@ var transponderPresentationView = Backbone.View.extend({
 		// console.log("transponderPresentationView render called!");
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
+	},
+	
+	addtransponder: function() {
+		alert("Use transponder called!");
 	}
 	
 });
@@ -543,9 +551,10 @@ var SettingView = Backbone.View.extend({
 	update: function() {
 		this.model.set('name', $('.name-update').val());
 		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
-		this.model.set('theLastEntry', new Date());
-		// this.model.set('theLastEntry', null);
+		// this.model.set('theLastEntry', new Date());
+		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		this.model.set('user' , currentUser);
+		this.model.set('conversion', new ConversionCollection());
 
 		this.model.save(null, {
 			success: function(response) {

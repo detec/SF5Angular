@@ -12,6 +12,16 @@
 		<table  class="table">
 			<tr>
 			<td>
+			<h3 class="">Table of settings</h3>
+			<p>Work with Openbox SF-5 settings
+			</td>
+			<td>
+			<h3 class="">Table of transponders</h3>
+			<p>Press 'Use' button to add transponder to setting edited.
+			</td>
+			</tr>
+			<tr>
+			<td>
 			<!-- 
 			Placeholder for setting edit pane
 			 -->
@@ -41,7 +51,7 @@
 			<table  class="table">
         	<thead>
             <tr>
-<!--             <th class="transponder-selection">Select</th> -->
+            <th class="transponder-selection">Action</th>
             <th>Frequency</th>
             <th>Speed</th>
             <th>Pol.</th>
@@ -64,6 +74,7 @@
 
 <!-- 	<td><span class="selection checkbox-inline"><input id="test" type="checkbox" name="selection" value="selection"></span></td> -->
 	<script type="text/template" class="transponder-Body-tmpl">
+		<td><button class="btn btn-primary use-transponder">Use</button></td>
         <td><span class="frequency"><%= frequency %></span></td>
 		<td><span class="speed"><%= speed %></span></td>
 		<td><span class="polarization"><%= polarization %></span></td>
