@@ -444,6 +444,37 @@ var SatelliteDropdownView = Backbone.View.extend({
     
 });
 
+var SettingsDropdown = Backbone.View.extend({
+	 el: $('.settings-dropdown'),
+	 
+    tagName: 'select',
+    initialize: function(){
+    	this.template= _.template($('.setting-select-tmpl').html());  
+    	
+        this.collection = settingsCollection;            
+        this.collection.on('sync',this.render,this);
+        
+        
+        this.collection.fetch({
+
+		success: function(collection){
+		},
+		error: function() {
+			console.log('Failed to get user settings!');
+		}});
+        
+    },
+    
+    render:function(){
+        $(this.el).html(this.template({
+        	settings: this.collection.toJSON()
+        }));
+        $('.settings-dropdown').append(this.el);
+        return this;
+    },
+
+}); 
+
 // single setting view
 var SettingView = Backbone.View.extend({
 	
@@ -562,6 +593,8 @@ var TPsView = new transpondersPresentationView(); // show table
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
 
 var SettingsViewItem = new SettingsView();
+
+var SettingsDD = new SettingsDropdown();
 
 
 $(document).ready(function() {

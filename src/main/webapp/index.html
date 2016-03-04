@@ -10,6 +10,17 @@
 	<div class="container">
 		<h1>Openbox SF-5 settings editor</h1>
 		<table  class="table">
+		<tr>
+			<td>
+			<!-- Placeholder for left upper cell -->
+			</td>
+			<td>
+			<!-- Settings list dropdown. -->
+			<div class="settings-dropdown">
+			
+			</div>
+			</td>
+			</tr>
 			<tr>
 			<td>
 			<h3 class="">Table of settings</h3>
@@ -20,6 +31,7 @@
 			<p>Press 'Use' button to add transponder to setting edited.
 			</td>
 			</tr>
+			
 			<tr>
 			<td>
 			<!-- 
@@ -88,7 +100,16 @@
 
     
 		 <!-- http://stackoverflow.com/questions/9154628/rendering-backbone-js-collection-as-a-select-list -->
-	 
+	<script type="text/template" class="setting-select-tmpl">
+		<select id="setting-selector" class="setting-selector">
+		<option value="0">Show lines of selected setting</option>
+		<% _(settings).each(function(t) { %>
+    		<option value="<%= t.id %>"><%= t.name %></option> 
+		<% }); %>
+		</select>
+	</script>	
+
+ 
 	<script type="text/template" class="satellite-select-tmpl">
 		<select id="satellite-selector" class="satellite-selector">
 		<option value="0">Filter by satellite</option>
