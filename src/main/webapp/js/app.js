@@ -13,10 +13,7 @@ var Satellite = Backbone.Model.extend({
 
 var User = Backbone.Model.extend({
 	idAttribute: 'id'
-	,
-  
-	initialize: function() {
-		// this.forward("authorities", new UserAuthorityCollection());
+	, initialize: function() {
     },
     
 	defaults: {
@@ -29,37 +26,11 @@ var User = Backbone.Model.extend({
     
     parse: function(response) {
     //	console.log('Parse in user called');
-        // if (_.has(response, "authorities")) {
             this.authorities = new UserAuthorityCollection(response.authorities, {
                 parse: true
             });
-           // This line deleted user roles 
-         //   delete response.authorities;
-       // }
         return response;
     }
-	
-	// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
-//	   parse: function(response){
-//		   // It is actually not called
-//		  // console.log('User parse called');
-//	        for(var key in this.model)
-//	        {
-//	            var embeddedClass = this.model[key];
-//	            var embeddedData = response[key];
-//	            response[key] = new embeddedClass(embeddedData, {parse:true});
-//	            
-//	            console.log(embeddedClass + ' ' + embeddedData);
-//	        }
-//	        return response;
-//	    },
-//    ,
-//    toJSON: function() {
-//        var json = _.clone(this.attributes);
-//        json.authorities = this.authorities.toJSON();
-//        return json;
-//    }
-
 
 });
 
@@ -133,41 +104,18 @@ var Setting = Backbone.Model.extend({
 		
 	, urlRoot : '/jaxrs/usersettings/'
 	// , url : '/jaxrs/usersettings/'	
-//	,
-//	defaults: {
-//		name : '',
-//		theLastEntry : new Date(0),
-//		user : new User(),
-//		conversion : new Conversion()
-//		
-//	}
-//	,
-//	parse: function (response) {
-//		
-//		this.user = new User(response.user || null, {
-//			parse : true
-//		});
-//		
-//		this.conversion = new Conversion(response.conversion || null, {
-//			parse : true
-//		});
-//		
-//		delete response.user;
-//		delete response.conversion;
-//		return response;
-//	}
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
-		, parse: function(response){
-			// console.log('Setting parse called');
-			for(var key in this.model)
-			{
-				var embeddedClass = this.model[key];
-				var embeddedData = response[key];
-				response[key] = new embeddedClass(embeddedData, {parse:true});
-			}
-			return response;
+	, parse: function(response){
+		// console.log('Setting parse called');
+		for(var key in this.model)
+		{
+			var embeddedClass = this.model[key];
+			var embeddedData = response[key];
+			response[key] = new embeddedClass(embeddedData, {parse:true});
 		}
+		return response;
+	}
 
 	
 });
@@ -223,18 +171,6 @@ var transponder = Backbone.Model.extend({
 		versionOfTheDVB: ''
 		}
 		,
-//		parse: function (response) {
-//			// Create a Author model on the Post Model
-//			this.satellite = new Satellite(response.satellite || null, {
-//				parse: true
-//			});
-//			// 	Delete from the response object as the data is
-//			// 	alredy available on the  model
-//			delete response.satellite;
-//		
-//			// 	return the response object 
-//			return response;
-//		}
 		
 		// http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	   parse: function(response){
@@ -354,17 +290,6 @@ error: function() {
 }
 });
 
-//Cannot get user out of collection
- 
-// currentUsers.at(0);
-//console.log(currentUser.get("username"));
-
-//console.log(currentUsers.username);
-
-// we should call it may be later
-// var currentUser = currentUsers.at(0);
-
-// console.log(currentUsers.length);
 
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
@@ -543,17 +468,20 @@ var SettingView = Backbone.View.extend({
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
+		var id = this.$('.id').html();
 
 		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
-		// this.$('.theLastEntry').html('<input type="date" class="form-control theLastEntry-update" value="' + theLastEntry + '">');
+		this.$('.id').html('<input type="text" readonly class="form-control id-update" value="' + id + '">');
 	},
 	
 	update: function() {
+		this.model.set('id', $('.id-update').val());
+		// console.log($('.name-update').val());
 		this.model.set('name', $('.name-update').val());
 		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
 		// this.model.set('theLastEntry', new Date());
 		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
-		this.model.set('user' , currentUser);
+		this.model.set('user', currentUser);
 		this.model.set('conversion', new ConversionCollection());
 
 		this.model.save(null, {

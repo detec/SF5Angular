@@ -7,7 +7,6 @@ import java.util.List;
 import org.openbox.sf5.common.JsonObjectFiller;
 import org.openbox.sf5.json.service.CustomObjectMapper;
 import org.openbox.sf5.json.service.CustomXMLMapper;
-import org.openbox.sf5.json.service.RequestProcessingTimeInterceptor;
 import org.openbox.sf5.model.Sat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,6 @@ import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConve
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -55,10 +53,10 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		return xmlMapper;
 	}
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new RequestProcessingTimeInterceptor());
-	}
+	// @Override
+	// public void addInterceptors(InterceptorRegistry registry) {
+	// registry.addInterceptor(new RequestProcessingTimeInterceptor());
+	// }
 
 	// http://stackoverflow.com/questions/22267191/is-it-possible-to-extend-webmvcconfigurationsupport-and-use-webmvcautoconfigurat
 	@Override

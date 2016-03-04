@@ -68,8 +68,13 @@ public class SettingsService {
 		// assigning current date to setting
 		setting.setTheLastEntry(new java.sql.Timestamp(System.currentTimeMillis()));
 
+		// Define return status. For existing settings request method is PUT,
+		// for new - POST.
+		// HttpStatus returnStatus = (setting.getId() > 0) ? HttpStatus.OK :
+		// HttpStatus.CREATED;
+		HttpStatus statusResult = null;
 		try {
-			HttpStatus statusResult = settingsJsonizer.saveNewSetting(setting);
+			statusResult = settingsJsonizer.saveNewSetting(setting);
 		} catch (Exception e) {
 			throw new IllegalStateException("Error when saving new setting", e);
 		}
@@ -91,14 +96,16 @@ public class SettingsService {
 		// return new ResponseEntity<Long>(new Long(setting.getId()), headers,
 		// HttpStatus.CREATED);
 		// Backbone requires return of the whole object to get id.
-		return new ResponseEntity<Settings>(setting, headers, HttpStatus.CREATED);
+		// return new ResponseEntity<Settings>(setting, headers,
+		// HttpStatus.CREATED);
+		return new ResponseEntity<Settings>(setting, headers, statusResult);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.PUT)
 	public ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@PathVariable("settingId") long settingId) throws NotAuthenticatedException, UsersDoNotCoincideException {
-		System.out.println("Put setting called");
+
 		return createSetting(setting, ucBuilder);
 	}
 

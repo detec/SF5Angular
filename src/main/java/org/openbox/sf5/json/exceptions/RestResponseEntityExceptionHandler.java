@@ -1,5 +1,7 @@
 package org.openbox.sf5.json.exceptions;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.ACCEPTED, request);
 	}
 
-	@ExceptionHandler(value = { IllegalStateException.class })
+	@ExceptionHandler(value = { IllegalStateException.class, IOException.class })
 	protected ResponseEntity<Object> handleServerException(RuntimeException ex, WebRequest request) {
 		String bodyOfResponse = ex.getMessage();
 		// 409

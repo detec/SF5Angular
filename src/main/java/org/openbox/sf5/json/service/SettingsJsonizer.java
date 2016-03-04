@@ -23,11 +23,17 @@ public class SettingsJsonizer {
 	public HttpStatus saveNewSetting(Settings setting) {
 		long id = setting.getId();
 		// if we receive non-empty id
-		if (id != 0) {
-			return HttpStatus.CONFLICT;
+		// We use the same method for new and existing settings
+		// if (id != 0) {
+		// return HttpStatus.CONFLICT;
+		// }
+		HttpStatus returnStatus = (id > 0) ? HttpStatus.OK : HttpStatus.CREATED;
+		try {
+			objectsController.saveOrUpdate(setting);
+		} catch (Exception e) {
+			returnStatus = HttpStatus.CONFLICT;
 		}
-		objectsController.saveOrUpdate(setting);
-		return HttpStatus.CREATED;
+		return returnStatus;
 	}
 
 	@SuppressWarnings("unchecked")
