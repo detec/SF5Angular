@@ -19,6 +19,23 @@
 			<div class="settings-dropdown">
 			
 			</div>
+			<table  class="table" class="setting-dropdown-conversionlines" style="display:none">
+				<thead>
+					<tr>
+					<th>Action</th>
+					<th style="display:none">ID</th>
+					<th>Line #</th>
+					<th>Transponder</th>
+					<th>Sat idx</th>
+					<th>Tp idx</th>
+					<th>Intersection line</th>
+					<th>Note</th>
+					<th style="display:none">Setting</th>
+					</tr>
+				</thead>
+				<tbody class="cl-list-selection"></tbody>
+				
+			</table>
 			</td>
 			</tr>
 			<tr>
@@ -130,6 +147,18 @@
 		<td><span class="name"><%= name %></span></td>
 		<td><span class="theLastEntry"><%= theLastEntry %></span></td>
 		<td><button class="btn btn-warning edit-setting">Edit</button> <button class="btn btn-danger delete-setting">Delete</button><button class="btn btn-success update-setting" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
+	</script>
+	
+	<script type="text/template" class="conversionline-template">
+		<td><button class="btn btn-primary use-cl">Use</button> <button class="btn btn-danger delete-cline edit-table">Delete</button></td>
+		<td><span class="id"  aria-hidden="true"><%= id %></span></td>
+		<td><span class="lineNumber"><%= lineNumber %></span></td>
+		<td><span class="transponder"><%= transponder.frequency %></span></td>
+		<td><span class="satindex"><%= satindex %></span></td>
+		<td><span class="tpindex"><%= tpindex %></span></td>
+		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>
+		<td><span class="note"><%= note %></span></td>
+		<td><span class="parent_id" aria-hidden="true"><%= parent_id %></span></td>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>

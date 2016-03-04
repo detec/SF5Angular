@@ -272,6 +272,8 @@ var transponders = new Transponders();
 
 var settingsCollection = new Settings();
 
+CurrentSelectionSetting = new Setting();
+
 // https://github.com/fiznool/backbone.basicauth
 
 // getting currently authenticated user
@@ -472,7 +474,29 @@ var SettingsDropdown = Backbone.View.extend({
         $('.settings-dropdown').append(this.el);
         return this;
     },
+    
+    events: {
+     	"change select.setting-selector" : "retrieveSetting"
+    },
 
+    retrieveSetting : function(event) {
+       	var settingId = event.target.value;
+       	if (settingId == 0) {
+       		return;
+       	}
+       	// we will fetch fresh data from server.
+       //	CurrentSelectionSetting.set('id', settingId);
+       	// doesn't work
+       	// CurrentSelectionSetting = this.collection.findWhere({ id : settingId});
+       	CurrentSelectionSetting = this.collection.get(settingId);
+       	if (CurrentSelectionSetting == null) {
+       		// console.log(this.collection.length);
+       		console.log('Setting with id ' + settingId + ' not found!');
+       	}
+       	CurrentSelectionSetting.fetch();
+       	SelectSettingCLView.render();
+       	
+    }
 }); 
 
 // single setting view
@@ -544,7 +568,53 @@ var SettingView = Backbone.View.extend({
 	}
 });
 
+var ConversionLineView = Backbone.View.extend({
+	
+	model: new ConversionLine(),
+	tagName: 'tr',
+	initialize: function() {
+		this.template = _.template($('.conversionline-template').html());
+	},
+	
+	events: {
+		'click .use-cl': 'useCL'
 
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
+	
+	useCL : function() {
+		alert("Use conversion line called!");
+	}
+	
+});
+
+var CLSelectionView = Backbone.View.extend({
+	
+	model : CurrentSelectionSetting.get('conversion'),
+	el: $('.cl-list-selection'),
+	
+	render: function() {
+		// console.log('CLSelectionView render called');
+		var self = this;
+		this.$el.html('');
+		// sometimes a setting cannot have a tabular part filled
+		if (this.model != null) {
+			_.each(this.model.toArray(), function(cline) {
+				self.$el.append((new ConversionLineView({model: cline})).render().$el);
+			});
+			
+			
+			// show table with lines
+			this.$('.setting-dropdown-conversionlines').show();
+		
+		}
+		return this;
+	}
+	
+});
 
 var SettingsView = Backbone.View.extend({
 	model: settingsCollection,
@@ -594,10 +664,15 @@ var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satelli
 
 var SettingsViewItem = new SettingsView();
 
+
 var SettingsDD = new SettingsDropdown();
 
+var SelectSettingCLView = new CLSelectionView();
 
 $(document).ready(function() {
+	
+	
+	
 	$('.add-setting').on('click', function() {
 		var setting = new Setting({
 			id : null,  // let's try to pretend it is new
