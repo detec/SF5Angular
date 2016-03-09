@@ -63,8 +63,8 @@ var ConversionLine = Backbone.Model.extend({
 	,
 	defaults: {
 		lineNumber : 0,
-		note : ''
-		, satindex : 0,
+		note : '',
+		satindex : 0,
 		tpindex : 0,
 		theLineOfIntersection : 0
 //		, parent_id : new Setting()
@@ -103,7 +103,6 @@ var Setting = Backbone.Model.extend({
 	idAttribute: 'id'
 		
 	, urlRoot : '/jaxrs/usersettings/'
-	// , url : '/jaxrs/usersettings/'	
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	, parse: function(response){
@@ -119,7 +118,6 @@ var Setting = Backbone.Model.extend({
 
 	
 });
-
 
 
 // Define a view model with selection checkbox
@@ -274,6 +272,8 @@ var settingsCollection = new Settings();
 
 CurrentSelectionSetting = new Setting();
 
+CurrentEditedSetting = new Setting();
+
 // https://github.com/fiznool/backbone.basicauth
 
 // getting currently authenticated user
@@ -292,6 +292,8 @@ error: function() {
 }
 });
 
+// variable to store current setting edited collection
+var editedCLTable = new ConversionCollection();
 
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
@@ -317,7 +319,18 @@ var transponderPresentationView = Backbone.View.extend({
 	},
 	
 	addtransponder: function() {
-		alert("Use transponder called!");
+
+	//	var conversionTable = CurrentEditedSetting.get('conversion');
+	// 	console.log(JSON.stringify(conversionTable));
+		var newLine = new ConversionLine();
+		newLine.set('transponder', this.model);
+		newLine.set('parent_id', CurrentEditedSetting);
+		newLine.set('id', null);
+		newLine.set('lineNumber', editedCLTable.length + 1);
+		
+		// says when 'add' - no such function.
+		// conversionTable.push(newLine);
+		editedCLTable.push(newLine);
 	}
 	
 });
@@ -493,6 +506,7 @@ var SettingsDropdown = Backbone.View.extend({
        		// console.log(this.collection.length);
        		console.log('Setting with id ' + settingId + ' not found!');
        	}
+       	// console.log(CurrentSelectionSetting.urlRoot);
        	CurrentSelectionSetting.fetch();
        	SelectSettingCLView.render();
        	
@@ -520,6 +534,16 @@ var SettingView = Backbone.View.extend({
 		$('.delete-setting').hide();
 		this.$('.update-setting').show();
 		this.$('.cancel').show();
+		
+		// showing table with conversion lines
+		
+		// console.log(JSON.stringify(this.model));
+		// CurrentEditedSetting = this.model;
+		// console.log(JSON.stringify(CLEditViewItem.model));
+		
+		
+		// CLEditViewItem.model.set(CurrentEditedSetting.get('conversion'));
+		CLEditViewItem.render();
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
@@ -537,7 +561,7 @@ var SettingView = Backbone.View.extend({
 		// this.model.set('theLastEntry', new Date());
 		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		this.model.set('user', currentUser);
-		this.model.set('conversion', new ConversionCollection());
+		this.model.set('conversion', editedCLTable);
 
 		this.model.save(null, {
 			success: function(response) {
@@ -551,6 +575,8 @@ var SettingView = Backbone.View.extend({
 	
 	cancel: function() {
 		// blogsView.render();
+		SettingsViewItem.render();
+		
 	},
 	delete: function() {
 		this.model.destroy({
@@ -606,10 +632,46 @@ var CLSelectionView = Backbone.View.extend({
 				self.$el.append((new ConversionLineView({model: cline})).render().$el);
 			});
 			
-			
 			// show table with lines
 			this.$('.setting-dropdown-conversionlines').show();
+		}
+		return this;
+	}
+	
+});
+
+// Table for edited setting
+var CLEditView = Backbone.View.extend({
+	// model : CurrentEditedSetting.get('conversion'),
+	model : editedCLTable,
+	el: $('.cl-list-edit'),
+	
+	initialize: function() {
+		var self = this;
+		// let's assign a model
 		
+//		console.log(JSON.stringify(this.model));
+		// this.model = new ConversionCollection();
+		this.model.on('push', this.render, this);
+		this.model.on('add', this.render, this);
+		this.model.on('change', function() {
+			setTimeout(function() {
+				self.render();
+			}, 30);
+		},this);
+		
+		this.model.on('remove', this.render, this);
+		
+	},
+	
+	render: function() {
+		var self = this;
+		this.$el.html('');
+		// sometimes a setting cannot have a tabular part filled
+		if (this.model != null) {
+			_.each(this.model.toArray(), function(cline) {
+				self.$el.append((new ConversionLineView({model: cline})).render().$el);
+			});
 		}
 		return this;
 	}
@@ -669,9 +731,12 @@ var SettingsDD = new SettingsDropdown();
 
 var SelectSettingCLView = new CLSelectionView();
 
+// var CLEditViewItem = new CLEditView({model : CurrentEditedSetting.get('conversion') });
+var CLEditViewItem = new CLEditView();
+
+
+
 $(document).ready(function() {
-	
-	
 	
 	$('.add-setting').on('click', function() {
 		var setting = new Setting({
@@ -682,7 +747,7 @@ $(document).ready(function() {
 			// we will use a trick and place a fixed string value in order to push it to the server
 			theLastEntry : '2016-02-10T16:28:23+0200',
 			user : currentUser,
-			conversion : new ConversionCollection()
+			conversion : editedCLTable
 			
 		});
 		$('.name-input').val('');
@@ -695,9 +760,7 @@ $(document).ready(function() {
 				console.log('Successfully SAVED new setting');
 			},
 	    error: function(model, error) {
-	  //      console.log(model.toJSON());
 	        console.log(error.responseText);
-	     //   console.log(setting.urlRoot);
 	    }
 		
 		,

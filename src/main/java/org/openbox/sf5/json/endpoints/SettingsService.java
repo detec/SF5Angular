@@ -181,7 +181,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "filter/id/{settingId}", method = RequestMethod.GET)
+	@RequestMapping(value = "{settingId}", method = RequestMethod.GET)
 	public ResponseEntity<Settings> getSettingById(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException {
 

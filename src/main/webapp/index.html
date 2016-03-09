@@ -13,6 +13,23 @@
 		<tr>
 			<td>
 			<!-- Placeholder for left upper cell -->
+			<h3>Lines of currently edited setting</h3>
+			<table  class="table" class="setting-edit-conversionlines">
+				<thead>
+					<tr>
+					<th>Action</th>
+					<th style="display:none">ID</th>
+					<th>Line #</th>
+					<th>Transponder</th>
+					<th>Sat idx</th>
+					<th>Tp idx</th>
+					<th>Intersection line</th>
+					<th>Note</th>
+					<th style="display:none">Setting</th>
+					</tr>
+				</thead>
+			<tbody class="cl-list-edit"></tbody>
+			</table>
 			</td>
 			<td>
 			<!-- Settings list dropdown. -->
@@ -151,14 +168,14 @@
 	
 	<script type="text/template" class="conversionline-template">
 		<td><button class="btn btn-primary use-cl">Use</button> <button class="btn btn-danger delete-cline edit-table">Delete</button></td>
-		<td><span class="id"  aria-hidden="true"><%= id %></span></td>
 		<td><span class="lineNumber"><%= lineNumber %></span></td>
 		<td><span class="transponder"><%= transponder.frequency %></span></td>
 		<td><span class="satindex"><%= satindex %></span></td>
 		<td><span class="tpindex"><%= tpindex %></span></td>
 		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>
 		<td><span class="note"><%= note %></span></td>
-		<td><span class="parent_id" aria-hidden="true"><%= parent_id %></span></td>
+		<td><span class="parent_id" style="display:none"><%= parent_id %></span></td>
+		<td><span class="id"  aria-hidden="true"><%= id %></span></td>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>
