@@ -68,7 +68,7 @@ var ConversionLine = Backbone.Model.extend({
 		tpindex : 0,
 		theLineOfIntersection : 0
 //		, parent_id : new Setting()
-//		, transponder: new transponder()
+		, transponder: transponder
 	}
 //	,
 //	parse: function (response) {
@@ -188,7 +188,7 @@ var transponder = Backbone.Model.extend({
 // variable for collection shown
 var TransponderPresentations = Backbone.Collection.extend({
 	// will use strict transponder
-	model : transponder,
+	model : transponderPresentation,
 	// Specify the base url to target the REST service
 	url : '/jaxrs/transponders/'
 
@@ -720,7 +720,7 @@ var SettingsView = Backbone.View.extend({
 	 } 
 });
 
-// var TPsView = new transpondersPresentationView({collection: transponderPresentations });
+
 var TPsView = new transpondersPresentationView(); // show table
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
 

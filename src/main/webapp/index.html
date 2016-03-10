@@ -12,7 +12,7 @@
 		<table  class="table">
 		<tr>
 			<td>
-			<!-- Placeholder for left upper cell -->
+		
 			<h3>Lines of currently edited setting</h3>
 			<table  class="table" class="setting-edit-conversionlines">
 				<thead>
@@ -62,15 +62,16 @@
 			</td>
 			<td>
 			<h3 class="">Table of transponders</h3>
-			<p>Press 'Use' button to add transponder to setting edited.
+			<p>Press 'Select' button to mark transponder to add to setting lines.
+						<div class="satellites-dropdown">
+			
+			</div>
 			</td>
 			</tr>
-			
+<!-- 			<tr></tr> -->
 			<tr>
 			<td>
-			<!-- 
-			Placeholder for setting edit pane
-			 -->
+			
 			<table  class="table"> 
 			<thead>
             	<tr>
@@ -90,14 +91,19 @@
              
 			</table>
 			</td>
+<!-- 			</tr>
+
+			<tr> -->
+<!-- 			<td>
+			Empty cell
+			</td> -->
 			<td>
-			<div class="satellites-dropdown">
-			
-			</div>
+			<button class="btn btn-primary add-setting">Select</button>
+
 			<table  class="table">
         	<thead>
             <tr>
-            <th class="transponder-selection">Action</th>
+            <th class="transponder-selection">Select</th>
             <th>Frequency</th>
             <th>Speed</th>
             <th>Pol.</th>
@@ -119,8 +125,9 @@
 	</div>
 
 <!-- 	<td><span class="selection checkbox-inline"><input id="test" type="checkbox" name="selection" value="selection"></span></td> -->
+	<!-- <td><button class="btn btn-primary use-transponder">Use</button></td>   -->
 	<script type="text/template" class="transponder-Body-tmpl">
-		<td><button class="btn btn-primary use-transponder">Use</button></td>
+		<td><span class="selection checkbox-inline"><input type="checkbox" name="selection" value="<%= selection %>"></span></td>
         <td><span class="frequency"><%= frequency %></span></td>
 		<td><span class="speed"><%= speed %></span></td>
 		<td><span class="polarization"><%= polarization %></span></td>
@@ -169,7 +176,7 @@
 	<script type="text/template" class="conversionline-template">
 		<td><button class="btn btn-primary use-cl">Use</button> <button class="btn btn-danger delete-cline edit-table">Delete</button></td>
 		<td><span class="lineNumber"><%= lineNumber %></span></td>
-		<td><span class="transponder"><%= transponder.frequency %></span></td>
+		<td><span class="transponder"><%= transponder.id %></span></td>
 		<td><span class="satindex"><%= satindex %></span></td>
 		<td><span class="tpindex"><%= tpindex %></span></td>
 		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>
