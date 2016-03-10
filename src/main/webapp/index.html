@@ -36,7 +36,8 @@
 			<div class="settings-dropdown">
 			
 			</div>
-			<table  class="table" class="setting-dropdown-conversionlines" style="display:none">
+			<h3>Lines of the selected setting</h3>
+			<table  class="table" class="setting-dropdown-conversionlines">
 				<thead>
 					<tr>
 					<th>Action</th>
@@ -53,6 +54,7 @@
 				<tbody class="cl-list-selection"></tbody>
 				
 			</table>
+
 			</td>
 			</tr>
 			<tr>
@@ -62,7 +64,7 @@
 			</td>
 			<td>
 			<h3 class="">Table of transponders</h3>
-			<p>Press 'Select' button to mark transponder to add to setting lines.
+			<p>Press 'Add' button to add transponder to setting lines.
 						<div class="satellites-dropdown">
 			
 			</div>
@@ -98,7 +100,7 @@
 			Empty cell
 			</td> -->
 			<td>
-			<button class="btn btn-primary select-transponder">Select</button>
+			<button class="btn btn-primary select-transponder" style="display:none">Select</button>
 
 			<table  class="table">
         	<thead>
@@ -128,7 +130,7 @@
 	<!-- <td><button class="btn btn-primary use-transponder">Use</button></td>   -->
 	<!-- <td><span class="checkbox-inline"><input id="<%= id %>" type="checkbox" name="selection" value="<%= selection %>" class="transponder-selection-checkbox"></span></td>  -->
 	<script type="text/template" class="transponder-Body-tmpl">
-		<td><button class="btn btn-primary use-transponder">Use</button></td>
+		<td><button class="btn btn-primary use-transponder">Add</button></td>
         <td><span class="frequency"><%= frequency %></span></td>
 		<td><span class="speed"><%= speed %></span></td>
 		<td><span class="polarization"><%= polarization %></span></td>
@@ -181,9 +183,12 @@
 		<div class="col-xs-6 text-left">
 		<div class="previous">
 
-		<button class="btn btn-primary btn-sm use-cl">Use</button> 
+		<button class="btn btn-primary btn-sm use-cl" style="display:none">Use</button> 
 		<button class="btn btn-danger btn-sm delete-cline edit-table">Delete</button> 
 		<button class="btn btn-warning btn-sm edit-scline">Edit</button>
+		<button class="btn btn-success btn-sm  update-scline" style="display:none">OK</button>
+		<button class="btn btn-danger btn-sm scline-cancel" style="display:none">Cancel</button>
+
 		</div>
 		</div>
 		</div>

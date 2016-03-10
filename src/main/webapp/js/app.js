@@ -291,6 +291,9 @@ error: function() {
 // variable to store current setting edited collection
 var editedCLTable = new ConversionCollection();
 
+// variable to store currently selected setting lines
+var selectedCLTable = new ConversionCollection();
+
 // single transponder view
 var transponderPresentationView = Backbone.View.extend({
 	
@@ -482,15 +485,18 @@ var SettingsDropdown = Backbone.View.extend({
     	
         this.collection = settingsCollection;            
         this.collection.on('sync',this.render,this);
+         
         
-        
-        this.collection.fetch({
+/*      Let's try not to fetch the collection again 
+ *  this.collection.fetch({
 
 		success: function(collection){
 		},
 		error: function() {
 			console.log('Failed to get user settings!');
 		}});
+		
+		*/
         
     },
     
@@ -507,6 +513,7 @@ var SettingsDropdown = Backbone.View.extend({
     },
 
     retrieveSetting : function(event) {
+    	
        	var settingId = event.target.value;
        	if (settingId == 0) {
        		return;
@@ -520,9 +527,13 @@ var SettingsDropdown = Backbone.View.extend({
        		// console.log(this.collection.length);
        		console.log('Setting with id ' + settingId + ' not found!');
        	}
+       	
        	// console.log(CurrentSelectionSetting.urlRoot);
        	CurrentSelectionSetting.fetch();
+       	selectedCLTable = CurrentSelectionSetting.get('conversion');
+       	console.log(selectedCLTable.length);
        	SelectSettingCLView.render();
+       	// console.log('Change fired!');
        	
     }
 }); 
@@ -555,8 +566,11 @@ var SettingView = Backbone.View.extend({
 		// CurrentEditedSetting = this.model;
 		// console.log(JSON.stringify(CLEditViewItem.model));
 		
-		
+		// editedCLTable.reset();
+		editedCLTable = this.model.get('conversion');
+		console.log(editedCLTable.length);
 		// CLEditViewItem.model.set(CurrentEditedSetting.get('conversion'));
+		// doesn't work
 		CLEditViewItem.render();
 
 		var name = this.$('.name').html();
@@ -589,6 +603,11 @@ var SettingView = Backbone.View.extend({
 	
 	cancel: function() {
 		// blogsView.render();
+	//	console.log(JSON.stringify(editedCLTable));
+		//_.each(editedCLTable, function(cline) {
+		//	editedCLTable.remove(cline);
+		//}),
+		// editedCLTable.reset();
 		SettingsViewItem.render();
 		
 	},
@@ -618,7 +637,10 @@ var ConversionLineView = Backbone.View.extend({
 	
 	events: {
 		'click .use-cl': 'useCL',
-		'click .delete-cline' : 'deleteCline'
+		'click .delete-cline' : 'deleteCline',
+		'click .edit-scline' : 'editCline',
+		'click .update-scline' : 'OKSCLine',
+		'click .scline-cancel' : 'CancelEditSCLine'
 
 	},
 	render: function() {
@@ -632,27 +654,65 @@ var ConversionLineView = Backbone.View.extend({
 	
 	deleteCline : function() {
 		editedCLTable.remove(this.model);
+	},
+	
+	editCline : function() {
+		this.$('.delete-cline').hide();
+		this.$('.edit-scline').hide();
+		this.$('.scline-cancel').show();
+		this.$('.update-scline').show();
+		
+		var note = this.$('.note').html();
+		
+		this.$('.note').html('<input type="text" class="form-control  input-normal note-update" value="' + note + '">');
+	},
+	
+	OKSCLine : function() {
+		this.model.set('note', $('.note-update').val());
+		
+	},
+	
+	CancelEditSCLine : function() {
+		// this.render;
+		// console.log('This render called');
+		CLEditViewItem.render();
 	}
 	
 });
 
 var CLSelectionView = Backbone.View.extend({
 	
-	model : CurrentSelectionSetting.get('conversion'),
-	el: $('.cl-list-selection'),
-	
-	render: function() {
+	// model : CurrentSelectionSetting.get('conversion'),
+	model : selectedCLTable,
+	el: $('.cl-list-selection')
+	,	
+	initialize: function() {
+		var self = this;
+		this.model.on('change', function() {
+			setTimeout(function() {
+				self.render();
+			}, 20);
+		},this);	
+	}
+
+	, render: function() {
 		// console.log('CLSelectionView render called');
 		var self = this;
 		this.$el.html('');
 		// sometimes a setting cannot have a tabular part filled
 		if (this.model != null) {
 			_.each(this.model.toArray(), function(cline) {
+				console.log('Rendering line');
 				self.$el.append((new ConversionLineView({model: cline})).render().$el);
 			});
 			
 			// show table with lines
-			this.$('.setting-dropdown-conversionlines').show();
+			// this.$('.setting-dropdown-conversionlines').show();
+			console.log('CLSelectionView - Model is not null');
+		}
+		
+		else {
+			console.log('CLSelectionView - Model is null');
 		}
 		return this;
 	}
