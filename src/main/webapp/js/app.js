@@ -247,10 +247,6 @@ var CurrentUsersCollection = Backbone.Collection.extend({
 var Settings = Backbone.Collection.extend({
 	model : Setting,
 	url : '/jaxrs/usersettings/'
-//	,
-//	parse: function (response) { 
-//		this.reset(response);				 
-//	}		
 	
 });
 
@@ -367,6 +363,11 @@ var transpondersPresentationView = Backbone.View.extend({
  		this.listenTo(this.model, 'reset', this.render); 
 	},
 	
+	
+	events: {
+		'click input.transponder-selection-checkbox' : 'onTransponderCheckboxClick' 
+	},
+	
 	render: function() {
 		// console.log("transponderSPresentationView render called!");
 
@@ -375,6 +376,7 @@ var transpondersPresentationView = Backbone.View.extend({
 		_.each(this.model.toArray(), function(transponderPresentation) {
 			 self.$el.append((new transponderPresentationView({model: transponderPresentation})).render().$el);
 		});
+		// console.log(this.model.length);
 		return this;
 	},
 	
@@ -383,6 +385,18 @@ var transpondersPresentationView = Backbone.View.extend({
 	 	options.reset = true; 
 	 	return Backbone.Collection.prototype.fetch.call(this, options); 
 	 } 
+	
+	, onTransponderCheckboxClick : function(e) {
+		 var isChecked = e.currentTarget.checked;
+		// console.log(e.currentTarget.id);
+		 // assign value to model item
+		// var TPitem = this.model.get(parseInt(e.currentTarget.id));
+		 // console.log(TPitem);
+		 // the model is empty
+		// console.log(JSON.stringify(this.model.toArray()));
+		 //transponderPresentations.get(e.currentTarget.id).set('selection', isChecked);
+	}
+	
 });
 
 // http://stackoverflow.com/questions/18900686/common-pattern-for-populating-select-list-data-in-backbone-views
@@ -603,7 +617,8 @@ var ConversionLineView = Backbone.View.extend({
 	},
 	
 	events: {
-		'click .use-cl': 'useCL'
+		'click .use-cl': 'useCL',
+		'click .delete-cline' : 'deleteCline'
 
 	},
 	render: function() {
@@ -613,6 +628,10 @@ var ConversionLineView = Backbone.View.extend({
 	
 	useCL : function() {
 		alert("Use conversion line called!");
+	},
+	
+	deleteCline : function() {
+		editedCLTable.remove(this.model);
 	}
 	
 });
@@ -776,5 +795,12 @@ $(document).ready(function() {
 		settingsCollection.add(setting);
 		// settingsCollection.fetch();
 		
+	});
+	
+	// move selected transponders to setting conversion lines
+	$('.select-transponder').on('click', function() {
+		// transponderPresentations
+		var selectedTransponders = transponderPresentations.where({selection : true});
+		console.log(selectedTransponders.length);
 	});
 })

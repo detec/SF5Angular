@@ -98,7 +98,7 @@
 			Empty cell
 			</td> -->
 			<td>
-			<button class="btn btn-primary add-setting">Select</button>
+			<button class="btn btn-primary select-transponder">Select</button>
 
 			<table  class="table">
         	<thead>
@@ -126,8 +126,9 @@
 
 <!-- 	<td><span class="selection checkbox-inline"><input id="test" type="checkbox" name="selection" value="selection"></span></td> -->
 	<!-- <td><button class="btn btn-primary use-transponder">Use</button></td>   -->
+	<!-- <td><span class="checkbox-inline"><input id="<%= id %>" type="checkbox" name="selection" value="<%= selection %>" class="transponder-selection-checkbox"></span></td>  -->
 	<script type="text/template" class="transponder-Body-tmpl">
-		<td><span class="selection checkbox-inline"><input type="checkbox" name="selection" value="<%= selection %>"></span></td>
+		<td><button class="btn btn-primary use-transponder">Use</button></td>
         <td><span class="frequency"><%= frequency %></span></td>
 		<td><span class="speed"><%= speed %></span></td>
 		<td><span class="polarization"><%= polarization %></span></td>
@@ -174,7 +175,19 @@
 	</script>
 	
 	<script type="text/template" class="conversionline-template">
-		<td><button class="btn btn-primary use-cl">Use</button> <button class="btn btn-danger delete-cline edit-table">Delete</button></td>
+		
+		<td>
+		<div class="panel-footer row"><!-- panel-footer -->
+		<div class="col-xs-6 text-left">
+		<div class="previous">
+
+		<button class="btn btn-primary btn-sm use-cl">Use</button> 
+		<button class="btn btn-danger btn-sm delete-cline edit-table">Delete</button> 
+		<button class="btn btn-warning btn-sm edit-scline">Edit</button>
+		</div>
+		</div>
+		</div>
+		</td>
 		<td><span class="lineNumber"><%= lineNumber %></span></td>
 		<td><span class="transponder"><%= transponder.id %></span></td>
 		<td><span class="satindex"><%= satindex %></span></td>
