@@ -135,8 +135,8 @@ var transponderPresentation = Backbone.Model.extend({
 
 		satellite: new Satellite(),
 		speed: 0,
-		versionOfTheDVB: '',
-		selection: false
+		versionOfTheDVB: ''
+		// ,	selection: false
 		}
 		,
 		parse: function (response) {
@@ -323,7 +323,8 @@ var transponderPresentationView = Backbone.View.extend({
 	// 	console.log(JSON.stringify(conversionTable));
 		var newLine = new ConversionLine();
 		newLine.set('transponder', this.model);
-		newLine.set('parent_id', CurrentEditedSetting);
+		// It seems that it fails at cyclic references.
+	//	newLine.set('parent_id', CurrentEditedSetting);
 		newLine.set('id', null);
 		newLine.set('lineNumber', editedCLTable.length + 1);
 		
@@ -485,7 +486,7 @@ var SettingsDropdown = Backbone.View.extend({
     	
         this.collection = settingsCollection;            
         this.collection.on('sync',this.render,this);
-         
+		this.collection.on('remove', this.render, this); 
         
 /*      Let's try not to fetch the collection again 
  *  this.collection.fetch({
@@ -593,7 +594,27 @@ var SettingView = Backbone.View.extend({
 		// this.model.set('theLastEntry', new Date());
 		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		this.model.set('user', currentUser);
+		// Here GUI properties as 'selection' pass to model.
 		this.model.set('conversion', editedCLTable);
+		
+		// Here we should transform models.
+		// cline.unset('selection');
+		// Let's recreate table from the scratch.
+//		var LinesToSave = new ConversionCollection();
+//		_.each(editedCLTable.models, function(cline) {
+//			var CLine = new ConversionLine();
+//			CLine.set('lineNumber', 	cline.get('lineNumber'));
+//			CLine.set('note', 			cline.get('note'));
+//			CLine.set('satindex', 		cline.get('satindex'));
+//			CLine.set('tpindex', 		cline.get('tpindex'));
+//			CLine.set('theLineOfIntersection', 	cline.get('theLineOfIntersection'));
+//			CLine.set('parent_id', 		cline.get('parent_id'));
+//			CLine.set('transponder', 	cline.get('transponder'));
+//			LinesToSave.push(CLine);
+//		});
+		
+		// this.model.set('conversion', new ConversionCollection(editedCLTable));
+		// this.model.set('conversion', LinesToSave);
 
 		this.model.save(null, {
 			success: function(response) {
@@ -603,6 +624,10 @@ var SettingView = Backbone.View.extend({
 				console.log(error.responseText);
 			}
 		});
+		
+		// clearing currently edited setting
+		editedCLTable.reset();
+		CurrentEditedSetting = new Setting();
 	},
 	
 	cancel: function() {
@@ -614,11 +639,15 @@ var SettingView = Backbone.View.extend({
 		// editedCLTable.reset();
 		SettingsViewItem.render();
 		
+		editedCLTable.reset();
+		CurrentEditedSetting = new Setting();
 	},
+	
 	delete: function() {
 		this.model.destroy({
 			success: function(response) {
 				console.log('Successfully DELETED setting with id: ' + response.toJSON().id);
+
 			},
 			error: function(error) {
 				console.log(error.responseText);
@@ -654,7 +683,19 @@ var ConversionLineView = Backbone.View.extend({
 	},
 	
 	useCL : function() {
-		alert("Use conversion line called!");
+		// alert("Use conversion line called!");
+		var newLine = new ConversionLine();
+		newLine.set('transponder', 		this.model.get('transponder'));
+		newLine.set('note', 			this.model.get('note'));
+		// It seems that it fails at cyclic references.
+		// newLine.set('parent_id', 		CurrentEditedSetting);
+		newLine.set('id', 				null);
+		newLine.set('lineNumber', 		editedCLTable.length + 1);
+		
+		// says when 'add' - no such function.
+		// conversionTable.push(newLine);
+		editedCLTable.push(newLine);
+		
 	},
 	
 	deleteCline : function() {
@@ -684,6 +725,7 @@ var ConversionLineView = Backbone.View.extend({
 	}
 	
 });
+
 
 var CLSelectionView = Backbone.View.extend({
 	
@@ -731,6 +773,7 @@ var CLSelectionView = Backbone.View.extend({
 });
 
 
+
 // Table for edited setting
 var CLEditView = Backbone.View.extend({
 	// model : CurrentEditedSetting.get('conversion'),
@@ -770,6 +813,7 @@ var CLEditView = Backbone.View.extend({
 	}
 	
 });
+
 
 
 var SettingsView = Backbone.View.extend({
@@ -816,6 +860,7 @@ var SettingsView = Backbone.View.extend({
 
 
 var TPsView = new transpondersPresentationView(); // show table
+
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
 
 var SettingsViewItem = new SettingsView();
@@ -827,7 +872,6 @@ var SelectSettingCLView = new CLSelectionView();
 
 // var CLEditViewItem = new CLEditView({model : CurrentEditedSetting.get('conversion') });
 var CLEditViewItem = new CLEditView();
-
 
 
 $(document).ready(function() {
@@ -868,7 +912,10 @@ $(document).ready(function() {
 		// will refetch collection; Doesn't work
 		setting.set('theLastEntry', new Date());
 		settingsCollection.add(setting);
-		// settingsCollection.fetch();
+		
+		editedCLTable.reset();
+		CurrentEditedSetting = new Setting();
+				
 		
 	});
 	

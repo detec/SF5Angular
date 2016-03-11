@@ -37,6 +37,7 @@
 			
 			</div>
 			<h3>Lines of the selected setting</h3>
+			<p>Press 'Use' button next to line shown to add it to currently edited setting.
 			<table  class="table" class="setting-dropdown-conversionlines">
 				<thead>
 					<tr>
@@ -176,7 +177,11 @@
 		<td><button class="btn btn-warning edit-setting">Edit</button> <button class="btn btn-danger delete-setting">Delete</button><button class="btn btn-success update-setting" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
 	</script>
 	
-<!-- 			<% if (data.selection != true) { %>
+<!-- 			<% if (selection != true) { %>
+				style="display:none"
+			<% } %> -->
+			
+<!-- 			<% if (selection == true) { %>
 				style="display:none"
 			<% } %> -->
 	<script type="text/template" class="conversionline-template">
@@ -192,10 +197,27 @@
 			<% } %>
 		>Use</button> 
 
-		<button class="btn btn-danger btn-sm delete-cline edit-table">Delete</button> 
-		<button class="btn btn-warning btn-sm edit-scline">Edit</button>
-		<button class="btn btn-success btn-sm  update-scline" style="display:none">OK</button>
-		<button class="btn btn-danger btn-sm scline-cancel" style="display:none">Cancel</button>
+		<button class="btn btn-danger btn-sm delete-cline edit-table"
+ 			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		
+		>Delete</button> 
+		<button class="btn btn-warning btn-sm edit-scline"
+ 			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+
+		>Edit</button>
+		<button class="btn btn-success btn-sm  update-scline" style="display:none"
+ 			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+
+		>OK</button>
+		<button class="btn btn-danger btn-sm scline-cancel"
+				style="display:none"
+		>Cancel</button>
 
 		</div>
 		</div>
