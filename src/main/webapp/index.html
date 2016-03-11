@@ -176,6 +176,9 @@
 		<td><button class="btn btn-warning edit-setting">Edit</button> <button class="btn btn-danger delete-setting">Delete</button><button class="btn btn-success update-setting" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
 	</script>
 	
+<!-- 			<% if (data.selection != true) { %>
+				style="display:none"
+			<% } %> -->
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
@@ -183,7 +186,12 @@
 		<div class="col-xs-6 text-left">
 		<div class="previous">
 
-		<button class="btn btn-primary btn-sm use-cl" style="display:none">Use</button> 
+		<button class="btn btn-primary btn-sm use-cl" 
+			<% if (selection != true) { %>
+				style="display:none"
+			<% } %>
+		>Use</button> 
+
 		<button class="btn btn-danger btn-sm delete-cline edit-table">Delete</button> 
 		<button class="btn btn-warning btn-sm edit-scline">Edit</button>
 		<button class="btn btn-success btn-sm  update-scline" style="display:none">OK</button>
@@ -200,7 +208,7 @@
 		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>
 		<td><span class="note"><%= note %></span></td>
 		<td><span class="parent_id" style="display:none"><%= parent_id %></span></td>
-		<td><span class="id"  aria-hidden="true"><%= id %></span></td>
+		<td><span class="id" style="display:none"><%= id %></span></td>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>

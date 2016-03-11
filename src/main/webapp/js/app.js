@@ -648,6 +648,7 @@ var ConversionLineView = Backbone.View.extend({
 
 	},
 	render: function() {
+		// this.$el.html(this.template(this.model.toJSON(), {variable: 'data'})({selection: true}));
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	},
@@ -713,7 +714,9 @@ var CLSelectionView = Backbone.View.extend({
 		//	console.log('Output of CLSelectionView model' + JSON.stringify(this.model));
 			
 			_.each(this.model.toArray(), function(cline) {
-				console.log('Rendering line');
+				// console.log('Rendering line');
+				// adding selection property
+				cline.set('selection', true);
 				self.$el.append((new ConversionLineView({model: cline})).render().$el);
 			});
 			
@@ -759,6 +762,7 @@ var CLEditView = Backbone.View.extend({
 		// sometimes a setting cannot have a tabular part filled
 		if (this.model != null) {
 			_.each(this.model.toArray(), function(cline) {
+				cline.set('selection', false);
 				self.$el.append((new ConversionLineView({model: cline})).render().$el);
 			});
 		}
