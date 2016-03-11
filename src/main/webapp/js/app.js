@@ -501,6 +501,7 @@ var SettingsDropdown = Backbone.View.extend({
     },
     
     render:function(){
+    	console.log('SettingsDropdown render called');
         $(this.el).html(this.template({
         	settings: this.collection.toJSON()
         }));
@@ -529,10 +530,13 @@ var SettingsDropdown = Backbone.View.extend({
        	}
        	
        	// console.log(CurrentSelectionSetting.urlRoot);
-       	CurrentSelectionSetting.fetch();
+       	// Let's not fetch setting as it may change the collection. Checked - it really re-renders this element.
+       	// CurrentSelectionSetting.fetch();
        	selectedCLTable = CurrentSelectionSetting.get('conversion');
-       	console.log(selectedCLTable.length);
-       	SelectSettingCLView.render();
+       	console.log('Length of lines table in selected setting: ' + selectedCLTable.length);
+       	
+       	// we have listener for change
+       	// SelectSettingCLView.render();
        	// console.log('Change fired!');
        	
     }
@@ -688,11 +692,16 @@ var CLSelectionView = Backbone.View.extend({
 	,	
 	initialize: function() {
 		var self = this;
-		this.model.on('change', function() {
-			setTimeout(function() {
-				self.render();
-			}, 20);
-		},this);	
+
+		// None of the commented listeners work
+	// this.listenTo(this.model, 'reset', this.render); 
+	//	this.model.on('sync',this.render,this);
+		
+//		this.model.on('change', function() {
+//			setTimeout(function() {
+//				self.render();
+//			}, 20);
+//		},this);	
 	}
 
 	, render: function() {
@@ -701,14 +710,13 @@ var CLSelectionView = Backbone.View.extend({
 		this.$el.html('');
 		// sometimes a setting cannot have a tabular part filled
 		if (this.model != null) {
+			console.log(JSON.stringify(this.model));
+			
 			_.each(this.model.toArray(), function(cline) {
 				console.log('Rendering line');
 				self.$el.append((new ConversionLineView({model: cline})).render().$el);
 			});
 			
-			// show table with lines
-			// this.$('.setting-dropdown-conversionlines').show();
-			console.log('CLSelectionView - Model is not null');
 		}
 		
 		else {
