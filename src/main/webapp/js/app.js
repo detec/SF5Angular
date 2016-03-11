@@ -67,7 +67,7 @@ var ConversionLine = Backbone.Model.extend({
 		satindex : 0,
 		tpindex : 0,
 		theLineOfIntersection : 0
-//		, parent_id : new Setting()
+		, parent_id : Setting
 		, transponder: transponder
 	}
 //	,
@@ -501,7 +501,7 @@ var SettingsDropdown = Backbone.View.extend({
     },
     
     render:function(){
-    	console.log('SettingsDropdown render called');
+    	// console.log('SettingsDropdown render called');
         $(this.el).html(this.template({
         	settings: this.collection.toJSON()
         }));
@@ -529,15 +529,14 @@ var SettingsDropdown = Backbone.View.extend({
        		console.log('Setting with id ' + settingId + ' not found!');
        	}
        	
-       	// console.log(CurrentSelectionSetting.urlRoot);
        	// Let's not fetch setting as it may change the collection. Checked - it really re-renders this element.
        	// CurrentSelectionSetting.fetch();
-       	selectedCLTable = CurrentSelectionSetting.get('conversion');
-       	console.log('Length of lines table in selected setting: ' + selectedCLTable.length);
        	
-       	// we have listener for change
-       	// SelectSettingCLView.render();
-       	// console.log('Change fired!');
+       	// not just get property but construct an instance of Backbone collection. This works!
+       	// selectedCLTable = CurrentSelectionSetting.get('conversion');
+       	selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+       	// console.log('Length of lines table in selected setting: ' + selectedCLTable.length);
+
        	
     }
 }); 
@@ -567,15 +566,16 @@ var SettingView = Backbone.View.extend({
 		// showing table with conversion lines
 		
 		// console.log(JSON.stringify(this.model));
-		// CurrentEditedSetting = this.model;
+		CurrentEditedSetting = this.model;
 		// console.log(JSON.stringify(CLEditViewItem.model));
 		
-		// editedCLTable.reset();
-		editedCLTable = this.model.get('conversion');
-		console.log(editedCLTable.length);
+		editedCLTable.reset(CurrentEditedSetting.get('conversion'));
+		// editedCLTable = this.model.get('conversion');
+		
+		// console.log('Length of editedCLTable ' + editedCLTable.length);
 		// CLEditViewItem.model.set(CurrentEditedSetting.get('conversion'));
 		// doesn't work
-		CLEditViewItem.render();
+		// CLEditViewItem.render();
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
@@ -694,7 +694,7 @@ var CLSelectionView = Backbone.View.extend({
 		var self = this;
 
 		// None of the commented listeners work
-	// this.listenTo(this.model, 'reset', this.render); 
+	this.listenTo(this.model, 'reset', this.render); 
 	//	this.model.on('sync',this.render,this);
 		
 //		this.model.on('change', function() {
@@ -710,7 +710,7 @@ var CLSelectionView = Backbone.View.extend({
 		this.$el.html('');
 		// sometimes a setting cannot have a tabular part filled
 		if (this.model != null) {
-			console.log(JSON.stringify(this.model));
+		//	console.log('Output of CLSelectionView model' + JSON.stringify(this.model));
 			
 			_.each(this.model.toArray(), function(cline) {
 				console.log('Rendering line');
@@ -726,6 +726,7 @@ var CLSelectionView = Backbone.View.extend({
 	}
 	
 });
+
 
 // Table for edited setting
 var CLEditView = Backbone.View.extend({
@@ -748,6 +749,7 @@ var CLEditView = Backbone.View.extend({
 		},this);
 		
 		this.model.on('remove', this.render, this);
+		this.listenTo(this.model, 'reset', this.render); 
 		
 	},
 	
@@ -764,6 +766,7 @@ var CLEditView = Backbone.View.extend({
 	}
 	
 });
+
 
 var SettingsView = Backbone.View.extend({
 	model: settingsCollection,
