@@ -18,6 +18,7 @@ public class CustomObjectMapper extends ObjectMapper {
 		configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		// to write java.util.Date, Calendar as number (timestamp):
 		configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		// configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
 
 		// DeserializationFeature for changing how JSON is read as POJOs:
 

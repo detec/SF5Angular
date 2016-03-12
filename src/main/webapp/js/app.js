@@ -106,13 +106,23 @@ var Setting = Backbone.Model.extend({
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	, parse: function(response){
-		// console.log('Setting parse called');
-		for(var key in this.model)
-		{
-			var embeddedClass = this.model[key];
-			var embeddedData = response[key];
-			response[key] = new embeddedClass(embeddedData, {parse:true});
-		}
+
+		// This all doesn't work
+//		for (var key in this.model)
+//		{
+//			
+//			var embeddedClass = this.model[key];
+//			console.log(embeddedClass);
+//			var embeddedData = response[key];
+//			
+//			if (embeddedClass == 'theLastEntry') {
+//				console.log('Parse date called');
+//				response[key] = Date.parse(embeddedData);
+//			}
+//			else {
+//				response[key] = new embeddedClass(embeddedData, {parse:true});
+//			}
+//		}
 		return response;
 	}
 
