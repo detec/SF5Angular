@@ -12,8 +12,10 @@
 		<table  class="table">
 		<tr>
 			<td>
-		
-			<h3>Lines of currently edited setting</h3>
+			<div class="settings-caption">
+			
+			</div>
+			
 			<table  class="table" class="setting-edit-conversionlines">
 				<thead>
 					<tr>
@@ -197,41 +199,51 @@
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
-		<div class="panel-footer row"><!-- panel-footer -->
-		<div class="col-xs-6 text-left">
-		<div class="previous">
 
+		<div class="col-xs-6 text-left">
+
+		<table>
+		<tr>
+		<td>
 		<button class="btn btn-primary btn-sm use-cl" 
 			<% if (selection != true) { %>
 				style="display:none"
 			<% } %>
 		>Add</button> 
-
+		</td>
+		<td>	
 		<button class="btn btn-danger btn-sm delete-cline edit-table"
  			<% if (selection == true) { %>
 				style="display:none"
 			<% } %>
 		
-		>Delete</button> 
+		>Delete</button>
+		</td>
+		<td> 
 		<button class="btn btn-warning btn-sm edit-scline"
  			<% if (selection == true) { %>
 				style="display:none"
 			<% } %>
 
 		>Edit</button>
+		</td>
+		<td>
 		<button class="btn btn-success btn-sm  update-scline" style="display:none"
  			<% if (selection == true) { %>
 				style="display:none"
 			<% } %>
 
 		>OK</button>
+		</td>
+		<td>
 		<button class="btn btn-danger btn-sm scline-cancel"
 				style="display:none"
 		>Cancel</button>
+		</td>
+		<tr>
+		</table>
+		</div>
 
-		</div>
-		</div>
-		</div>
 		</td>
 		<td><span class="lineNumber"><%= lineNumber %></span></td>
 		<td><span class="transponder"><%= (transponder.frequency == undefined) ? frequency : transponder.frequency %></span></td>
@@ -241,6 +253,10 @@
 		<td><span class="note"><%= note %></span></td>
 		<td><span class="parent_id" style="display:none"><%= parent_id %></span></td>
 		<td><span class="id" style="display:none"><%= id %></span></td>
+	</script>
+	
+	<script type="text/template" class="setting-caption-template">
+		<h3>Lines of currently edited setting: <%= (name == undefined) ? "new setting" : name %> </h3>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>

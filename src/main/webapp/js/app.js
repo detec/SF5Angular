@@ -882,6 +882,38 @@ var SettingsView = Backbone.View.extend({
 });
 
 
+var SettingCaptionView = Backbone.View.extend({
+	model : CurrentEditedSetting,
+	
+	el: $('.settings-caption'),
+	
+	// template : _.template($('.setting-caption-template').html()),
+	
+	initialize: function() {
+		
+		this.template = _.template($('.setting-caption-template').html());
+		
+		this.listenTo(this.model, 'change', this.render); 
+//		this.model.on('change', 
+//				
+//				function() {
+//			setTimeout(function() {
+//				self.render();
+//			}, 30);
+//		},this);
+//		this.render;
+		
+		
+	},
+	
+	render: function() {
+		// console.log('Render caption called');
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
+	
+});
+
 // http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
 
 var TPsView = new transpondersPresentationView(); // show table
@@ -898,6 +930,8 @@ var SelectSettingCLView = new CLSelectionView();
 // var CLEditViewItem = new CLEditView({model : CurrentEditedSetting.get('conversion') });
 var CLEditViewItem = new CLEditView();
 
+var SettingCaptionViewItem = new SettingCaptionView();
+SettingCaptionViewItem.render();
 
 $(document).ready(function() {
 	
