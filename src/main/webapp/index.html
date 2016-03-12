@@ -15,17 +15,17 @@
 			<div class="settings-caption">
 			
 			</div>
-			
+			<p>Press 'Edit' button in Table of settings to show lines of setting. 
 			<table  class="table" class="setting-edit-conversionlines">
 				<thead>
 					<tr>
-					<th>Action</th>
-					<th>Line #</th>
-					<th>Transponder</th>
-					<th>Sat idx</th>
-					<th>Tp idx</th>
-					<th>Intersection line</th>
-					<th>Note</th>
+					<th class="table-bordered">Action</th>
+					<th class="table-bordered">Line #</th>
+					<th class="table-bordered">Transponder</th>
+					<th class="table-bordered">Sat idx</th>
+					<th class="table-bordered">Tp idx</th>
+					<th class="table-bordered">Intersection line</th>
+					<th class="table-bordered">Note</th>
 					<th style="display:none">Setting</th>
 					<th style="display:none">ID</th>
 					</tr>
@@ -43,13 +43,13 @@
 			<table  class="table" class="setting-dropdown-conversionlines">
 				<thead>
 					<tr>
-					<th>Action</th>
-					<th>Line #</th>
-					<th>Transponder</th>
-					<th>Sat idx</th>
-					<th>Tp idx</th>
-					<th>Intersection line</th>
-					<th>Note</th>
+					<th class="table-bordered">Action</th>
+					<th class="table-bordered">Line #</th>
+					<th class="table-bordered">Transponder</th>
+					<th class="table-bordered">Sat idx</th>
+					<th class="table-bordered">Tp idx</th>
+					<th class="table-bordered">Intersection line</th>
+					<th class="table-bordered">Note</th>
 					<th style="display:none">Setting</th>
 					<th style="display:none">ID</th>
 					</tr>
@@ -61,21 +61,32 @@
 			</td>
 			</tr>
 			<tr>
-			<td>
+			<td style="vertical-align:bottom">
+			<form enctype="multipart/form-data" action="/jaxrs/transponders/" method="post">
+				<table>
+				<tr>
+				<td colspan="2">
+			    <label>
+			      Upload .ini file with transponders. If success, message 'true' will be shown at next page.
+			      
+			    </label>
+			    </td>
+			    </tr>
+			    <tr>
+			    <td><input name='file' type='file' /></td>
+			    <td style="horizontal-align:left">
+			    <input type="submit" value="Upload">
+			    </td>
+			    </tr>
+			    </table>
+			</form>
+			
 			<h3 class="">Table of settings</h3>
-			<p>Work with Openbox SF-5 settings
 			</td>
 			<td>
 			<h3 class="">Table of transponders</h3>
 			<p>Press 'Add' button to add transponder to setting lines.
 			<!-- action="/jaxrs/transponders/"   -->
-			<form enctype="multipart/form-data" action="/jaxrs/transponders/" method="post">
-			    <label>
-			      Upload .ini file with transponders. If success, message 'true' will be shown at next page.
-			      <input name='file' type='file' />
-			    </label>
-			    <input type="submit" value="Upload">
-			</form>
 
 			
 			<div class="satellites-dropdown">
@@ -186,7 +197,24 @@
 		<td><span class="id"><%= id %></span></td>
 		<td><span class="name"><%= name %></span></td>
 		<td><span class="theLastEntry"><%= theLastEntry %></span></td>
-		<td><button class="btn btn-warning edit-setting">Edit</button> <button class="btn btn-danger delete-setting">Delete</button><button class="btn btn-success update-setting" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
+		<td>
+		<table>
+		<tr>
+		<td>
+		<button class="btn btn-warning edit-setting">Edit</button>
+		</td>
+		<td>
+		<button class="btn btn-danger delete-setting">Delete</button>
+		</td>
+		<td>
+		<button class="btn btn-success update-setting" style="display:none">Update</button>
+		</td>
+		<td>
+ 		<button class="btn btn-danger cancel" style="display:none">Cancel</button>
+		</td>
+		</tr>
+		</table>
+		</td>
 	</script>
 	
 <!-- 			<% if (selection != true) { %>
