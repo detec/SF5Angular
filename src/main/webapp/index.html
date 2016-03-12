@@ -224,7 +224,7 @@
 		</div>
 		</td>
 		<td><span class="lineNumber"><%= lineNumber %></span></td>
-		<td><span class="transponder"><%= transponder.frequency %></span></td>
+		<td><span class="transponder"><%= (transponder.frequency == undefined) ? frequency : transponder.frequency %></span></td>
 		<td><span class="satindex"><%= satindex %></span></td>
 		<td><span class="tpindex"><%= tpindex %></span></td>
 		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>

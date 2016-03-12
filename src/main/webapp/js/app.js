@@ -337,9 +337,12 @@ var transponderPresentationView = Backbone.View.extend({
 	//	newLine.set('parent_id', CurrentEditedSetting);
 		newLine.set('id', null);
 		newLine.set('lineNumber', editedCLTable.length + 1);
+		newLine.set('frequency', this.model.get('frequency'));
 		
-		// says when 'add' - no such function.
-		// conversionTable.push(newLine);
+		// Let's do as reset because it works in another cases.
+		// var clone = editedCLTable.clone();
+		// clone.push(newLine);
+		//editedCLTable.reset(clone);
 		editedCLTable.push(newLine);
 	}
 	
@@ -676,6 +679,9 @@ var ConversionLineView = Backbone.View.extend({
 	tagName: 'tr',
 	initialize: function() {
 		this.template = _.template($('.conversionline-template').html());
+		
+		// this.model.on("change", this.updateElement);
+
 	},
 	
 	events: {
@@ -691,6 +697,12 @@ var ConversionLineView = Backbone.View.extend({
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	},
+	
+//	updateElement: function() {
+//		// doesn't work
+//		this.attributes = this.model.attributes;
+//		this.render;
+//	},
 	
 	useCL : function() {
 		// alert("Use conversion line called!");
