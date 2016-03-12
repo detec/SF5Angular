@@ -166,6 +166,7 @@ var transponderPresentation = Backbone.Model.extend({
 
 
 var transponder = Backbone.Model.extend({
+	urlRoot : '/jaxrs/transponders/',
 	idAttribute: 'id',
 	
 	defaults: {
@@ -880,6 +881,8 @@ var SettingsView = Backbone.View.extend({
 	 } 
 });
 
+
+// http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
 
 var TPsView = new transpondersPresentationView(); // show table
 

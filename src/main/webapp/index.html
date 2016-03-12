@@ -66,7 +66,17 @@
 			<td>
 			<h3 class="">Table of transponders</h3>
 			<p>Press 'Add' button to add transponder to setting lines.
-						<div class="satellites-dropdown">
+			<!-- action="/jaxrs/transponders/"   -->
+			<form enctype="multipart/form-data" action="/jaxrs/transponders/" method="post">
+			    <label>
+			      Upload .ini file with transponders. If success, message 'true' will be shown at next page.
+			      <input name='file' type='file' />
+			    </label>
+			    <input type="submit" value="Upload">
+			</form>
+
+			
+			<div class="satellites-dropdown">
 			
 			</div>
 			</td>
@@ -195,7 +205,7 @@
 			<% if (selection != true) { %>
 				style="display:none"
 			<% } %>
-		>Use</button> 
+		>Add</button> 
 
 		<button class="btn btn-danger btn-sm delete-cline edit-table"
  			<% if (selection == true) { %>
