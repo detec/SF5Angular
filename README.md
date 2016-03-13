@@ -6,6 +6,13 @@ Idea of this pet project derives from my old 1C:Enterprise 8.2 (<http://1c-dn.co
 
 Backend implementation has been taken from <https://github.com/detec/SF5Spring> with enhancements and RESTful service modified to comply with common Javascript frameworks practices.
 
+## Features ##
+
+Leaving behind satellite television details, Openbox SF-5 settings editor is a representation of a typical full-cycle CRUD application. It is able to:
+
+- import catalogue data from structured text files (refreshed transponder data from resources like <http://ru.kingofsat.net>) into relational database;
+- create and edit own entities (gadget settings) using catalogue data, store them in database and reuse when needed.
+
 ## User authentication ##
 
 This implementation of Openbox SF-5 settings editor provides SQL-based user authentication (Spring Security 4 used) and registration, so that it can be run in a cloud. Each user can access only his/her own SF-5 settings. At the same time, a user has the right to update common catalogue with transponder data, without the need for the administrator to do this routine job. User administrator with credentials admin/1 is checked and, if necessary, created at every application startup. Form login authentication is used for accessing web pages and REST service.
@@ -21,10 +28,10 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 	
 - Transponders
 	- jaxrs/transponders/filter/{type}/{typeValue} GET 	- get transponders, filtered by arbitrary field name and field value;
-	- jaxrs/transponders/filter/id/{transponderId} GET 	- get transponder by its ID;
+	- jaxrs/transponders/{transponderId} GET 			- get transponder by its ID;
 	- jaxrs/transponders/filter;satId={satId} GET 		- get all transponders from specified satellite;
 	- jaxrs/transponders/ GET 							- get all transponders;
-	- jaxrs/transponders/upload POST					- upload .ini file with transponders for further import. Content-type should be multipart/form-data.
+	- jaxrs/transponders/ POST							- upload .ini file with transponders for further import. Content-type should be multipart/form-data.
 	
 - Users (most endpoints require form login authentication)
 	- jaxrs/users/filter/username/{login} GET 			- get user by its login, for ADMIN role or user authenticated;
