@@ -202,7 +202,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "filter/id/{settingId}/sf5", method = RequestMethod.GET
+	@RequestMapping(value = "{settingId}/sf5", method = RequestMethod.GET
 
 	// , produces = MediaType.APPLICATION_XML
 			, produces = MediaType.TEXT_PLAIN // This removes <String> tags
