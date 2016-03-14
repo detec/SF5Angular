@@ -265,6 +265,8 @@ CurrentEditedSetting = new Setting();
 // for keeping selected transponders
 var selectedTranspondersArray = new TransponderPresentations();
 
+var selectedClinesArray = new ConversionCollection();
+
 // https://github.com/fiznool/backbone.basicauth
 
 // getting currently authenticated user
@@ -414,6 +416,7 @@ var transpondersPresentationView = Backbone.View.extend({
 	
 });
 
+
 // http://stackoverflow.com/questions/18900686/common-pattern-for-populating-select-list-data-in-backbone-views
 var SatelliteView = Backbone.View.extend({
     tagName: 'option',
@@ -487,6 +490,7 @@ var SatelliteDropdownView = Backbone.View.extend({
     
     
 });
+
 
 var SettingsDropdown = Backbone.View.extend({
 	 el: $('.settings-dropdown'),
@@ -687,7 +691,8 @@ var ConversionLineView = Backbone.View.extend({
 		'click .delete-cline' : 'deleteCline',
 		'click .edit-scline' : 'editCline',
 		'click .update-scline' : 'OKSCLine',
-		'click .scline-cancel' : 'CancelEditSCLine'
+		'click .scline-cancel' : 'CancelEditSCLine',
+		'click .cline-selection-checkbox' : 'onClineCheckboxClick'	
 
 	},
 	render: function() {
@@ -742,6 +747,18 @@ var ConversionLineView = Backbone.View.extend({
 		// this.render;
 		// console.log('This render called');
 		CLEditViewItem.render();
+	}
+	
+	, onClineCheckboxClick : function(e) {
+	// selectedClinesArray	
+		 var isChecked = e.currentTarget.checked;
+		 var currentTid = this.model.get('id');
+		 if (isChecked) {
+			 selectedClinesArray.add(this.model);
+		 }
+		 else {
+			 selectedClinesArray.remove(this.model);
+		 }
 	}
 	
 });
@@ -1001,5 +1018,27 @@ $(document).ready(function() {
 		// and we cannot control list of transponders.
 		// TPsView.render();
 		transponderPresentations.fetch();
+	});
+	
+	$('.select-clines').on('click', function() {
+		_.each(selectedClinesArray.models, function(cline) {
+		
+			var newLine = new ConversionLine();
+			newLine.set('transponder', 		cline.get('transponder'));
+			newLine.set('note', 			cline.get('note'));
+			// It seems that it fails at cyclic references.
+			// newLine.set('parent_id', 		CurrentEditedSetting);
+			newLine.set('id', 				null);
+			newLine.set('lineNumber', 		editedCLTable.length + 1);
+			
+			// says when 'add' - no such function.
+			// conversionTable.push(newLine);
+			editedCLTable.push(newLine);
+			
+		});
+		
+		selectedClinesArray.reset();
+		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+		
 	});
 })

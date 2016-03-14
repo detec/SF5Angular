@@ -40,7 +40,8 @@
 			
 			</div>
 			<h3>Lines of the selected setting</h3>
-			<p>Press 'Use' button next to line shown to add it to currently edited setting.
+			<p>Press 'Select' button next to line shown to add it to currently edited setting.
+			<button class="btn btn-primary select-clines">Select</button>
 			<table  class="table" class="setting-dropdown-conversionlines">
 				<thead>
 					<tr>
@@ -238,6 +239,11 @@
 <!-- 			<% if (selection == true) { %>
 				style="display:none"
 			<% } %> -->
+<!-- 			<button class="btn btn-primary btn-sm use-cl" 
+			<% if (selection != true) { %>
+				style="display:none"
+			<% } %>
+		>Add</button>  -->
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
@@ -247,11 +253,8 @@
 		<table>
 		<tr>
 		<td>
-		<button class="btn btn-primary btn-sm use-cl" 
-			<% if (selection != true) { %>
-				style="display:none"
-			<% } %>
-		>Add</button> 
+		<td><span><input type="checkbox" name="selection" class="cline-selection-checkbox" style="vertical-align:center"></span></td>
+
 		</td>
 		<td>	
 		<button class="btn btn-danger btn-sm delete-cline edit-table"
