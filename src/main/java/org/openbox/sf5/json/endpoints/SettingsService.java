@@ -1,6 +1,7 @@
 package org.openbox.sf5.json.endpoints;
 
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +49,8 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder)
+	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
+			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
 		// System.out.println("Post setting called");
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
@@ -74,7 +77,9 @@ public class SettingsService {
 		// HttpStatus.CREATED;
 		HttpStatus statusResult = null;
 		try {
-			statusResult = settingsJsonizer.saveNewSetting(setting);
+			statusResult = settingsJsonizer.saveNewSetting(setting, calculateIntersection);
+		} catch (SQLException se) {
+			throw new IllegalStateException("Error when calculating intersection lines", se);
 		} catch (Exception e) {
 			throw new IllegalStateException("Error when saving new setting", e);
 		}
@@ -104,9 +109,11 @@ public class SettingsService {
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.PUT)
 	public ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
-			@PathVariable("settingId") long settingId) throws NotAuthenticatedException, UsersDoNotCoincideException {
+			@PathVariable("settingId") long settingId,
+			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
+			throws NotAuthenticatedException, UsersDoNotCoincideException {
 
-		return createSetting(setting, ucBuilder);
+		return createSetting(setting, ucBuilder, calculateIntersection);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")

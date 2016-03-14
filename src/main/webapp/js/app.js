@@ -558,6 +558,7 @@ var SettingsDropdown = Backbone.View.extend({
 }); 
 
 // single setting view
+
 var SettingView = Backbone.View.extend({
 	
 	model: new Setting(),
@@ -1041,4 +1042,41 @@ $(document).ready(function() {
 		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
 		
 	});
+	
+	$('.calculate-intersection').on('click', function() {
+		if (editedCLTable.length == 0 && CurrentEditedSetting == undefined) {
+			return; // nothing to process
+		}
+		
+		CurrentEditedSetting.set('id', $('.id-update').val());
+		var editedName = $('.name-update').val();
+		editedName = (editedName == undefined) ? 'New setting' : editedName; 
+		CurrentEditedSetting.set('name', editedName);
+		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
+		// this.model.set('theLastEntry', new Date());
+		CurrentEditedSetting.set('theLastEntry', '2016-02-10T16:28:23+0200');
+		CurrentEditedSetting.set('user', currentUser);
+		// Here GUI properties as 'selection' pass to model.
+		CurrentEditedSetting.set('conversion', editedCLTable);
+		
+		var idparam = (CurrentEditedSetting.get('id') == undefined) ? '' : CurrentEditedSetting.get('id');
+		CurrentEditedSetting.url = CurrentEditedSetting.urlRoot + idparam + ";calculateIntersection=true"; 
+		
+		CurrentEditedSetting.save(null, {
+			success: function(response) {
+				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
+				// here we parse the setting.
+				CurrentEditedSetting.parse(response);
+			},
+			error: function(error) {
+				console.log(error.responseText);
+			}
+		});
+		
+		// re-reading after calculation
+		// CurrentEditedSetting.fetch();
+		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+		settingsCollection.add(CurrentEditedSetting);
+	});
+	
 })

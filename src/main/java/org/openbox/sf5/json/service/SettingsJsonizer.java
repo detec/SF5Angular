@@ -1,5 +1,6 @@
 package org.openbox.sf5.json.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +10,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.openbox.sf5.common.Intersections;
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.model.Settings;
+import org.openbox.sf5.model.SettingsConversion;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.service.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SettingsJsonizer {
 
-	public HttpStatus saveNewSetting(Settings setting) {
+	public HttpStatus saveNewSetting(Settings setting, boolean calculateIntersection) throws SQLException {
 		long id = setting.getId();
 		// if we receive non-empty id
 		// We use the same method for new and existing settings
@@ -33,6 +36,17 @@ public class SettingsJsonizer {
 		} catch (Exception e) {
 			returnStatus = HttpStatus.CONFLICT;
 		}
+
+		if (calculateIntersection) {
+			Intersections intersections = new Intersections();
+			intersections.setSessionFactory(sessionFactory);
+			List<SettingsConversion> scList = setting.getConversion();
+			int rows = intersections.checkIntersection(scList, setting);
+
+			setting.setConversion(scList);
+			objectsController.saveOrUpdate(setting);
+		}
+
 		return returnStatus;
 	}
 
