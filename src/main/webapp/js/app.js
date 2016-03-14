@@ -252,6 +252,7 @@ var UserAuthorityCollection = Backbone.Collection.extend({
 var satellitesCollection = new Satellites();
 
 var transponderPresentations = new TransponderPresentations();
+// transponderPresentations = new TransponderPresentations();
 
 var transponders = new Transponders();
 
@@ -260,6 +261,9 @@ var settingsCollection = new Settings();
 CurrentSelectionSetting = new Setting();
 
 CurrentEditedSetting = new Setting();
+
+// for keeping selected transponders
+var selectedTranspondersArray = new TransponderPresentations();
 
 // https://github.com/fiznool/backbone.basicauth
 
@@ -292,7 +296,8 @@ var transponderPresentationView = Backbone.View.extend({
 	model: new transponder(),
 	
 	events: {
-		'click .use-transponder' : 'addtransponder'
+		'click .use-transponder' : 'addtransponder',
+		'click .transponder-selection-checkbox' : 'onTransponderCheckboxClick' 
 	},
 	
 	tagName: 'tr',
@@ -327,6 +332,27 @@ var transponderPresentationView = Backbone.View.extend({
 		// clone.push(newLine);
 		//editedCLTable.reset(clone);
 		editedCLTable.push(newLine);
+	}
+	, onTransponderCheckboxClick : function(e) {
+
+		 var isChecked = e.currentTarget.checked;
+		 var currentTid = this.model.get('id');
+		 if (isChecked) {
+			 // add to selected transponders.
+			 selectedTranspondersArray.add(this.model);
+			// console.log('Transponder added.');
+		 }
+		 else {
+			 selectedTranspondersArray.remove(this.model);
+			 //console.log('Transponder removed.');
+		 }
+		// console.log(e.currentTarget.id);
+		 // assign value to model item
+		// var TPitem = this.model.get(parseInt(e.currentTarget.id));
+		 // console.log(TPitem);
+		 // the model is empty
+		// console.log(JSON.stringify(this.model.toArray()));
+		 //transponderPresentations.get(e.currentTarget.id).set('selection', isChecked);
 	}
 	
 });
@@ -364,9 +390,7 @@ var transpondersPresentationView = Backbone.View.extend({
 	},
 	
 	
-	events: {
-		'click input.transponder-selection-checkbox' : 'onTransponderCheckboxClick' 
-	},
+
 	
 	render: function() {
 		// console.log("transponderSPresentationView render called!");
@@ -386,16 +410,7 @@ var transpondersPresentationView = Backbone.View.extend({
 	 	return Backbone.Collection.prototype.fetch.call(this, options); 
 	 } 
 	
-	, onTransponderCheckboxClick : function(e) {
-		 var isChecked = e.currentTarget.checked;
-		// console.log(e.currentTarget.id);
-		 // assign value to model item
-		// var TPitem = this.model.get(parseInt(e.currentTarget.id));
-		 // console.log(TPitem);
-		 // the model is empty
-		// console.log(JSON.stringify(this.model.toArray()));
-		 //transponderPresentations.get(e.currentTarget.id).set('selection', isChecked);
-	}
+
 	
 });
 
@@ -963,7 +978,28 @@ $(document).ready(function() {
 	// move selected transponders to setting conversion lines
 	$('.select-transponder').on('click', function() {
 		// transponderPresentations
-		var selectedTransponders = transponderPresentations.where({selection : true});
-		console.log(selectedTransponders.length);
+		// var selectedTransponders = transponderPresentations.where({selection : true});
+		// console.log(transponderPresentations.models.length);
+		_.each(selectedTranspondersArray.models, function(transponder) {
+			var newLine = new ConversionLine();
+			newLine.set('transponder', transponder);
+			// It seems that it fails at cyclic references.
+		//	newLine.set('parent_id', CurrentEditedSetting);
+			newLine.set('id', null);
+			newLine.set('lineNumber', editedCLTable.length + 1);
+			newLine.set('frequency', transponder.get('frequency'));
+			var sat = transponder.get('satellite');
+			newLine.set('satellitename', sat.name);
+
+			editedCLTable.push(newLine);
+		});
+		
+		// clear selected.
+		selectedTranspondersArray.reset();
+		
+		// we should re-render list of transponders, as the collection of them is 0 in length
+		// and we cannot control list of transponders.
+		// TPsView.render();
+		transponderPresentations.fetch();
 	});
 })

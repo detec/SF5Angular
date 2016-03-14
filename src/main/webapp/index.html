@@ -87,7 +87,16 @@
 			</td>
 			<td>
 			<h3 class="">Table of transponders</h3>
-			<p>Press 'Add' button to add transponder to setting lines.
+			<table>
+			<tr>
+			<td>
+			<p>Press 'Select' button to add selected transponders to setting lines.
+			</td>
+			<td>
+			<button class="btn btn-primary select-transponder">Select</button>
+			</td>
+			</tr>
+			</table>
 			<!-- action="/jaxrs/transponders/"   -->
 
 			
@@ -156,7 +165,7 @@
 	<!-- <td><button class="btn btn-primary use-transponder">Use</button></td>   -->
 	<!-- <td><span class="checkbox-inline"><input id="<%= id %>" type="checkbox" name="selection" value="<%= selection %>" class="transponder-selection-checkbox"></span></td>  -->
 	<script type="text/template" class="transponder-Body-tmpl">
-		<td><button class="btn btn-primary use-transponder">Add</button></td>
+		<td><span><input type="checkbox" name="selection" class="transponder-selection-checkbox" style="vertical-align:center"></span></td>
         <td><span class="frequency"><%= frequency %></span></td>
 		<td><span class="speed"><%= speed %></span></td>
 		<td><span class="polarization"><%= polarization %></span></td>
