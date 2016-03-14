@@ -25,6 +25,7 @@
 					<th class="table-bordered">Sat idx</th>
 					<th class="table-bordered">Tp idx</th>
 					<th class="table-bordered">Intersection line</th>
+					<th class="table-bordered">Sat.</th>
 					<th class="table-bordered">Note</th>
 					<th style="display:none">Setting</th>
 					<th style="display:none">ID</th>
@@ -49,6 +50,7 @@
 					<th class="table-bordered">Sat idx</th>
 					<th class="table-bordered">Tp idx</th>
 					<th class="table-bordered">Intersection line</th>
+					<th class="table-bordered">Sat.</th>
 					<th class="table-bordered">Note</th>
 					<th style="display:none">Setting</th>
 					<th style="display:none">ID</th>
@@ -281,6 +283,7 @@
 		<td><span class="satindex"><%= satindex %></span></td>
 		<td><span class="tpindex"><%= tpindex %></span></td>
 		<td><span class="theLineOfIntersection"><%= theLineOfIntersection %></span></td>
+		<td><span class="satellite"><%= (transponder.satellite == undefined || transponder.satellite.name == undefined) ? satellitename : transponder.satellite.name %></span></td>
 		<td><span class="note"><%= note %></span></td>
 		<td><span class="parent_id" style="display:none"><%= parent_id %></span></td>
 		<td><span class="id" style="display:none"><%= id %></span></td>

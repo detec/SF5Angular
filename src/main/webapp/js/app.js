@@ -106,23 +106,6 @@ var Setting = Backbone.Model.extend({
 		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	, parse: function(response){
-
-		// This all doesn't work
-//		for (var key in this.model)
-//		{
-//			
-//			var embeddedClass = this.model[key];
-//			console.log(embeddedClass);
-//			var embeddedData = response[key];
-//			
-//			if (embeddedClass == 'theLastEntry') {
-//				console.log('Parse date called');
-//				response[key] = Date.parse(embeddedData);
-//			}
-//			else {
-//				response[key] = new embeddedClass(embeddedData, {parse:true});
-//			}
-//		}
 		return response;
 	}
 
@@ -143,7 +126,8 @@ var transponderPresentation = Backbone.Model.extend({
 		polarization: '',
 		rangeOfDVB: '',
 
-		satellite: new Satellite(),
+	//	satellite: new Satellite(),
+		satellite: Satellite,
 		speed: 0,
 		versionOfTheDVB: ''
 		// ,	selection: false
@@ -175,7 +159,8 @@ var transponder = Backbone.Model.extend({
 		frequency: 0,
 		polarization: '',
 		rangeOfDVB: '',
-		satellite: new Satellite(),
+		//	satellite: new Satellite(),
+		satellite: Satellite,
 		speed: 0,
 		versionOfTheDVB: ''
 		}
@@ -246,11 +231,6 @@ var CurrentUsersCollection = Backbone.Collection.extend({
 	
 	model : User,
 	url : '/jaxrs/users/currentuser'
-	// It started to parse user when we commented it	
-//	,
-//	parse: function (response) { 
-//		this.reset(response);				 
-//	} 
 	
 });
 
@@ -339,7 +319,9 @@ var transponderPresentationView = Backbone.View.extend({
 		newLine.set('id', null);
 		newLine.set('lineNumber', editedCLTable.length + 1);
 		newLine.set('frequency', this.model.get('frequency'));
-		
+		var sat = this.model.get('satellite');
+		newLine.set('satellitename', sat.name);
+		// .get('name')
 		// Let's do as reset because it works in another cases.
 		// var clone = editedCLTable.clone();
 		// clone.push(newLine);
