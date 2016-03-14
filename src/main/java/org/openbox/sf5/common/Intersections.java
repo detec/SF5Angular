@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
+import org.hibernate.dialect.MySQL5Dialect;
 import org.hibernate.dialect.ProgressDialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jdbc.ReturningWork;
@@ -123,16 +124,26 @@ public class Intersections {
 	public static String getDropTempTables(Dialect dialect) {
 		String returnString = "";
 		if (dialect instanceof H2Dialect) {
-			returnString = "\n" + "DROP TABLE  CONVERSIONTABLE IF EXISTS; \n"
-					+ "DROP TABLE  ManyFrequencies IF EXISTS; \n" + "DROP TABLE  IntersectionTable IF EXISTS; \n";
+			returnString = "\n" + "DROP TABLE CONVERSIONTABLE IF EXISTS; \n"
+					+ "DROP TABLE ManyFrequencies IF EXISTS; \n"
+
+					+ "DROP TABLE IntersectionTable IF EXISTS; \n";
 		}
 
 		else if (dialect instanceof ProgressDialect) {
 			returnString = "\n" + "DROP TABLE IF EXISTS CONVERSIONTABLE; \n"
-					+ "DROP TABLE  IF EXISTS ManyFrequencies;  \n" + "DROP TABLE  IF EXISTS IntersectionTable; \n";
-		}
-		return returnString;
+					+ "DROP TABLE IF EXISTS ManyFrequencies;  \n"
 
+					+ "DROP TABLE IF EXISTS IntersectionTable; \n";
+		}
+
+		else if (dialect instanceof MySQL5Dialect) {
+			returnString = "\n" + "DROP TEMPORARY  TABLE IF EXISTS CONVERSIONTABLE; \n"
+					+ "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies;  \n"
+					+ "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n";
+		}
+
+		return returnString;
 	}
 
 	public static String fillTempTables(Dialect dialect) {
