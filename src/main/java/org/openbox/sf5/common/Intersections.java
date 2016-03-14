@@ -138,9 +138,10 @@ public class Intersections {
 		}
 
 		else if (dialect instanceof MySQL5Dialect) {
-			returnString = "\n" + "DROP TEMPORARY  TABLE IF EXISTS CONVERSIONTABLE; \n"
-					+ "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies;  \n"
-					+ "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n";
+//			returnString = "\n " + "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE; \n"
+//					+ "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies;  \n"
+//					+ "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n ";
+			returnString = "\n " + "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE, ManyFrequencies, IntersectionTable;";
 		}
 
 		return returnString;
