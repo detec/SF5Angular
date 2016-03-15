@@ -705,7 +705,8 @@ var ConversionLineView = Backbone.View.extend({
 		'click .update-scline' : 'OKSCLine',
 		'click .scline-cancel' : 'CancelEditSCLine',
 		'click .cline-selection-checkbox' : 'onClineCheckboxClick',
-		'click .move-up' : 'MoveUpOnClick'
+		'click .move-up' : 'MoveUpOnClick',
+		'click .move-down' : 'MoveDownOnClick'
 
 	},
 	render: function() {
@@ -776,12 +777,27 @@ var ConversionLineView = Backbone.View.extend({
 	
 	, MoveUpOnClick : function() {
 		var index = editedCLTable.indexOf(this.model);
+		if (index == 0) {
+			return;
+		} 
 		// console.log(index);
 		editedCLTable.models.move(index, index - 1);
 		// we should renumerate lines.
 		editedCLTable.renumerate();
 		// CLEditViewItem.render();
 		// console.log('Moved up!');
+
+	}
+	
+	, MoveDownOnClick : function() {
+		var index = editedCLTable.indexOf(this.model);
+		if (index + 1 == editedCLTable.models.length) {
+			// if it is the last line
+			return;
+		}
+		editedCLTable.models.move(index, index + 1);
+		console.log(index);
+		editedCLTable.renumerate();
 
 	}
 	
