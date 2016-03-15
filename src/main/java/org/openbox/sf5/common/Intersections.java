@@ -138,10 +138,12 @@ public class Intersections {
 		}
 
 		else if (dialect instanceof MySQL5Dialect) {
-//			returnString = "\n " + "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE; \n"
-//					+ "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies;  \n"
-//					+ "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n ";
-			returnString = "\n " + "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE, ManyFrequencies, IntersectionTable;";
+			// returnString = "\n " + "DROP TEMPORARY TABLE IF EXISTS
+			// CONVERSIONTABLE; \n"
+			// + "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies; \n"
+			// + "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n ";
+			returnString = "\n "
+					+ "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE, ManyFrequencies, IntersectionTable;";
 		}
 
 		return returnString;
@@ -156,6 +158,16 @@ public class Intersections {
 
 		// http://stackoverflow.com/questions/1915074/understanding-the-in-javas-format-strings
 		String tempTableCreate = dialect.getCreateTableString();
+		// String tempTableCreate = dialect.get
+
+		// String tempTableCreate = "";
+		//
+		// if (dialect instanceof MySQL5Dialect) {
+		// tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
+		// } else {
+		// tempTableCreate = dialect.getCreateTableString();
+		// }
+
 		String fromatString = "\n" + "%1$s CONVERSIONTABLE  AS ( \n" + "SELECT \n" + "lineNumber \n"
 
 				+ ", tp.frequency \n"
@@ -172,7 +184,7 @@ public class Intersections {
 
 				+ " where parent_id = ? \n"
 
-				+ " ); \n"
+				+ " ); \n\n"
 
 				// + "CREATE MEMORY TEMPORARY TABLE ManyFrequencies AS ( \n"
 				+ "%1$s ManyFrequencies AS (  \n"
@@ -180,19 +192,19 @@ public class Intersections {
 				+ "select \n" + "p1.lineNumber \n" + ", p1.frequency \n" + ", p1.theLineOfIntersection \n"
 				// + "into #ManyFrequencies \n"
 
-				+ "from ConversionTable p1  \n"
+				+ "from ConversionTable p1)  \n"
 
-				+ "union  \n"
+				+ "UNION  \n"
 
-				+ "select  \n" + "p2.lineNumber  \n" + ", p2.frequency + 1 \n"
-				+ ", p2.theLineOfIntersection AS  theLineOfIntersection \n" + "from ConversionTable p2 \n"
+				+ "(select  \n" + "p2.lineNumber  \n" + ", p2.frequency + 1 \n"
+				+ ", p2.theLineOfIntersection AS  theLineOfIntersection \n" + "from ConversionTable p2) \n"
 
-				+ "union \n"
+				+ "UNION \n"
 
-				+ "select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
+				+ "(select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
 				+ "from ConversionTable p3 \n"
 
-				+ " ); \n"
+				+ " ); \n\n"
 
 				// + "CREATE MEMORY TEMPORARY TABLE IntersectionTable AS ( \n"
 				+ "%1$s IntersectionTable AS (   \n"

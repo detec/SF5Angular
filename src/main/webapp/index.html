@@ -17,13 +17,16 @@
 			</div>
 			<table>
 			<tr>
-			<td>
+			<td colspan="2">
 			<p>Press 'Edit' button in Table of settings to show lines of setting.
 			</td>
 			</tr>
 			<tr>
 			<td>
 			<button class="btn btn-warning btn-sm calculate-intersection">Calculate intersection</button>
+			</td>
+			<td>
+			
 			</td>
 			</tr>
 			</table> 
@@ -295,6 +298,13 @@
 		<button class="btn btn-danger btn-sm scline-cancel"
 				style="display:none"
 		>Cancel</button>
+		</td>
+		<td>
+		<button class="btn btn-primary btn-sm move-up"
+			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		>Move up</button>
 		</td>
 		<tr>
 		</table>

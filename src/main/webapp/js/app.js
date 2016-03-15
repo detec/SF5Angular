@@ -217,7 +217,16 @@ var Transponders = Backbone.Collection.extend({
 
 
 var ConversionCollection = Backbone.Collection.extend({
-	model : ConversionLine
+	model : ConversionLine,
+	
+	renumerate : function() {
+		var self = this;
+		
+		_.each(self.models, function(cline) {
+			var index = self.models.indexOf(cline);
+			cline.set('lineNumber', index + 1);
+		});
+	}
 });
 
 var Satellites = Backbone.Collection.extend({
@@ -360,6 +369,7 @@ var transponderPresentationView = Backbone.View.extend({
 });
 
 // View for a table of transponders
+
 var transpondersPresentationView = Backbone.View.extend({
 	model: transponderPresentations,
 	el: $('.transponders-list'),
@@ -418,6 +428,7 @@ var transpondersPresentationView = Backbone.View.extend({
 
 
 // http://stackoverflow.com/questions/18900686/common-pattern-for-populating-select-list-data-in-backbone-views
+
 var SatelliteView = Backbone.View.extend({
     tagName: 'option',
     initialize:function(){        
@@ -693,7 +704,8 @@ var ConversionLineView = Backbone.View.extend({
 		'click .edit-scline' : 'editCline',
 		'click .update-scline' : 'OKSCLine',
 		'click .scline-cancel' : 'CancelEditSCLine',
-		'click .cline-selection-checkbox' : 'onClineCheckboxClick'	
+		'click .cline-selection-checkbox' : 'onClineCheckboxClick',
+		'click .move-up' : 'MoveUpOnClick'
 
 	},
 	render: function() {
@@ -762,6 +774,17 @@ var ConversionLineView = Backbone.View.extend({
 		 }
 	}
 	
+	, MoveUpOnClick : function() {
+		var index = editedCLTable.indexOf(this.model);
+		// console.log(index);
+		editedCLTable.models.move(index, index - 1);
+		// we should renumerate lines.
+		editedCLTable.renumerate();
+		// CLEditViewItem.render();
+		// console.log('Moved up!');
+
+	}
+	
 });
 
 
@@ -809,7 +832,6 @@ var CLSelectionView = Backbone.View.extend({
 	}
 	
 });
-
 
 
 // Table for edited setting
@@ -1079,4 +1101,16 @@ $(document).ready(function() {
 		settingsCollection.add(CurrentEditedSetting);
 	});
 	
+
 })
+
+Array.prototype.move = function (old_index, new_index) {
+    if (new_index >= this.length) {
+        var k = new_index - this.length;
+        while ((k--) + 1) {
+            this.push(undefined);
+        }
+    }
+    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+    return this; // for testing purposes
+};
