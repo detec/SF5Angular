@@ -60,6 +60,7 @@ var UserAuthority = Backbone.Model.extend({
 
 var ConversionLine = Backbone.Model.extend({
 	idAttribute: 'id'
+	, urlRoot : '/jaxrs/usersettings/lines/'	
 	,
 	defaults: {
 		lineNumber : 0,
@@ -600,12 +601,12 @@ var SettingView = Backbone.View.extend({
 		// console.log(JSON.stringify(CLEditViewItem.model));
 		
 		editedCLTable.reset(CurrentEditedSetting.get('conversion'));
-		// editedCLTable = this.model.get('conversion');
-		
-		// console.log('Length of editedCLTable ' + editedCLTable.length);
-		// CLEditViewItem.model.set(CurrentEditedSetting.get('conversion'));
-		// doesn't work
-		// CLEditViewItem.render();
+		// we should manually update parent_id because it becomes undefined.
+		_.each(editedCLTable.models, function(cline) {
+			if (cline.get('parent_id') == undefined) {
+				cline.set('parent_id', CurrentEditedSetting);
+		}			
+		});
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
@@ -648,6 +649,8 @@ var SettingView = Backbone.View.extend({
 		this.model.save(null, {
 			success: function(response) {
 				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
+				// refreshing setting from response.
+				this.model.parse(response);
 			},
 			error: function(error) {
 				console.log(error.responseText);
@@ -660,12 +663,7 @@ var SettingView = Backbone.View.extend({
 	},
 	
 	cancel: function() {
-		// blogsView.render();
-	//	console.log(JSON.stringify(editedCLTable));
-		//_.each(editedCLTable, function(cline) {
-		//	editedCLTable.remove(cline);
-		//}),
-		// editedCLTable.reset();
+
 		SettingsViewItem.render();
 		
 		editedCLTable.reset();
@@ -1125,9 +1123,16 @@ $(document).ready(function() {
 	});
 	
 	$('.delete-selected-clines').on('click', function() {
+	
+		_.each(editedCLTable.models, function(cline) {
+			if (cline.get('parent_id') == undefined) {
+				cline.set('parent_id', CurrentEditedSetting);
+		}			
+		});
+		
 		editedCLTable.remove(selectedEditClinesArray.models);
 		selectedEditClinesArray.reset();
-		console.log('Group deletion ended!')
+		// console.log('Group deletion ended!')
 	});
 	
 

@@ -259,6 +259,22 @@ public class SettingsService {
 		// useful link
 	}
 
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "/lines/{lineId}", method = RequestMethod.DELETE)
+	public ResponseEntity<SettingsConversion> deleteSettingLine(@PathVariable("lineId") long lineId)
+			throws NotAuthenticatedException {
+		// It is necessary because orphan removal does not work as expected.
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		if (currentUser == null) {
+
+			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
+			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
+		}
+
+		settingsJsonizer.deleteSettingLine(lineId);
+		return new ResponseEntity<SettingsConversion>(HttpStatus.NO_CONTENT);
+	}
+
 	@Autowired
 	private SF5SecurityContext securityContext;
 
