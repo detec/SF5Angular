@@ -26,7 +26,7 @@
 			<button class="btn btn-warning btn-sm calculate-intersection">Calculate intersection</button>
 			</td>
 			<td>
-			
+			<button class="btn btn-danger btn-sm delete-selected-clines">Delete selected</button>
 			</td>
 			</tr>
 			</table> 
@@ -258,6 +258,15 @@
 				style="display:none"
 			<% } %>
 		>Add</button>  -->
+		
+<!-- 		<td>	
+		<button class="btn btn-danger btn-sm delete-cline edit-table"
+ 			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		
+		>Delete</button>
+		</td> -->
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
@@ -267,17 +276,19 @@
 		<table>
 		<tr>
 		<td>
-		<td><span><input type="checkbox" name="selection" class="cline-selection-checkbox" style="vertical-align:center"></span></td>
+		<td><span><input type="checkbox" name="selection"
+ 
+			<% if (selection == true) { %>	
+			class="cline-selection-checkbox" 
+			<% } %>
+
+			<% if (selection != true) { %>
+			class="edit-cline-selection-checkbox"
+			<% } %>
+		style="vertical-align:center"></span></td>
 
 		</td>
-		<td>	
-		<button class="btn btn-danger btn-sm delete-cline edit-table"
- 			<% if (selection == true) { %>
-				style="display:none"
-			<% } %>
-		
-		>Delete</button>
-		</td>
+
 		<td> 
 		<button class="btn btn-warning btn-sm edit-scline"
  			<% if (selection == true) { %>

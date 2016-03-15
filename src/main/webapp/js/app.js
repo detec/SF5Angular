@@ -276,6 +276,8 @@ var selectedTranspondersArray = new TransponderPresentations();
 
 var selectedClinesArray = new ConversionCollection();
 
+var selectedEditClinesArray = new ConversionCollection();
+
 // https://github.com/fiznool/backbone.basicauth
 
 // getting currently authenticated user
@@ -705,6 +707,7 @@ var ConversionLineView = Backbone.View.extend({
 		'click .update-scline' : 'OKSCLine',
 		'click .scline-cancel' : 'CancelEditSCLine',
 		'click .cline-selection-checkbox' : 'onClineCheckboxClick',
+		'click .edit-cline-selection-checkbox' : 'onEditClineCheckboxClick',
 		'click .move-up' : 'MoveUpOnClick',
 		'click .move-down' : 'MoveDownOnClick'
 
@@ -764,7 +767,7 @@ var ConversionLineView = Backbone.View.extend({
 	}
 	
 	, onClineCheckboxClick : function(e) {
-	// selectedClinesArray	
+
 		 var isChecked = e.currentTarget.checked;
 		 var currentTid = this.model.get('id');
 		 if (isChecked) {
@@ -798,7 +801,11 @@ var ConversionLineView = Backbone.View.extend({
 		editedCLTable.models.move(index, index + 1);
 		console.log(index);
 		editedCLTable.renumerate();
-
+	}
+	
+	, onEditClineCheckboxClick : function() {
+		selectedEditClinesArray.add(this.model);
+		// console.log('Added to selected');
 	}
 	
 });
@@ -1115,6 +1122,12 @@ $(document).ready(function() {
 		// CurrentEditedSetting.fetch();
 		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
 		settingsCollection.add(CurrentEditedSetting);
+	});
+	
+	$('.delete-selected-clines').on('click', function() {
+		editedCLTable.remove(selectedEditClinesArray.models);
+		selectedEditClinesArray.reset();
+		console.log('Group deletion ended!')
 	});
 	
 
