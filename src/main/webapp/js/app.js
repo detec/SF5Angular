@@ -590,7 +590,11 @@ var SettingView = Backbone.View.extend({
 	
 	edit: function() {
 		$('.edit-setting').hide();
-		$('.delete-setting').hide();
+	// 	$('.delete-setting').hide();
+		// we will hide delete button only for particular setting
+		$('#delete' + this.model.get('id')).hide();
+		$('#exportsetting' + this.model.get('id')).hide();
+		$('#printsetting' + this.model.get('id')).hide();
 		this.$('.update-setting').show();
 		this.$('.cancel').show();
 		

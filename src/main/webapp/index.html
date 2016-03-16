@@ -230,7 +230,7 @@
 		<button class="btn btn-warning edit-setting">Edit</button>
 		</td>
 		<td>
-		<button class="btn btn-danger delete-setting">Delete</button>
+		<button id="delete<%= id %>" class="btn btn-danger delete-setting">Delete</button>
 		</td>
 		<td>
 		<button class="btn btn-success update-setting" style="display:none">Update</button>
@@ -239,10 +239,10 @@
  		<button class="btn btn-danger cancel" style="display:none">Cancel</button>
 		</td>
 		<td>
-		<a href="/jaxrs/usersettings/<%= id %>/sf5">Export</a>
+		<a id="exportsetting<%= id %>" href="/jaxrs/usersettings/<%= id %>/sf5">Export</a>
 		</td>
 		<td>
-		<a href="/print?id=<%= id %>">Print view</a>
+		<a id="printsetting<%= id %>" href="/print?id=<%= id %>">Print view</a>
 		</td>
 		</tr>
 		</table>
