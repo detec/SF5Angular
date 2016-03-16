@@ -241,6 +241,9 @@
 		<td>
 		<a href="/jaxrs/usersettings/<%= id %>/sf5">Export</a>
 		</td>
+		<td>
+		<a href="/print?id=<%= id %>">Print view</a>
+		</td>
 		</tr>
 		</table>
 		</td>
@@ -267,6 +270,13 @@
 		
 		>Delete</button>
 		</td> -->
+		
+<!-- 				<button class="btn btn-primary btn-sm print-view"
+			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		>Print view</button> -->
+		
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
@@ -315,16 +325,17 @@
 			<% if (selection == true) { %>
 				style="display:none"
 			<% } %>
-		>Move up</button>
+		>Up</button>
 		</td>
 		<td>
 		<button class="btn btn-primary btn-sm move-down"
 			<% if (selection == true) { %>
 				style="display:none"
 			<% } %>
-		>Move down</button>
+		>Down</button>
 		</td>
-		<tr>
+
+		</tr>
 		</table>
 		</div>
 

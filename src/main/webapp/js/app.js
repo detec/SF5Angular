@@ -972,6 +972,53 @@ var SettingCaptionView = Backbone.View.extend({
 	
 });
 
+var SettingPrintHeader = Backbone.View.extend({
+	model : CurrentEditedSetting,
+	
+	el: $('.print-header-holder'),
+	
+	initialize: function() {
+		template = _.template($('.setting-caption-template').html());
+	},
+
+	render: function() {
+		// console.log('Render caption called');
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
+});
+
+
+var SettingPrintSingleDetail = Backbone.View.extend({
+	model: new ConversionLine(),
+	
+	tagName: 'tr',
+	initialize: function() {
+		this.template = _.template($('.setting-print-details-template').html());
+	},
+	render: function() {
+		// this.$el.html(this.template(this.model.toJSON(), {variable: 'data'})({selection: true}));
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}	
+	
+});
+
+var SettingPrintManyDetails = Backbone.View.extend({
+	model : CurrentEditedSetting.get('conversion'),
+	el: $('.settings-detail-print-list'),
+	
+	render: function() {
+		var self = this;
+		this.$el.html('');
+		_.each(this.model.models, function(setting) {
+			
+			self.$el.append((new SettingPrintSingleDetail({model: setting})).render().$el);
+		});
+		return this;
+	}
+});
+
 // http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
 
 var TPsView = new transpondersPresentationView(); // show table

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Openbox SF-5 settings editor - Print form</title>
+<link rel="stylesheet" href="css/bootstrap/dist/css/bootstrap.css">
+
+</head>
+<body>
+	<div class="print-form">
+	<div class="print-header-holder">
+	<!-- Placeholder for  setting-print-head-template -->
+	</div>
+	<table>
+	<thead>
+	<tr>
+	<th></th> <!-- Placeholder for satindex -->
+  	<th>#</th>
+   	<th>Tr. #</th>
+   	<th>Trans. freq</th>
+   	<th>Satellite</th>
+   	<th>Pol.</th>
+   	<th>Speed</th>
+   	<th>FEC</th>
+   	<th>Comment</th>
+	</tr>
+	</thead>
+	<tbody class="settings-detail-print-list"></tbody>
+	</table>
+	</div>
+	<script type="text/template" class="setting-print-head-template">
+	<h3><%= name %></h3>
+	<table>
+	<tr>
+	<td>ID:</td>
+	<td><%= id %></td>
+	<td>Print date:</td>
+	<td><%= theLastEntry %></td>
+	</tr>
+	</table>
+	<br>
+	</script>
+	<script type="text/template" class="setting-print-details-template">
+		<td><span class="satindex"><%= satindex %></span></td>
+		<td><span class="lineNumber"><%= lineNumber %></span></td>
+		<td><span class="tpindex"><%= tpindex %></span></td>
+		<td><span class="transponder"><%= (transponder.frequency == undefined) ? frequency : transponder.frequency %></span></td>
+		<td><span class="satellite"><%= (transponder.satellite == undefined || transponder.satellite.name == undefined) ? satellitename : transponder.satellite.name %></span></td>
+		<td><span class="transponder"><%= (transponder.polarization == undefined) ? polarization : transponder.polarization %></span></td>
+		<td><span class="transponder"><%= (transponder.speed == undefined) ? speed : transponder.speed %></span></td>
+		<td><span class="transponder"><%= (transponder.FEC == undefined) ? FEC : transponder.FEC %></span></td>
+		<td><span class="transponder"><%= (transponder.note == undefined) ? note : transponder.note %></span></td>
+	</script>
+
+	<script src="js/libs/jquery/dist/jquery.js"></script>
+	<script src="js/libs/underscore/underscore.js"></script>
+	<script src="js/libs/backbone/backbone.js"></script>
+	<script src="js/app.js"></script>
+</body>
+</html>
