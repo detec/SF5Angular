@@ -1,14 +1,18 @@
 <!doctype html>
 <html>
 <head>
-<title>OpenBox SF-5 settings editor - Login</title>
+<title>OpenBox SF-5 settings editor - login and registration</title>
 
 </head>
 
 <body>
-	<h1>Openbox SF-5 settings editor </h1>
-   <h2>Login</h2>
-   <form name='f' action="/login" method="POST">
+	<h1>Openbox SF-5 settings editor - login and registration</h1>
+
+<table>
+	<tr>
+		<td>
+	<h2>Sign in</h2>
+	<form name='loginform' action="login" method="POST">
       <table>
          <tr>
             <td>User:</td>
@@ -23,11 +27,34 @@
             <td><input name="submit" type="submit" value="Submit" /></td>
          </tr>
       </table>
-      
-<!--   	<input type="hidden" name="${_csrf.parameterName}"
-                value="${_csrf.token}" />  -->   
+  
   </form>
- No account? <a href="register">Register</a>
+  		</td>
+  		<td>
+  		<h2>Sign up</h2>
+  		<form name='registerform' action="register" method="POST">
+  		     <table>
+         <tr>
+            <td>User:</td>
+            <td><input id="username" name="username" type="text"/>
+            </td>
+            </tr>
+            <tr>
+               <td>Password:</td>
+            <td><input id="password" name="password" type="password"/></td>
+            </tr>
+            <tr>
+               <td>Re-enter password:</td>
+               <td><input id="reenterpassword" name="reenterpassword" type="password"/></td>
+        	</tr>
+            <tr>
+            <td><input name="submit" type="submit" value="Submit" /></td>
+        	</tr>
+      	</table>
+  		</form>
+  		</td>
+	</tr>
+</table>
 
 </body>
 </html>
