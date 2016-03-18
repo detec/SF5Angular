@@ -976,6 +976,18 @@ var SettingCaptionView = Backbone.View.extend({
 	
 });
 
+var ShowCurrentUser = Backbone.View.extend({
+	model : currentUser,
+	el: $('.current-user-name'),
+	
+	render: function() {
+		// console.log('ShowCurrentUser render called');
+		this.$el.html('You are working under user ' + currentUser.get('username'));
+		return this;
+	}
+	
+});
+
 var SettingPrintHeader = Backbone.View.extend({
 	model : CurrentEditedSetting,
 	
@@ -1041,6 +1053,9 @@ var CLEditViewItem = new CLEditView();
 
 var SettingCaptionViewItem = new SettingCaptionView();
 SettingCaptionViewItem.render();
+
+var ShowCurrentUserItem = new ShowCurrentUser();
+
 
 $(document).ready(function() {
 	
@@ -1186,6 +1201,22 @@ $(document).ready(function() {
 		// console.log('Group deletion ended!')
 	});
 	
+	
+	currentUsers.fetch({
+		success: function(collection){
+	    // Callback triggered only after receiving the data.
+	 //  console.log(collection.length);
+		currentUser = currentUsers.at(0);
+		// console.log(currentUser.get("username"));
+	  
+	  ShowCurrentUserItem.render();
+	  
+	},
+	error: function() {
+		console.log('Failed to get current user!');
+	}
+	});
+
 
 })
 

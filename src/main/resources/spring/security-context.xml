@@ -103,7 +103,7 @@ A separate instance is created for each intercept-url element using its pattern 
 and regular expressions are matched using a RegexRequestMatcher. See the Javadoc for these classes for more details on exactly how the matching is preformed. 
 Ant paths are the default strategy.    -->
 
-<security:debug/>
+<!-- <security:debug/> -->
 
 <!-- http://stackoverflow.com/questions/18722471/when-to-use-double-star-in-glob-syntax-within-java -->
 <!-- Two asterisks, **, works like * but crosses directory boundaries. This syntax is generally used for matching complete paths. 
@@ -170,6 +170,7 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
 
 	<security:intercept-url pattern="/login" access="isAnonymous()"/>
 	<security:intercept-url pattern="/registration/***" access="isAnonymous()"/>
+	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 
 	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
