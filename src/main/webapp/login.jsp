@@ -41,7 +41,7 @@
   	<input type="hidden" name="${_csrf.parameterName}"
                 value="${_csrf.token}" />    
   	</form>
-  <a href="register">Sign up</a>
+  <a href="/registration/register.html">Sign up</a>
       </td>
       
       

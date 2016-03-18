@@ -97,6 +97,8 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
 		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+		// For static html pages.
+		registry.addResourceHandler("/registration/**").addResourceLocations("/html/");
 	}
 
 	// @Override
