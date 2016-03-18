@@ -2,7 +2,47 @@
 <html>
 <head>
 <title>OpenBox SF-5 settings editor - login and registration</title>
+<script type="text/javascript">
+   <!--
+      // Form validation code will come here.
+      function validate()
+      {
+      
+         if( document.registerform.username.value == "" )
+         {
+            alert( "Please provide username!" );
+            document.registerform.username.focus() ;
+            return false;
+         }
+         
+         if( document.registerform.password.value == "" )
+         {
+            alert( "Please provide your password!" );
+            document.registerform.password.focus();
+            return false;
+         }
 
+         if( document.registerform.matchingPassword.value == "" )
+         {
+            alert( "Please re-enter your password!" );
+            document.registerform.matchingPassword.focus() ;
+            return false;
+         }
+
+         
+         if( document.registerform.password.value != 
+        	 document.registerform.matchingPassword.value ) {
+
+             alert( "Password and its confirmation do not match!" );
+             document.registerform.matchingPassword.focus();
+            
+             return false;
+         }
+             
+         return( true );
+      }
+   //-->
+</script>
 </head>
 
 <body>
@@ -32,7 +72,7 @@
   		</td> -->
   		<td>
   		<h2>Sign up</h2>
-  		<form name='registerform' action="/register" method="POST">
+  		<form name='registerform' action="/register" method="POST" onsubmit="return(validate());">
   		     <table>
          <tr>
             <td>User:</td>

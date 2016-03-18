@@ -965,6 +965,8 @@ var SettingCaptionView = Backbone.View.extend({
 //		},this);
 //		this.render;
 		
+	//	this.listenTo(this.model, 'change:id', this.render);
+		
 		
 	},
 	
