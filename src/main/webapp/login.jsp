@@ -18,6 +18,9 @@
         <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.
       </font>
 </c:if>
+ <c:if test="${not empty viewErrMsg}" >
+ <div style="color:Red;"> ${viewErrMsg}</div>
+ </c:if>
       <table>
          <tr>
          <td>
