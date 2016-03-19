@@ -11,7 +11,17 @@ Backend implementation has been taken from <https://github.com/detec/SF5Spring> 
 Leaving behind satellite television details, Openbox SF-5 settings editor is a representation of a typical full-cycle CRUD application. It is able to:
 
 - import catalogue data from structured text files (refreshed transponder data from resources like <http://ru.kingofsat.net>) into relational database;
-- create and edit own entities (gadget settings) using catalogue data, store them in database and reuse when needed.
+- create and edit own entities (gadget settings) using catalogue data, store them in database and reuse when needed;
+- export gadget settings into structured XML files for exchange with vendor owned gadget application;
+- output user composed gadget settings to a print form, so that a user can have a hard copy of settings when using Openbox SF-5.
+
+This project implementation has undergone significant transformation from its desktop 1C:Enterprise 8.2 original with transition points like JavaFX 8 and Spring MVC. I hardly tried to repeat all GUI features that I had previously implemented in its original, 1C:Enterprise desktop version, in final destination technology, BackboneJS single page application, to ensure good end-user experience. It includes:
+
+- comfortable usage of transponder catalogue, single and multiple transponder selection;
+- powerful feature of selection of settings lines from other settings while editing current setting;
+- ability to move lines up and down in a setting.
+
+All these features have been implemented with BackboneJS, plain HTML and Spring MVC to take the best and most appropriate of these worlds.
 
 ## User authentication ##
 
@@ -41,12 +51,14 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 	
 - OpenBox SF-5 settings (require form login authentication)
 	- jaxrs/usersettings/ POST								- post user setting to this endpoint to create a new setting, user authenticated and the one in setting should coincide;
+	- jaxrs/usersettings/calculateIntersection={booleanValue} POST	- post user setting to this endpoint with option to discover lines with transponder frequency intersection;
 	- jaxrs/usersettings/{settingId} PUT 					- update user setting, user authenticated and the one in setting should coincide;
+	- jaxrs/usersettings/{settingId};calculateIntersection={booleanValue} PUT - update user setting with option to discover lines with transponder frequency intersection;	
 	- jaxrs/usersettings/{settingId} DELETE 				- delete setting that belongs to authenticated user;
 	- jaxrs/usersettings/ GET								- get all user's settings, based on credentials provided;
 	- jaxrs/usersettings/filter/{type}/{typeValue} GET 		- get user's settings, filtered by arbitrary field name and field value, based on credentials provided;
-	- jaxrs/usersettings/filter/id/{settingId} GET 			- get setting by its ID, based on credentials provided;
-	- jaxrs/usersettings/filter/id/{settingId}/sf5 GET		- get setting by its ID, based on credentials provided, in Openbox SF-5 XML format; only "text/plain" "Accept" HTTP header is supported.
+	- jaxrs/usersettings/{settingId} GET 			- get setting by its ID, based on credentials provided;
+	- jaxrs/usersettings/{settingId}/sf5 GET				- get setting by its ID, based on credentials provided, in Openbox SF-5 XML format; only "text/plain" "Accept" HTTP header is supported.
 
 ## System requirements ##
 
