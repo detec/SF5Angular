@@ -789,7 +789,7 @@ var ConversionLineView = Backbone.View.extend({
 		editedCLTable.models.move(index, index - 1);
 		// we should renumerate lines.
 		editedCLTable.renumerate();
-		// CLEditViewItem.render();
+		CLEditViewItem.render();
 		// console.log('Moved up!');
 
 	}
@@ -1225,25 +1225,41 @@ $(document).ready(function() {
 	
 	
 	$('.moveup-selected-clines').on('click', function() {
+//		var index = editedCLTable.indexOf(this.model);
+//		if (index == 0) {
+//			return;
+//		} 
+//		// console.log(index);
+//		editedCLTable.models.move(index, index - 1);
+//		// we should renumerate lines.
+//		editedCLTable.renumerate();
+//		CLEditViewItem.render();
 		
-		var selectedModels = selectedEditClinesArray.models;
+		
+		// var selectedModels = selectedEditClinesArray.models;
+		// let's filter lines from bottom to top
+		var selectedModels = editedCLTable.where({selection: true});
+
 		_.each(selectedModels, function(cline) {
 
-			var currentIndex = editedCLTable.models.indexOf(cline);
-			// console.log(currentIndex);
+			var currentIndex = editedCLTable.indexOf(cline);
+		//	console.log(currentIndex);
 			if (currentIndex > 0) {
 //				editedCLTable.models.splice(currentIndex - 1, 0, cline);
 //				editedCLTable.models.splice(currentIndex + 1, 1);
 				
 				// http://stackoverflow.com/questions/18292668/best-practice-for-moving-backbone-model-within-a-collection
-				editedCLTable.remove(cline);
-				editedCLTable.add(cline, {at: currentIndex - 1});
-
+//				editedCLTable.remove(cline);
+//				editedCLTable.add(cline, {at: currentIndex - 1});
+				
+				editedCLTable.models.move(currentIndex, currentIndex - 1);
 			}
 					
 		});
 		
 		// editedCLTable.reset(editedCLTable.models);
+		editedCLTable.renumerate();
+		CLEditViewItem.render();
 		
 	});
 	
