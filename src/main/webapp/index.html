@@ -313,7 +313,9 @@
 			<% if (selection != true) { %>
 			class="edit-cline-selection-checkbox"
 			<% } %>
-		style="vertical-align:center"></span></td>
+		style="vertical-align:center" 
+		<%= selection ? 'checked' : ''%>
+		></span></td>
 
 		</td>
 
