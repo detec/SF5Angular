@@ -1193,11 +1193,12 @@ $(document).ready(function() {
 	
 	$('.delete-selected-clines').on('click', function() {
 	
-		_.each(editedCLTable.models, function(cline) {
-			if (cline.get('parent_id') == undefined) {
-				cline.set('parent_id', CurrentEditedSetting);
-		}			
-		});
+		// This leads to an error of cyclic reference
+//		_.each(editedCLTable.models, function(cline) {
+//			if (cline.get('parent_id') == undefined) {
+//				cline.set('parent_id', CurrentEditedSetting);
+//		}			
+//		});
 		
 		editedCLTable.remove(selectedEditClinesArray.models);
 		selectedEditClinesArray.reset();
