@@ -606,11 +606,12 @@ var SettingView = Backbone.View.extend({
 		
 		editedCLTable.reset(CurrentEditedSetting.get('conversion'));
 		// we should manually update parent_id because it becomes undefined.
-		_.each(editedCLTable.models, function(cline) {
-			if (cline.get('parent_id') == undefined) {
-				cline.set('parent_id', CurrentEditedSetting);
-		}			
-		});
+		// probably causes error with cyclic reference
+//		_.each(editedCLTable.models, function(cline) {
+//			if (cline.get('parent_id') == undefined) {
+//				cline.set('parent_id', CurrentEditedSetting);
+//		}			
+//		});
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
@@ -652,9 +653,13 @@ var SettingView = Backbone.View.extend({
 
 		this.model.save(null, {
 			success: function(response) {
+				// var self = this.model;
 				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
 				// refreshing setting from response.
-				this.model.parse(response);
+				// this.model - reference is undefined.
+				// this.model.parse(response);
+				// self.parse(response);
+				// Backbone should automatically refresh models after save.
 			},
 			error: function(error) {
 				console.log(error.responseText);
@@ -720,12 +725,7 @@ var ConversionLineView = Backbone.View.extend({
 		return this;
 	},
 	
-//	updateElement: function() {
-//		// doesn't work
-//		this.attributes = this.model.attributes;
-//		this.render;
-//	},
-	
+
 	useCL : function() {
 		// alert("Use conversion line called!");
 		var newLine = new ConversionLine();
@@ -860,6 +860,7 @@ var CLSelectionView = Backbone.View.extend({
 
 
 // Table for edited setting
+
 var CLEditView = Backbone.View.extend({
 	// model : CurrentEditedSetting.get('conversion'),
 	model : editedCLTable,
