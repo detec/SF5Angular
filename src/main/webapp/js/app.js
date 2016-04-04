@@ -806,8 +806,24 @@ var ConversionLineView = Backbone.View.extend({
 	}
 	
 	, onEditClineCheckboxClick : function() {
-		selectedEditClinesArray.add(this.model);
+		if (_.contains(selectedEditClinesArray.models, this.model)) {
+			selectedEditClinesArray.remove(this.model);
+			console.log('Removed from selected');
+		}
+		
+		else {
+			selectedEditClinesArray.add(this.model);
+			console.log('Added to selected');
+		}
+		// selectedEditClinesArray.add(this.model);
+		// will change selection mark.
 		// console.log('Added to selected');
+		
+		// will change selection mark.
+		var previousValue = this.model.get('selection');
+		// this fires re-render implicitly. ((
+		this.model.set('selection', !previousValue);
+
 	}
 	
 });
@@ -874,11 +890,13 @@ var CLEditView = Backbone.View.extend({
 		// this.model = new ConversionCollection();
 		this.model.on('push', this.render, this);
 		this.model.on('add', this.render, this);
-		this.model.on('change', function() {
-			setTimeout(function() {
-				self.render();
-			}, 30);
-		},this);
+		
+		// we need to control 'selection' attribute programmatically
+//		this.model.on('change', function() {
+//			setTimeout(function() {
+//				self.render();
+//			}, 30);
+//		},this);
 		
 		this.model.on('remove', this.render, this);
 		this.listenTo(this.model, 'reset', this.render); 
@@ -1205,6 +1223,29 @@ $(document).ready(function() {
 		// console.log('Group deletion ended!')
 	});
 	
+	
+	$('.moveup-selected-clines').on('click', function() {
+		
+		var selectedModels = selectedEditClinesArray.models;
+		_.each(selectedModels, function(cline) {
+
+			var currentIndex = editedCLTable.models.indexOf(cline);
+			// console.log(currentIndex);
+			if (currentIndex > 0) {
+//				editedCLTable.models.splice(currentIndex - 1, 0, cline);
+//				editedCLTable.models.splice(currentIndex + 1, 1);
+				
+				// http://stackoverflow.com/questions/18292668/best-practice-for-moving-backbone-model-within-a-collection
+				editedCLTable.remove(cline);
+				editedCLTable.add(cline, {at: currentIndex - 1});
+
+			}
+					
+		});
+		
+		// editedCLTable.reset(editedCLTable.models);
+		
+	});
 	
 	currentUsers.fetch({
 		success: function(collection){
