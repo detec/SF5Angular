@@ -70,6 +70,7 @@ var ConversionLine = Backbone.Model.extend({
 		theLineOfIntersection : 0
 		, parent_id : Setting
 		, transponder: transponder
+		, checked : false
 	}
 //	,
 //	parse: function (response) {
@@ -599,10 +600,7 @@ var SettingView = Backbone.View.extend({
 		this.$('.cancel').show();
 		
 		// showing table with conversion lines
-		
-		// console.log(JSON.stringify(this.model));
 		CurrentEditedSetting = this.model;
-		// console.log(JSON.stringify(CLEditViewItem.model));
 		
 		editedCLTable.reset(CurrentEditedSetting.get('conversion'));
 		// we should manually update parent_id because it becomes undefined.
@@ -623,13 +621,11 @@ var SettingView = Backbone.View.extend({
 	
 	update: function() {
 		this.model.set('id', $('.id-update').val());
-		// console.log($('.name-update').val());
 		this.model.set('name', $('.name-update').val());
 		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
 		// this.model.set('theLastEntry', new Date());
 		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		this.model.set('user', currentUser);
-		// Here GUI properties as 'selection' pass to model.
 		this.model.set('conversion', editedCLTable);
 		
 		// Here we should transform models.
@@ -808,21 +804,21 @@ var ConversionLineView = Backbone.View.extend({
 	, onEditClineCheckboxClick : function() {
 		if (_.contains(selectedEditClinesArray.models, this.model)) {
 			selectedEditClinesArray.remove(this.model);
-			console.log('Removed from selected');
+			// console.log('Removed from selected');
 		}
 		
 		else {
 			selectedEditClinesArray.add(this.model);
-			console.log('Added to selected');
+			// console.log('Added to selected');
 		}
 		// selectedEditClinesArray.add(this.model);
 		// will change selection mark.
 		// console.log('Added to selected');
 		
 		// will change selection mark.
-		var previousValue = this.model.get('selection');
+		var previousValue = this.model.get('checked');
 		// this fires re-render implicitly. ((
-		this.model.set('selection', !previousValue);
+		this.model.set('checked', !previousValue);
 
 	}
 	
@@ -1238,7 +1234,7 @@ $(document).ready(function() {
 		
 		// var selectedModels = selectedEditClinesArray.models;
 		// let's filter lines from bottom to top
-		var selectedModels = editedCLTable.where({selection: true});
+		var selectedModels = editedCLTable.where({checked: true});
 
 		_.each(selectedModels, function(cline) {
 
