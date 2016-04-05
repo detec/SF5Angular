@@ -223,11 +223,26 @@ var ConversionCollection = Backbone.Collection.extend({
 	
 	renumerate : function() {
 		var self = this;
+	
+		// trying to remove undefined lines
+//		_.each(self, function(cline) {
+//			if (cline == undefined) {
+//				self.remove(cline);
+//			}
+//		});
 		
+		// actual renumbering
 		_.each(self.models, function(cline) {
 			var index = self.models.indexOf(cline);
 			cline.set('lineNumber', index + 1);
 		});
+		
+//		self = this;
+//		
+//		_.each(self, function(cline) {
+//			var index = self.indexOf(cline);
+//			cline.set('lineNumber', index + 1);
+//		});
 	}
 });
 
@@ -797,7 +812,7 @@ var ConversionLineView = Backbone.View.extend({
 			return;
 		}
 		editedCLTable.models.move(index, index + 1);
-		console.log(index);
+		// console.log(index);
 		editedCLTable.renumerate();
 	}
 	
@@ -1253,9 +1268,31 @@ $(document).ready(function() {
 					
 		});
 		
+
+		
 		// editedCLTable.reset(editedCLTable.models);
 		editedCLTable.renumerate();
 		CLEditViewItem.render();
+		
+	});
+	
+	
+	$('.movedown-selected-clines').on('click', function() {
+		
+		var selectedModels = editedCLTable.where({checked: true});
+		_.each(selectedModels, function(cline) {
+
+			var currentIndex = editedCLTable.indexOf(cline);
+			//console.log(currentIndex);
+			if (currentIndex + selectedModels.length < editedCLTable.models.length) {
+				// if it is the last line
+				editedCLTable.models.move(currentIndex, currentIndex + selectedModels.length);	
+			}
+								
+		});
+
+	editedCLTable.renumerate();
+	CLEditViewItem.render();
 		
 	});
 	

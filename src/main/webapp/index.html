@@ -46,6 +46,9 @@
 			<td>
 			<button class="btn btn-primary btn-sm moveup-selected-clines">Move up</button>
 			</td>
+			<td>
+			<button class="btn btn-primary btn-sm movedown-selected-clines">Move down</button>
+			</td>
 			</tr>
 			</table> 
 			<table  class="table" class="setting-edit-conversionlines">
@@ -295,6 +298,21 @@
 			<% } %>
 		>Print view</button> -->
 		
+<!-- 				<td>
+		<button class="btn btn-primary btn-sm move-up"
+			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		>Up</button>
+		</td>
+		<td>
+		<button class="btn btn-primary btn-sm move-down"
+			<% if (selection == true) { %>
+				style="display:none"
+			<% } %>
+		>Down</button>
+		</td> -->
+		
 	<script type="text/template" class="conversionline-template">
 		
 		<td>
@@ -340,20 +358,7 @@
 				style="display:none"
 		>Cancel</button>
 		</td>
-		<td>
-		<button class="btn btn-primary btn-sm move-up"
-			<% if (selection == true) { %>
-				style="display:none"
-			<% } %>
-		>Up</button>
-		</td>
-		<td>
-		<button class="btn btn-primary btn-sm move-down"
-			<% if (selection == true) { %>
-				style="display:none"
-			<% } %>
-		>Down</button>
-		</td>
+
 
 		</tr>
 		</table>
