@@ -65,8 +65,20 @@ public class Intersections {
 
 				try {
 					// fill temp tables
-					preparedStatement = connection.prepareStatement(fillTempTables(dialect));
+					// preparedStatement =
+					// connection.prepareStatement(fillTempTables(dialect));
+					// preparedStatement.setLong(1, Object.getId());
+					// preparedStatement.execute();
+
+					// With MySQL let's try to split temp tables creation.
+					preparedStatement = connection.prepareStatement(fillFirstTempTable(dialect));
 					preparedStatement.setLong(1, Object.getId());
+					preparedStatement.execute();
+
+					preparedStatement = connection.prepareStatement(fillSecondTempTable(dialect));
+					preparedStatement.execute();
+
+					preparedStatement = connection.prepareStatement(fillThirdTempTable(dialect));
 					preparedStatement.execute();
 
 					preparedStatement = connection.prepareStatement(getIntersectionQuery());
@@ -143,7 +155,9 @@ public class Intersections {
 			// + "DROP TEMPORARY TABLE IF EXISTS ManyFrequencies; \n"
 			// + "DROP TEMPORARY TABLE IF EXISTS IntersectionTable; \n ";
 			returnString = "\n "
-					+ "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE, ManyFrequencies, IntersectionTable;";
+					// + "DROP TEMPORARY TABLE IF EXISTS CONVERSIONTABLE,
+					// ManyFrequencies, IntersectionTable;";
+					+ "DROP TABLE IF EXISTS CONVERSIONTABLE, ManyFrequencies, IntersectionTable;";
 		}
 
 		return returnString;
@@ -157,16 +171,16 @@ public class Intersections {
 		// return
 
 		// http://stackoverflow.com/questions/1915074/understanding-the-in-javas-format-strings
-		String tempTableCreate = dialect.getCreateTableString();
+		// String tempTableCreate = dialect.getCreateTableString();
 		// String tempTableCreate = dialect.get
 
-		// String tempTableCreate = "";
-		//
-		// if (dialect instanceof MySQL5Dialect) {
-		// tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
-		// } else {
-		// tempTableCreate = dialect.getCreateTableString();
-		// }
+		String tempTableCreate = "";
+
+		if (dialect instanceof MySQL5Dialect) {
+			tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
+		} else {
+			tempTableCreate = dialect.getCreateTableString();
+		}
 
 		String fromatString = "\n" + "%1$s CONVERSIONTABLE  AS ( \n" + "SELECT \n" + "lineNumber \n"
 
@@ -186,25 +200,63 @@ public class Intersections {
 
 				+ " ); \n\n"
 
-				// + "CREATE MEMORY TEMPORARY TABLE ManyFrequencies AS ( \n"
-				+ "%1$s ManyFrequencies AS (  \n"
+				+ "%1$s ManyFrequencies " + ""
+
+				+ "\n"
 
 				+ "select \n" + "p1.lineNumber \n" + ", p1.frequency \n" + ", p1.theLineOfIntersection \n"
-				// + "into #ManyFrequencies \n"
 
-				+ "from ConversionTable p1)  \n"
+				+ "from ConversionTable p1"
 
-				+ "UNION  \n"
-
-				+ "(select  \n" + "p2.lineNumber  \n" + ", p2.frequency + 1 \n"
-				+ ", p2.theLineOfIntersection AS  theLineOfIntersection \n" + "from ConversionTable p2) \n"
+				+ " \n"
 
 				+ "UNION \n"
 
-				+ "(select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
-				+ "from ConversionTable p3 \n"
+				+ "select \n" + "p2.lineNumber \n" + ", p2.frequency + 1 \n"
+				+ ", p2.theLineOfIntersection AS theLineOfIntersection \n" + "from ConversionTable p2 \n"
 
-				+ " ); \n\n"
+				+ "UNION \n"
+
+				+ "select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
+				+ "from ConversionTable p3; \n\n"
+
+				// + "%1$s ManyFrequencies LIKE CONVERSIONTABLE; \n"
+				//
+				// + "INSERT INTO ManyFrequencies \n"
+				//
+				// + "select \n"
+				//
+				// + "p1.lineNumber \n"
+				//
+				// + ", p1.frequency \n"
+				//
+				// + ", p1.theLineOfIntersection \n"
+				//
+				// + "from ConversionTable p1; \n"
+				//
+				// + "INSERT INTO ManyFrequencies \n"
+				//
+				// + "select \n"
+				//
+				// + "p2.lineNumber \n"
+				//
+				// + ", p2.frequency + 1 \n"
+				//
+				// + ", p2.theLineOfIntersection AS theLineOfIntersection \n"
+				//
+				// + "from ConversionTable p2; \n"
+				//
+				// + "INSERT INTO ManyFrequencies \n"
+				//
+				// + "select \n"
+				//
+				// + "p3.lineNumber \n"
+				//
+				// + ", p3.frequency - 1 \n"
+				//
+				// + ", p3.theLineOfIntersection \n"
+				//
+				// + "from ConversionTable p3; \n"
 
 				// + "CREATE MEMORY TEMPORARY TABLE IntersectionTable AS ( \n"
 				+ "%1$s IntersectionTable AS (   \n"
@@ -216,7 +268,110 @@ public class Intersections {
 
 				+ " ); \n";
 
-		return String.format(fromatString, tempTableCreate);
+		String resultQuery = String.format(fromatString, tempTableCreate);
+
+		return resultQuery;
+
+	}
+
+	public static String fillFirstTempTable(Dialect dialect) {
+
+		// String tempTableCreate = "";
+		//
+		// if (dialect instanceof MySQL5Dialect) {
+		// tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
+		// } else {
+		// tempTableCreate = dialect.getCreateTableString();
+		// }
+
+		String tempTableCreate = dialect.getCreateTableString();
+
+		String fromatString = "\n" + "%1$s CONVERSIONTABLE  AS ( \n" + "SELECT \n" + "lineNumber \n"
+
+				+ ", tp.frequency \n"
+
+				+ ", 0 as theLineOfIntersection \n"
+
+				// + " into #ConversionTable \n"
+
+				+ "	FROM SettingsConversion conv \n"
+
+				+ "inner join Transponders tp \n"
+
+				+ "on conv.transponder = tp.id \n"
+
+				+ " where parent_id = ? \n"
+
+				+ " ); \n\n";
+
+		String resultQuery = String.format(fromatString, tempTableCreate);
+
+		return resultQuery;
+
+	}
+
+	public static String fillSecondTempTable(Dialect dialect) {
+
+		// String tempTableCreate = "";
+		//
+		// if (dialect instanceof MySQL5Dialect) {
+		// tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
+		// } else {
+		// tempTableCreate = dialect.getCreateTableString();
+		// }
+
+		String tempTableCreate = dialect.getCreateTableString();
+
+		String fromatString = "%1$s ManyFrequencies " + ""
+
+				+ "\n"
+
+				+ "select \n" + "p1.lineNumber \n" + ", p1.frequency \n" + ", p1.theLineOfIntersection \n"
+
+				+ "from ConversionTable p1"
+
+				+ " \n"
+
+				+ "UNION \n"
+
+				+ "select \n" + "p2.lineNumber \n" + ", p2.frequency + 1 \n"
+				+ ", p2.theLineOfIntersection AS theLineOfIntersection \n" + "from ConversionTable p2 \n"
+
+				+ "UNION \n"
+
+				+ "select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
+				+ "from ConversionTable p3; \n\n";
+
+		String resultQuery = String.format(fromatString, tempTableCreate);
+
+		return resultQuery;
+
+	}
+
+	public static String fillThirdTempTable(Dialect dialect) {
+
+		// String tempTableCreate = "";
+		//
+		// if (dialect instanceof MySQL5Dialect) {
+		// tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
+		// } else {
+		// tempTableCreate = dialect.getCreateTableString();
+		// }
+
+		String tempTableCreate = dialect.getCreateTableString();
+
+		String fromatString = "%1$s IntersectionTable AS (   \n"
+
+				+ "select \n" + "t1.lineNumber \n" + ", t1.frequency \n" + ", t2.lineNumber as theLineOfIntersection \n"
+				// + "into #IntersectionTable \n"
+				+ "from ManyFrequencies t1 \n" + "inner join ManyFrequencies t2 \n"
+				+ "on t1.frequency = t2.frequency \n" + "and t1.lineNumber <> t2.lineNumber \n"
+
+				+ " ); \n";
+
+		String resultQuery = String.format(fromatString, tempTableCreate);
+
+		return resultQuery;
 
 	}
 
