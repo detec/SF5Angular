@@ -739,7 +739,7 @@ var ConversionLineView = Backbone.View.extend({
 		return this;
 	},
 	
-
+	// not used now
 	useCL : function() {
 		// alert("Use conversion line called!");
 		var newLine = new ConversionLine();
@@ -761,7 +761,7 @@ var ConversionLineView = Backbone.View.extend({
 	},
 	
 	editCline : function() {
-		this.$('.delete-cline').hide();
+		// this.$('.delete-cline').hide();
 		this.$('.edit-scline').hide();
 		this.$('.scline-cancel').show();
 		this.$('.update-scline').show();
@@ -773,7 +773,13 @@ var ConversionLineView = Backbone.View.extend({
 	
 	OKSCLine : function() {
 		this.model.set('note', $('.note-update').val());
+		// These buttons are shown when rendering.
+		//this.$('.scline-cancel').hide();
+		//this.$('.update-scline').hide();
+		//this.$('.edit-scline').show();
 		
+		// this.$('.note').html();
+		this.render();
 	},
 	
 	CancelEditSCLine : function() {
@@ -1109,7 +1115,7 @@ $(document).ready(function() {
 		$('.name-input').val('');
 
 		
-		// console.log( JSON.stringify(setting));
+		editedCLTable.renumerate();
 		
 		setting.save(null, {
 			success: function(response) {
