@@ -958,11 +958,13 @@ var CLEditView = Backbone.View.extend({
 		
 		
 		this.model.on('remove', this.render, this);
-		this.listenTo(this.model, 'reset', this.render); 
+	//	this.listenTo(this.model, 'reset', this.render);
+		this.model.on('reset', this.render, this);
 		
 	},
 	
 	render: function() {
+	//	console.log('CLEditView render called');
 		var self = this;
 		this.$el.html('');
 		// sometimes a setting cannot have a tabular part filled
@@ -1255,37 +1257,15 @@ $(document).ready(function() {
 				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
 				// here we parse the setting.
 				// CurrentEditedSetting.parse(response);
+				editedCLTable.cleanReset(response.get('conversion'));
 			},
 			error: function(error) {
 				console.log(error.responseText);
 			}
 		});
 		
-		// Doesn't work
-		// SettingsViewItem.hideOtherSettingsButtons();
-		
-		// This code removes the whole table.
-//		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
-//		// sometimes null object may appear, it causes error.
-//		var cleanArray = [];
-//
-//		_.each(collectionOfLines, function(cline) {
-//			if (cline == null || cline == undefined) {
-//			}
-//			else {
-//				cleanArray.push(cline);
-//			}
-//		});
-//		
-//		editedCLTable.reset(cleanArray);
-//		CLEditViewItem.render();
-		
-		// editedCLTable.reset(CurrentEditedSetting.get('conversion'));
-		// CLEditViewItem.render();
 
-		// selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
-		// It is already in the list as we do not calculate intersection on new setting.
-		// settingsCollection.add(CurrentEditedSetting);
+
 	});
 	
 	$('.delete-selected-clines').on('click', function() {
