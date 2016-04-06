@@ -629,6 +629,9 @@ var SettingView = Backbone.View.extend({
 	edit: function() {
 		this.prepareElementsForUpdate();
 		
+		// calling list function
+		SettingsViewItem.hideOtherSettingsButtons();
+		
 		// showing table with conversion lines
 		CurrentEditedSetting = this.model;
 		
@@ -736,11 +739,7 @@ var SettingView = Backbone.View.extend({
 	
 	, prepareElementsForUpdate : function() {
 		
-		$('.calculate-intersection').show();
-		$('.edit-setting').hide(); // hide all edit buttons
-		$('.delete-setting').hide(); // hide all delete buttons
-		$('.export-setting').hide(); // hide all export links.
-		$('.print-setting').hide(); // hide all print links.
+
 		this.$('.edit-setting').hide(); // this button was shown after intersection calculation
 		this.$('#delete' + this.model.get('id')).hide();
 		this.$('#exportsetting' + this.model.get('id')).hide();
@@ -756,6 +755,8 @@ var SettingView = Backbone.View.extend({
 		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
 		this.$('.id').html('<input type="text" readonly class="form-control id-update" value="' + id + '">');
 	}
+	
+	
 	
 });
 
@@ -955,12 +956,6 @@ var CLEditView = Backbone.View.extend({
 		// It causes too many problems.
 		// this.model.on('change', this.render, this);
 		
-		// we need to control 'selection' attribute programmatically
-//		this.model.on('change', function() {
-//			setTimeout(function() {
-//				self.render();
-//			}, 30);
-//		},this);
 		
 		this.model.on('remove', this.render, this);
 		this.listenTo(this.model, 'reset', this.render); 
@@ -1012,10 +1007,24 @@ var SettingsView = Backbone.View.extend({
 	},
 	render: function() {
 		var self = this;
+		
+		var editModeOnSingleSetting = false;
+		
 		this.$el.html('');
 		_.each(this.model.toArray(), function(setting) {
 			self.$el.append((new SettingView({model: setting})).render().$el);
+			// find out if one of the setting is edited.
+
+				if (CurrentEditedSetting.get('id') == setting.get('id')) {
+					editModeOnSingleSetting = true;
+				}
+
 		});
+		
+		if (editModeOnSingleSetting) {
+			// hide all settings buttons and links except one being edited.
+			this.hideOtherSettingsButtons();
+		}
 		return this;
 	}
 	,
@@ -1024,6 +1033,17 @@ var SettingsView = Backbone.View.extend({
 	 	options.reset = true; 
 	 	return Backbone.Collection.prototype.fetch.call(this, options); 
 	 } 
+	
+	, hideOtherSettingsButtons : function() {
+		
+		$('.calculate-intersection').show();
+		$('.edit-setting').hide(); // hide all edit buttons
+		$('.delete-setting').hide(); // hide all delete buttons
+		$('.export-setting').hide(); // hide all export links.
+		$('.print-setting').hide(); // hide all print links.
+		
+	}
+	
 });
 
 
@@ -1234,12 +1254,15 @@ $(document).ready(function() {
 			success: function(response) {
 				console.log('Successfully UPDATED setting with id: ' + response.toJSON().id);
 				// here we parse the setting.
-				CurrentEditedSetting.parse(response);
+				// CurrentEditedSetting.parse(response);
 			},
 			error: function(error) {
 				console.log(error.responseText);
 			}
 		});
+		
+		// Doesn't work
+		// SettingsViewItem.hideOtherSettingsButtons();
 		
 		// This code removes the whole table.
 //		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
