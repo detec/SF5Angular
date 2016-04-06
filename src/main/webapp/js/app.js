@@ -713,7 +713,10 @@ var SettingView = Backbone.View.extend({
 	, prepareElementsForUpdate : function() {
 		
 		$('.calculate-intersection').show();
-		this.$('.edit-setting').hide();
+		$('.edit-setting').hide(); // hide all edit buttons
+		$('.delete-setting').hide(); // hide all delete buttons
+		$('.export-setting').hide(); // hide all export links.
+		$('.print-setting').hide(); // hide all print links.
 		this.$('#delete' + this.model.get('id')).hide();
 		this.$('#exportsetting' + this.model.get('id')).hide();
 		this.$('#printsetting' + this.model.get('id')).hide();
