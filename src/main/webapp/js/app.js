@@ -605,6 +605,7 @@ var SettingView = Backbone.View.extend({
 	},
 	
 	edit: function() {
+		$('.calculate-intersection').show();
 		$('.edit-setting').hide();
 	// 	$('.delete-setting').hide();
 		// we will hide delete button only for particular setting
@@ -635,6 +636,8 @@ var SettingView = Backbone.View.extend({
 	},
 	
 	update: function() {
+		$('.calculate-intersection').hide();
+		
 		this.model.set('id', $('.id-update').val());
 		this.model.set('name', $('.name-update').val());
 		// this.model.set('theLastEntry', $('.theLastEntry-update').val());
@@ -1029,54 +1032,6 @@ var ShowCurrentUser = Backbone.View.extend({
 	
 });
 
-var SettingPrintHeader = Backbone.View.extend({
-	model : CurrentEditedSetting,
-	
-	el: $('.print-header-holder'),
-	
-	initialize: function() {
-		template = _.template($('.setting-caption-template').html());
-	},
-
-	render: function() {
-		// console.log('Render caption called');
-		this.$el.html(this.template(this.model.toJSON()));
-		return this;
-	}
-});
-
-
-var SettingPrintSingleDetail = Backbone.View.extend({
-	model: new ConversionLine(),
-	
-	tagName: 'tr',
-	initialize: function() {
-		this.template = _.template($('.setting-print-details-template').html());
-	},
-	render: function() {
-		// this.$el.html(this.template(this.model.toJSON(), {variable: 'data'})({selection: true}));
-		this.$el.html(this.template(this.model.toJSON()));
-		return this;
-	}	
-	
-});
-
-var SettingPrintManyDetails = Backbone.View.extend({
-	model : CurrentEditedSetting.get('conversion'),
-	el: $('.settings-detail-print-list'),
-	
-	render: function() {
-		var self = this;
-		this.$el.html('');
-		_.each(this.model.models, function(setting) {
-			
-			self.$el.append((new SettingPrintSingleDetail({model: setting})).render().$el);
-		});
-		return this;
-	}
-});
-
-// http://estebanpastorino.com/2013/09/27/simple-file-uploads-with-backbone-dot-js/
 
 var TPsView = new transpondersPresentationView(); // show table
 
@@ -1101,9 +1056,15 @@ var ShowCurrentUserItem = new ShowCurrentUser();
 $(document).ready(function() {
 	
 	$('.add-setting').on('click', function() {
+		var newName = $('.name-input').val(); 
+		
+		if (newName == '') {
+			return;
+		}
+		
 		var setting = new Setting({
 			id : null,  // let's try to pretend it is new
-			name: $('.name-input').val(),
+			name: newName,
 			// theLastEntry : new Date(),
 			//theLastEntry : null,  // because we may have trouble parsing it, error 500
 			// we will use a trick and place a fixed string value in order to push it to the server
@@ -1136,6 +1097,9 @@ $(document).ready(function() {
 		// will refetch collection; Doesn't work
 		setting.set('theLastEntry', new Date());
 		settingsCollection.add(setting);
+		
+		// Hiding add setting button.
+		$('.add-setting').hide();
 		
 		editedCLTable.reset();
 		CurrentEditedSetting = new Setting();
@@ -1303,6 +1267,18 @@ $(document).ready(function() {
 	editedCLTable.renumerate();
 	CLEditViewItem.render();
 		
+	});
+	
+	// Managing visibility of Add setting button
+	$('.name-input').on('input', function() {
+		var textvalue =  $(this).val();
+		// console.log('Changed - ' + textvalue);
+		if (textvalue == '') {
+			$('.add-setting').hide();
+		}
+		else {
+			$('.add-setting').show();
+		}
 	});
 	
 	currentUsers.fetch({
