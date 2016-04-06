@@ -21,6 +21,9 @@
  <c:if test="${not empty viewErrMsg}" >
  <div style="color:Red;"> ${viewErrMsg}</div>
  </c:if>
+   <c:if test="${not empty viewMsg}" >
+ <div style="color:Green;"> ${viewMsg}</div>
+ </c:if>
       <table>
          <tr>
          <td>

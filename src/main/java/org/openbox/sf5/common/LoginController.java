@@ -94,7 +94,9 @@ public class LoginController {
 
 			model.addAttribute("username", user.getusername());
 			model.addAttribute("viewMsg", user.getusername() + " successfully registered!");
-			return "login";
+			// return "login";
+			// Let's redirect to html page
+			return "redirect:/index.html";
 
 		}
 
