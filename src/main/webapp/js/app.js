@@ -705,6 +705,8 @@ var SettingView = Backbone.View.extend({
 		editedCLTable.reset();
 		CurrentEditedSetting = new Setting();
 		SettingCaptionViewItem.render();
+		// enable input of new setting.
+		$('.name-input').show();
 	},
 	
 	cancel: function() {
@@ -714,7 +716,8 @@ var SettingView = Backbone.View.extend({
 		SettingsViewItem.render();
 		// as we cannot fire change event - rendering it explicitly.
 		SettingCaptionViewItem.render();
-		
+		// enable input of new setting.
+		$('.name-input').show();
 
 	},
 	
@@ -1046,6 +1049,9 @@ var SettingsView = Backbone.View.extend({
 		$('.export-setting').hide(); // hide all export links.
 		$('.print-setting').hide(); // hide all print links.
 		
+		// disabling entering new setting name
+		// console.log('Trying to disable name input');
+		$('.name-input').hide();
 	}
 	
 });
