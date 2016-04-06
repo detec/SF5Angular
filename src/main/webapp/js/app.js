@@ -641,6 +641,9 @@ var SettingView = Backbone.View.extend({
 		// this.model.set('theLastEntry', new Date());
 		this.model.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		this.model.set('user', currentUser);
+		
+		
+		editedCLTable.renumerate();
 		this.model.set('conversion', editedCLTable);
 		
 		// Here we should transform models.
