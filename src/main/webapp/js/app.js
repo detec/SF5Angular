@@ -605,15 +605,7 @@ var SettingView = Backbone.View.extend({
 	},
 	
 	edit: function() {
-		$('.calculate-intersection').show();
-		$('.edit-setting').hide();
-	// 	$('.delete-setting').hide();
-		// we will hide delete button only for particular setting
-		$('#delete' + this.model.get('id')).hide();
-		$('#exportsetting' + this.model.get('id')).hide();
-		$('#printsetting' + this.model.get('id')).hide();
-		this.$('.update-setting').show();
-		this.$('.cancel').show();
+		this.prepareElementsForUpdate();
 		
 		// showing table with conversion lines
 		CurrentEditedSetting = this.model;
@@ -633,12 +625,6 @@ var SettingView = Backbone.View.extend({
 		editedCLTable.reset(cleanArray);
 
 
-		var name = this.$('.name').html();
-		var theLastEntry = new Date();
-		var id = this.$('.id').html();
-
-		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
-		this.$('.id').html('<input type="text" readonly class="form-control id-update" value="' + id + '">');
 	},
 	
 	update: function() {
@@ -695,11 +681,12 @@ var SettingView = Backbone.View.extend({
 	},
 	
 	cancel: function() {
-
-		SettingsViewItem.render();
-		
 		editedCLTable.reset();
 		CurrentEditedSetting = new Setting();
+		
+		SettingsViewItem.render();
+		
+
 	},
 	
 	delete: function() {
@@ -715,8 +702,33 @@ var SettingView = Backbone.View.extend({
 	},
 	render: function() {
 		this.$el.html(this.template(this.model.toJSON()));
+		
+		// Let's update buttons.
+		if (CurrentEditedSetting.get('id') == this.model.get('id')) {
+			this.prepareElementsForUpdate();
+		}
 		return this;
 	}
+	
+	, prepareElementsForUpdate : function() {
+		
+		$('.calculate-intersection').show();
+		this.$('.edit-setting').hide();
+		this.$('#delete' + this.model.get('id')).hide();
+		this.$('#exportsetting' + this.model.get('id')).hide();
+		this.$('#printsetting' + this.model.get('id')).hide();
+		this.$('.update-setting').show();
+		this.$('.cancel').show();
+		
+
+		var name = this.$('.name').html();
+		var theLastEntry = new Date();
+		var id = this.$('.id').html();
+
+		this.$('.name').html('<input type="text" class="form-control name-update" value="' + name + '">');
+		this.$('.id').html('<input type="text" readonly class="form-control id-update" value="' + id + '">');
+	}
+	
 });
 
 var ConversionLineView = Backbone.View.extend({
@@ -1200,56 +1212,25 @@ $(document).ready(function() {
 	});
 	
 	$('.delete-selected-clines').on('click', function() {
-	
-		// This leads to an error of cyclic reference
-//		_.each(editedCLTable.models, function(cline) {
-//			if (cline.get('parent_id') == undefined) {
-//				cline.set('parent_id', CurrentEditedSetting);
-//		}			
-//		});
 		
 		editedCLTable.remove(selectedEditClinesArray.models);
 		selectedEditClinesArray.reset();
-		// console.log('Group deletion ended!')
+
 	});
 	
 	
 	$('.moveup-selected-clines').on('click', function() {
-//		var index = editedCLTable.indexOf(this.model);
-//		if (index == 0) {
-//			return;
-//		} 
-//		// console.log(index);
-//		editedCLTable.models.move(index, index - 1);
-//		// we should renumerate lines.
-//		editedCLTable.renumerate();
-//		CLEditViewItem.render();
-		
-		
-		// var selectedModels = selectedEditClinesArray.models;
+
 		// let's filter lines from bottom to top
 		var selectedModels = editedCLTable.where({checked: true});
 
 		_.each(selectedModels, function(cline) {
-
 			var currentIndex = editedCLTable.indexOf(cline);
-		//	console.log(currentIndex);
 			if (currentIndex > 0) {
-//				editedCLTable.models.splice(currentIndex - 1, 0, cline);
-//				editedCLTable.models.splice(currentIndex + 1, 1);
-				
-				// http://stackoverflow.com/questions/18292668/best-practice-for-moving-backbone-model-within-a-collection
-//				editedCLTable.remove(cline);
-//				editedCLTable.add(cline, {at: currentIndex - 1});
-				
 				editedCLTable.models.move(currentIndex, currentIndex - 1);
 			}
-					
 		});
 		
-
-		
-		// editedCLTable.reset(editedCLTable.models);
 		editedCLTable.renumerate();
 		CLEditViewItem.render();
 		
