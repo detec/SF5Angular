@@ -106,6 +106,9 @@ var Setting = Backbone.Model.extend({
 		
 	, urlRoot : '/jaxrs/usersettings/'
 		
+	,	defaults: {
+		name : ''
+	}		
 		// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	, parse: function(response){
 		return response;
@@ -353,8 +356,6 @@ var transponderPresentationView = Backbone.View.extend({
 	
 	addtransponder: function() {
 
-	//	var conversionTable = CurrentEditedSetting.get('conversion');
-	// 	console.log(JSON.stringify(conversionTable));
 		var newLine = new ConversionLine();
 		newLine.set('transponder', this.model);
 		// It seems that it fails at cyclic references.
@@ -364,11 +365,7 @@ var transponderPresentationView = Backbone.View.extend({
 		newLine.set('frequency', this.model.get('frequency'));
 		var sat = this.model.get('satellite');
 		newLine.set('satellitename', sat.name);
-		// .get('name')
-		// Let's do as reset because it works in another cases.
-		// var clone = editedCLTable.clone();
-		// clone.push(newLine);
-		//editedCLTable.reset(clone);
+
 		editedCLTable.push(newLine);
 	}
 	, onTransponderCheckboxClick : function(e) {
@@ -651,6 +648,8 @@ var SettingView = Backbone.View.extend({
 		
 		editedCLTable.cleanReset(CurrentEditedSetting.get('conversion'));
 
+		// as we cannot fire change event - rendering it explicitly.
+		SettingCaptionViewItem.render();
 
 	},
 	
@@ -705,6 +704,7 @@ var SettingView = Backbone.View.extend({
 		// clearing currently edited setting
 		editedCLTable.reset();
 		CurrentEditedSetting = new Setting();
+		SettingCaptionViewItem.render();
 	},
 	
 	cancel: function() {
@@ -712,6 +712,8 @@ var SettingView = Backbone.View.extend({
 		CurrentEditedSetting = new Setting();
 		
 		SettingsViewItem.render();
+		// as we cannot fire change event - rendering it explicitly.
+		SettingCaptionViewItem.render();
 		
 
 	},
@@ -1064,14 +1066,17 @@ var SettingCaptionView = Backbone.View.extend({
 		
 	//	this.listenTo(this.model, 'change:id', this.render);
 		
-		// this.model.on("change", this.render /*function to call*/, this);
+	this.model.on("change:name", this.render /*function to call*/, this);
 		
 		
 	},
 	
 	render: function() {
 		// console.log('Render caption called');
-		this.$el.html(this.template(this.model.toJSON()));
+		this.$el.html('');
+	//	this.$el.html(this.template(this.model.toJSON()));
+		// In some cases model is not listed among attributes.
+		this.$el.html(this.template(CurrentEditedSetting.toJSON()));
 		return this;
 	}
 	
