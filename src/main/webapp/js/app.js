@@ -231,7 +231,27 @@ var ConversionCollection = Backbone.Collection.extend({
 		});
 		
 
+	},
+	
+	// let's override default function
+	cleanReset : function(incomingArray) {
+		
+	//	console.log('Overridden reset called');
+		var cleanArray = [];
+
+		_.each(incomingArray, function(cline) {
+			if (cline == null || cline == undefined) {
+			}
+			else {
+				cleanArray.push(cline);
+			}
+		});
+		
+		this.reset(cleanArray);
+		
 	}
+
+
 });
 
 var Satellites = Backbone.Collection.extend({
@@ -566,21 +586,21 @@ var SettingsDropdown = Backbone.View.extend({
        	
        	
        	// We need to filter lines of setting.
-		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
-		// sometimes null object may appear, it causes error.
-		var cleanArray = [];
-
-		_.each(collectionOfLines, function(cline) {
-			if (cline == null || cline == undefined) {
-			}
-			else {
-				cleanArray.push(cline);
-			}
-		});
-		
-		selectedCLTable.reset(cleanArray);      	
+//		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
+//		// sometimes null object may appear, it causes error.
+//		var cleanArray = [];
+//
+//		_.each(collectionOfLines, function(cline) {
+//			if (cline == null || cline == undefined) {
+//			}
+//			else {
+//				cleanArray.push(cline);
+//			}
+//		});
+//		
+//		selectedCLTable.reset(cleanArray);      	
        	
-       	
+       	selectedCLTable.cleanReset(CurrentSelectionSetting.get('conversion'));
        	
      //  	selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
        	// console.log('Length of lines table in selected setting: ' + selectedCLTable.length);
@@ -612,19 +632,21 @@ var SettingView = Backbone.View.extend({
 		// showing table with conversion lines
 		CurrentEditedSetting = this.model;
 		
-		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
-		// sometimes null object may appear, it causes error.
-		var cleanArray = [];
-
-		_.each(collectionOfLines, function(cline) {
-			if (cline == null || cline == undefined) {
-			}
-			else {
-				cleanArray.push(cline);
-			}
-		});
+//		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
+//		// sometimes null object may appear, it causes error.
+//		var cleanArray = [];
+//
+//		_.each(collectionOfLines, function(cline) {
+//			if (cline == null || cline == undefined) {
+//			}
+//			else {
+//				cleanArray.push(cline);
+//			}
+//		});
+//		
+//		editedCLTable.reset(cleanArray);
 		
-		editedCLTable.reset(cleanArray);
+		editedCLTable.cleanReset(CurrentEditedSetting.get('conversion'));
 
 
 	},
@@ -1168,19 +1190,21 @@ $(document).ready(function() {
 		
 		//selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
        	//	We need to filter lines of setting.
-		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
-		// sometimes null object may appear, it causes error.
-		var cleanArray = [];
-
-		_.each(collectionOfLines, function(cline) {
-			if (cline == null || cline == undefined) {
-			}
-			else {
-				cleanArray.push(cline);
-			}
-		});
+//		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
+//		// sometimes null object may appear, it causes error.
+//		var cleanArray = [];
+//
+//		_.each(collectionOfLines, function(cline) {
+//			if (cline == null || cline == undefined) {
+//			}
+//			else {
+//				cleanArray.push(cline);
+//			}
+//		});
+//		
+//		selectedCLTable.reset(cleanArray); 
 		
-		selectedCLTable.reset(cleanArray); 
+		selectedCLTable.cleanReset(CurrentSelectionSetting.get('conversion'));
 		
 	});
 	
