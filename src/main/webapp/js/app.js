@@ -221,7 +221,7 @@ var Transponders = Backbone.Collection.extend({
 var ConversionCollection = Backbone.Collection.extend({
 	model : ConversionLine,
 	
-	renumerate : function() {
+	renumber : function() {
 		var self = this;
 	
 		// actual renumbering
@@ -662,7 +662,7 @@ var SettingView = Backbone.View.extend({
 		this.model.set('user', currentUser);
 		
 		
-		editedCLTable.renumerate();
+		editedCLTable.renumber();
 		this.model.set('conversion', editedCLTable);
 		
 		// Here we should transform models.
@@ -856,8 +856,8 @@ var ConversionLineView = Backbone.View.extend({
 		} 
 		// console.log(index);
 		editedCLTable.models.move(index, index - 1);
-		// we should renumerate lines.
-		editedCLTable.renumerate();
+		// we should renumber lines.
+		editedCLTable.renumber();
 		CLEditViewItem.render();
 		// console.log('Moved up!');
 
@@ -871,7 +871,7 @@ var ConversionLineView = Backbone.View.extend({
 		}
 		editedCLTable.models.move(index, index + 1);
 		// console.log(index);
-		editedCLTable.renumerate();
+		editedCLTable.renumber();
 	}
 	
 	, onEditClineCheckboxClick : function() {
@@ -1048,7 +1048,7 @@ var SettingCaptionView = Backbone.View.extend({
 	},
 	
 	render: function() {
-		console.log('Render caption called');
+		// console.log('Render caption called');
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	}
@@ -1110,7 +1110,7 @@ $(document).ready(function() {
 		$('.name-input').val('');
 
 		
-		editedCLTable.renumerate();
+		editedCLTable.renumber();
 		
 		setting.save(null, {
 			success: function(response) {
@@ -1206,6 +1206,8 @@ $(document).ready(function() {
 		
 		selectedCLTable.cleanReset(CurrentSelectionSetting.get('conversion'));
 		
+		editedCLTable.renumber();
+		
 	});
 	
 	$('.calculate-intersection').on('click', function() {
@@ -1222,7 +1224,7 @@ $(document).ready(function() {
 		CurrentEditedSetting.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		CurrentEditedSetting.set('user', currentUser);
 
-		editedCLTable.renumerate();
+		editedCLTable.renumber();
 		CurrentEditedSetting.set('conversion', editedCLTable);
 		
 		var idparam = (CurrentEditedSetting.get('id') == undefined) ? '' : CurrentEditedSetting.get('id');
@@ -1283,7 +1285,7 @@ $(document).ready(function() {
 			}
 		});
 		
-		editedCLTable.renumerate();
+		editedCLTable.renumber();
 		CLEditViewItem.render();
 		
 	});
@@ -1303,7 +1305,7 @@ $(document).ready(function() {
 								
 		});
 
-	editedCLTable.renumerate();
+	editedCLTable.renumber();
 	CLEditViewItem.render();
 		
 	});
