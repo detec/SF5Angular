@@ -224,25 +224,13 @@ var ConversionCollection = Backbone.Collection.extend({
 	renumerate : function() {
 		var self = this;
 	
-		// trying to remove undefined lines
-//		_.each(self, function(cline) {
-//			if (cline == undefined) {
-//				self.remove(cline);
-//			}
-//		});
-		
 		// actual renumbering
 		_.each(self.models, function(cline) {
 			var index = self.models.indexOf(cline);
 			cline.set('lineNumber', index + 1);
 		});
 		
-//		self = this;
-//		
-//		_.each(self, function(cline) {
-//			var index = self.indexOf(cline);
-//			cline.set('lineNumber', index + 1);
-//		});
+
 	}
 });
 
@@ -575,12 +563,25 @@ var SettingsDropdown = Backbone.View.extend({
        		console.log('Setting with id ' + settingId + ' not found!');
        	}
        	
-       	// Let's not fetch setting as it may change the collection. Checked - it really re-renders this element.
-       	// CurrentSelectionSetting.fetch();
        	
-       	// not just get property but construct an instance of Backbone collection. This works!
-       	// selectedCLTable = CurrentSelectionSetting.get('conversion');
-       	selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+       	// We need to filter lines of setting.
+		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
+		// sometimes null object may appear, it causes error.
+		var cleanArray = [];
+
+		_.each(collectionOfLines, function(cline) {
+			if (cline == null || cline == undefined) {
+			}
+			else {
+				cleanArray.push(cline);
+			}
+		});
+		
+		selectedCLTable.reset(cleanArray);      	
+       	
+       	
+       	
+     //  	selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
        	// console.log('Length of lines table in selected setting: ' + selectedCLTable.length);
 
        	
@@ -717,6 +718,7 @@ var SettingView = Backbone.View.extend({
 		$('.delete-setting').hide(); // hide all delete buttons
 		$('.export-setting').hide(); // hide all export links.
 		$('.print-setting').hide(); // hide all print links.
+		this.$('.edit-setting').hide(); // this button was shown after intersection calculation
 		this.$('#delete' + this.model.get('id')).hide();
 		this.$('#exportsetting' + this.model.get('id')).hide();
 		this.$('#printsetting' + this.model.get('id')).hide();
@@ -884,13 +886,7 @@ var CLSelectionView = Backbone.View.extend({
 
 		// None of the commented listeners work
 	this.listenTo(this.model, 'reset', this.render); 
-	//	this.model.on('sync',this.render,this);
-		
-//		this.model.on('change', function() {
-//			setTimeout(function() {
-//				self.render();
-//			}, 20);
-//		},this);	
+	
 	}
 
 	, render: function() {
@@ -928,12 +924,13 @@ var CLEditView = Backbone.View.extend({
 	
 	initialize: function() {
 		var self = this;
-		// let's assign a model
-		
-//		console.log(JSON.stringify(this.model));
-		// this.model = new ConversionCollection();
+
 		this.model.on('push', this.render, this);
 		this.model.on('add', this.render, this);
+		
+		// trying to automatically refresh table on change.
+		// It causes too many problems.
+		// this.model.on('change', this.render, this);
 		
 		// we need to control 'selection' attribute programmatically
 //		this.model.on('change', function() {
@@ -1018,23 +1015,17 @@ var SettingCaptionView = Backbone.View.extend({
 		
 		this.template = _.template($('.setting-caption-template').html());
 		
-		this.listenTo(this.model, 'change', this.render); 
-//		this.model.on('change', 
-//				
-//				function() {
-//			setTimeout(function() {
-//				self.render();
-//			}, 30);
-//		},this);
-//		this.render;
+	//	this.listenTo(this.model, 'change', this.render); 
 		
 	//	this.listenTo(this.model, 'change:id', this.render);
+		
+		// this.model.on("change", this.render /*function to call*/, this);
 		
 		
 	},
 	
 	render: function() {
-		// console.log('Render caption called');
+		console.log('Render caption called');
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	}
@@ -1065,7 +1056,6 @@ var SettingsDD = new SettingsDropdown();
 
 var SelectSettingCLView = new CLSelectionView();
 
-// var CLEditViewItem = new CLEditView({model : CurrentEditedSetting.get('conversion') });
 var CLEditViewItem = new CLEditView();
 
 var SettingCaptionViewItem = new SettingCaptionView();
@@ -1191,7 +1181,8 @@ $(document).ready(function() {
 		// this.model.set('theLastEntry', new Date());
 		CurrentEditedSetting.set('theLastEntry', '2016-02-10T16:28:23+0200');
 		CurrentEditedSetting.set('user', currentUser);
-		// Here GUI properties as 'selection' pass to model.
+
+		editedCLTable.renumerate();
 		CurrentEditedSetting.set('conversion', editedCLTable);
 		
 		var idparam = (CurrentEditedSetting.get('id') == undefined) ? '' : CurrentEditedSetting.get('id');
@@ -1208,6 +1199,24 @@ $(document).ready(function() {
 			}
 		});
 		
+		// This code removes the whole table.
+//		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
+//		// sometimes null object may appear, it causes error.
+//		var cleanArray = [];
+//
+//		_.each(collectionOfLines, function(cline) {
+//			if (cline == null || cline == undefined) {
+//			}
+//			else {
+//				cleanArray.push(cline);
+//			}
+//		});
+//		
+//		editedCLTable.reset(cleanArray);
+//		CLEditViewItem.render();
+		
+		// editedCLTable.reset(CurrentEditedSetting.get('conversion'));
+		// CLEditViewItem.render();
 
 		// selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
 		// It is already in the list as we do not calculate intersection on new setting.
