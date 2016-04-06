@@ -375,6 +375,7 @@ var transponderPresentationView = Backbone.View.extend({
 	
 });
 
+
 // View for a table of transponders
 
 var transpondersPresentationView = Backbone.View.extend({
@@ -1164,7 +1165,22 @@ $(document).ready(function() {
 		});
 		
 		selectedClinesArray.reset();
-		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+		
+		//selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+       	//	We need to filter lines of setting.
+		var collectionOfLines = CurrentSelectionSetting.get('conversion'); 
+		// sometimes null object may appear, it causes error.
+		var cleanArray = [];
+
+		_.each(collectionOfLines, function(cline) {
+			if (cline == null || cline == undefined) {
+			}
+			else {
+				cleanArray.push(cline);
+			}
+		});
+		
+		selectedCLTable.reset(cleanArray); 
 		
 	});
 	
