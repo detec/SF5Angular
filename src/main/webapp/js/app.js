@@ -618,14 +618,20 @@ var SettingView = Backbone.View.extend({
 		// showing table with conversion lines
 		CurrentEditedSetting = this.model;
 		
-		editedCLTable.reset(CurrentEditedSetting.get('conversion'));
-		// we should manually update parent_id because it becomes undefined.
-		// probably causes error with cyclic reference
-//		_.each(editedCLTable.models, function(cline) {
-//			if (cline.get('parent_id') == undefined) {
-//				cline.set('parent_id', CurrentEditedSetting);
-//		}			
-//		});
+		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
+		// sometimes null object may appear, it causes error.
+		var cleanArray = [];
+
+		_.each(collectionOfLines, function(cline) {
+			if (cline == null || cline == undefined) {
+			}
+			else {
+				cleanArray.push(cline);
+			}
+		});
+		
+		editedCLTable.reset(cleanArray);
+
 
 		var name = this.$('.name').html();
 		var theLastEntry = new Date();
@@ -1187,10 +1193,10 @@ $(document).ready(function() {
 			}
 		});
 		
-		// re-reading after calculation
-		// CurrentEditedSetting.fetch();
-		selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
-		settingsCollection.add(CurrentEditedSetting);
+
+		// selectedCLTable.reset(CurrentSelectionSetting.get('conversion'));
+		// It is already in the list as we do not calculate intersection on new setting.
+		// settingsCollection.add(CurrentEditedSetting);
 	});
 	
 	$('.delete-selected-clines').on('click', function() {
