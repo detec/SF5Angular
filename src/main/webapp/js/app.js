@@ -28,7 +28,7 @@ var User = Backbone.Model.extend({
     // http://stackoverflow.com/questions/17451831/backbone-nested-collection
     
     parse: function(response) {
-    //	console.log('Parse in user called');
+    //	console.log('Parsing user called');
             this.authorities = new UserAuthorityCollection(response.authorities, {
                 parse: true
             });
@@ -264,6 +264,10 @@ var UsersCollection = Backbone.Collection.extend({
 	model : User,
 	url : '/jaxrs/users/'
 	
+//	, parse: function (response) { 
+//		 	console.log('Collection - parse'); 
+//		 	this.reset(response);				 
+//		} 
 });
 
 
@@ -292,6 +296,9 @@ var settingsCollection = new Settings();
 CurrentSelectionSetting = new Setting();
 
 CurrentEditedSetting = new Setting();
+
+// Let's specify variable for collection of users
+var usersToManage = new UsersCollection();
 
 // for keeping selected transponders
 var selectedTranspondersArray = new TransponderPresentations();
@@ -1105,6 +1112,7 @@ var UserView = Backbone.View.extend({
 	},
 	
 	render: function() {
+		// console.log('Rendering user line');
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	},
@@ -1149,10 +1157,48 @@ var UserView = Backbone.View.extend({
 
 var UsersTableView = Backbone.View.extend({
 	
-	model : new UsersCollection(),
-	el: $('.settings-caption'),
+	model : usersToManage,
+	el: $('.users-list'),
+	
+	initialize : function() {
+		
+//		this.model.on('add', this.render, this);
+		
+		this.model.on('change', function() {
+			setTimeout(function() {
+				self.render();
+			}, 30);
+		},this);
+
+		var self = this;
+		
+		this.model.fetch({
+			success: function(response) {
+				_.each(response.toJSON(), function(user) {
+					// console.log('Successfully GOT user with id: ' + user.id);
+				});
+				
+				// we have already redefined fetch function
+				self.render();
+			},
+			error: function() {
+				console.log('Failed to get users!');
+			}
+		});
+		
+		this.listenTo(this.model, 'reset', this.render); 
+		
+	},
+	
+	
+	// http://www.sagarganatra.com/2013/06/backbone-collections-do-not-emit-reset-event-after-fetch.html
+	fetch: function (options) { 
+	 	options.reset = true; 
+	 	return Backbone.Collection.prototype.fetch.call(this, options); 
+	 } ,
 	
 	render: function() {
+		// console.log('Rendering UsersTableView, user count: ' + this.model.length);
 		var self = this;
 		
 		this.$el.html('');
@@ -1165,40 +1211,50 @@ var UsersTableView = Backbone.View.extend({
 	}
 });
 
-var SF5SettingsView = Backbone.View.extend({
-	
-	el: $('#sf5-settings-page'),
-	
-	render: function() {
-		this.$el.show();
-		return this;
-	},
-	
-	initialize : function() {
-		// Here we should initialize all variables and views that this page contains.
-		var TPsView = new transpondersPresentationView(); // show table
-
-		var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
-
-		var SettingsViewItem = new SettingsView();
-
-
-		var SettingsDD = new SettingsDropdown();
-
-		var SelectSettingCLView = new CLSelectionView();
-
-		var CLEditViewItem = new CLEditView();
-
-		var SettingCaptionViewItem = new SettingCaptionView();
-		SettingCaptionViewItem.render();
-		
-	}
-	
-});
+//var SF5SettingsView = Backbone.View.extend({
+//	
+//	el: $('#sf5-settings-page'),
+//	
+//	render: function() {
+//		this.$el.show();
+//		return this;
+//	},
+//	
+//	initialize : function() {
+//		// Here we should initialize all variables and views that this page contains.
+//		var TPsView = new transpondersPresentationView(); // show table
+//
+//		var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
+//
+//		var SettingsViewItem = new SettingsView();
+//
+//
+//		var SettingsDD = new SettingsDropdown();
+//
+//		var SelectSettingCLView = new CLSelectionView();
+//
+//		var CLEditViewItem = new CLEditView();
+//
+//		var SettingCaptionViewItem = new SettingCaptionView();
+//		SettingCaptionViewItem.render();
+//		
+//	}
+//	
+//});
 
 var UsersPageView = Backbone.View.extend({
 	
 	el: $('#users-page'),
+	
+	initialize: function() {
+		
+		if (UsersTableViewItem == undefined) {
+			// console.log('Initializing UsersTableView');
+			UsersTableViewItem = new UsersTableView();
+			// UsersTableViewItem.render();
+		}
+		
+	},
 	
 	render: function() {
 		this.$el.show();
@@ -1216,12 +1272,14 @@ var SwitchTab = Backbone.View.extend({
 	
 	initialize: function() {
 		this.template = _.template($('.switcher-buttons-template').html());
+		
+
 	},
 	
 	render: function() {
 		this.$el.html('');
 		var arrayAuthorities = currentUser.get('authorities');
-		var collectionAuthorities = new UsersCollection(arrayAuthorities);
+		var collectionAuthorities = new UserAuthorityCollection(arrayAuthorities);
 		
 		var isAdmin = (collectionAuthorities.where({authority : 'ROLE_ADMIN'}).length > 0);
 	//	console.log(isAdmin);
@@ -1242,6 +1300,10 @@ var SwitchTab = Backbone.View.extend({
 	},
 	
 	switchUsers : function() {
+		if (UsersPageViewItem == undefined) {
+			UsersPageViewItem = new UsersPageView();
+		}
+		
 		$('#sf5-settings-page').hide();
 		$('#users-page').show();
 	}
@@ -1270,6 +1332,10 @@ SettingCaptionViewItem.render();
 var ShowCurrentUserItem = new ShowCurrentUser();
 
 var SwitchTabItem = new SwitchTab();
+
+var UsersPageViewItem = undefined;
+
+var UsersTableViewItem = undefined;
 
 $(document).ready(function() {
 	

@@ -434,7 +434,7 @@
 		<td><span class="userenabled"><%= enabled %></span></td>
 		<td><span class="list">
 			<% _(authorities).each(function(t) { %>
-    		<%= t.authority %><%= (authorities.indexOf(t) == authorities.length + 1) ? "" : "," %>   
+    		<%= t.authority %><%= (authorities.indexOf(t) + 1 == authorities.length) ? "" : "," %>   
 			<% }); %>
 		</span></td>
 
