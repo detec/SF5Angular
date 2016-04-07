@@ -24,6 +24,50 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @RequestMapping(value = "${jaxrs.path}/users/")
 public class UsersService {
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<Users>> getAllUsers() throws NotAuthenticatedException {
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		if (currentUser == null) {
+
+			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
+		}
+
+		List<Users> listOfUsers = new ArrayList<Users>();
+		listOfUsers = usersJsonizer.getAllUsers();
+		return new ResponseEntity<List<Users>>(listOfUsers, HttpStatus.OK);
+
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "{userId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Users> deleteUser(@PathVariable("userId") long userId) {
+		Users user = null;
+		try {
+			user = usersJsonizer.getUserById(userId);
+		} catch (Exception e) {
+			throw new IllegalStateException("Error getting user from database!", e);
+		}
+
+		if (user == null) {
+
+			throw new IllegalArgumentException("No user found in database for id: " + userId);
+		}
+
+		if (user.getauthorities().contains("ROLE_ADMIN")) {
+			throw new IllegalArgumentException("Cannot delete administrative user!");
+		}
+
+		try {
+			usersJsonizer.removeUser(userId);
+		} catch (Exception e) {
+			throw new IllegalStateException("Error deleting user from database with id: " + userId);
+		}
+
+		return new ResponseEntity<Users>(HttpStatus.NO_CONTENT);
+
+	}
+
 	// https://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html
 	// We allow only for admin and enabled user.
 	// @PreAuthorize("hasRole('ROLE_ADMIN') or (#login == principal and
@@ -49,19 +93,23 @@ public class UsersService {
 
 	// @PreAuthorize("hasRole('ROLE_ADMIN')") // if new user registers -
 	// anonymous access is needed.
-	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public ResponseEntity<Long> createUser(@RequestBody Users user)
+	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
+											// with REST.
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Users> saveUser(@RequestBody Users user)
 			throws IllegalArgumentException, IllegalStateException {
 		// check if such user exists.
-		Boolean result = usersJsonizer.checkIfUsernameExists(user.getusername());
-		if (result) {
-			// return new ResponseEntity<Long>(HttpStatus.ACCEPTED);
-			throw new IllegalArgumentException("Not created! Username already exists.");
-		}
+		// Boolean result =
+		// usersJsonizer.checkIfUsernameExists(user.getusername());
+		// if (result) {
+		// // return new ResponseEntity<Long>(HttpStatus.ACCEPTED);
+		// throw new IllegalArgumentException("Not created! Username already
+		// exists.");
+		// }
 		HttpStatus statusResult = null;
 
 		try {
-			statusResult = usersJsonizer.saveNewUser(user);
+			statusResult = usersJsonizer.saveUser(user);
 		}
 
 		catch (Exception e) {
@@ -73,7 +121,9 @@ public class UsersService {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("UserId", Long.toString(user.getId()));
-		return new ResponseEntity<Long>(new Long(user.getId()), headers, HttpStatus.CREATED);
+		// return new ResponseEntity<Long>(new Long(user.getId()), headers,
+		// HttpStatus.CREATED);
+		return new ResponseEntity<Users>(user, headers, statusResult);
 	}
 
 	@RequestMapping(value = "exists/username/{login}", method = RequestMethod.GET)

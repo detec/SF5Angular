@@ -13,14 +13,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsersJsonizer {
 
-	public HttpStatus saveNewUser(Users user) {
+	public Users getUserById(long userId) {
+		return objectsController.select(Users.class, userId);
+	}
+
+	public void removeUser(long userId) {
+		objectsController.remove(Users.class, userId);
+	}
+
+	public HttpStatus saveUser(Users user) {
 		long id = user.getId();
 		// if we receive non-empty id
-		if (id != 0) {
-			return HttpStatus.CONFLICT;
-		}
+		// if (id != 0) {
+		// return HttpStatus.CONFLICT;
+		// }
+
+		HttpStatus statusResult = (id != 0) ? HttpStatus.OK : HttpStatus.CREATED;
+
 		objectsController.saveOrUpdate(user);
-		return HttpStatus.CREATED;
+		return statusResult;
 
 	}
 
@@ -39,6 +50,12 @@ public class UsersJsonizer {
 		}
 		returnUser = userList.get(0);
 		return returnUser;
+	}
+
+	public List<Users> getAllUsers() {
+		List<Users> listOfUsers = objectsController.ObjectsList(Users.class);
+		return listOfUsers;
+
 	}
 
 	// returns false if there is no such user. Otherwise - false.
