@@ -12,7 +12,10 @@ var Satellite = Backbone.Model.extend({
 });
 
 var User = Backbone.Model.extend({
+		
 	idAttribute: 'id'
+	, urlRoot : '/jaxrs/users/'
+		
 	, initialize: function() {
     },
     
@@ -72,20 +75,6 @@ var ConversionLine = Backbone.Model.extend({
 		, transponder: transponder
 		, checked : false
 	}
-//	,
-//	parse: function (response) {
-//		this.parent_id = new Setting(response.conversion.parent_id || null, {
-//			parse : true
-//		});
-//		
-//		this.transponder = new transponder(response.conversion.transponder || null, {
-//			parse : true
-//		});
-//		
-//		delete response.conversion.parent_id;
-//		delete response.conversion.transponder;
-//		return response;
-//	}
 
 	// 	http://stackoverflow.com/questions/6535948/nested-models-in-backbone-js-how-to-approach
 	, parse: function(response){
@@ -271,6 +260,12 @@ var CurrentUsersCollection = Backbone.Collection.extend({
 	
 });
 
+var UsersCollection = Backbone.Collection.extend({
+	model : User,
+	url : '/jaxrs/users/'
+	
+});
+
 
 var Settings = Backbone.Collection.extend({
 	model : Setting,
@@ -289,7 +284,6 @@ var UserAuthorityCollection = Backbone.Collection.extend({
 var satellitesCollection = new Satellites();
 
 var transponderPresentations = new TransponderPresentations();
-// transponderPresentations = new TransponderPresentations();
 
 var transponders = new Transponders();
 
@@ -1101,6 +1095,160 @@ var ShowCurrentUser = Backbone.View.extend({
 });
 
 
+var UserView = Backbone.View.extend({
+	model : new User(),
+	tagName: 'tr',
+	
+	initialize: function() {
+		this.template = _.template($('.userline-template').html());
+		this.listenTo(this.model, 'change', this.render); 
+	},
+	
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
+	
+	events: {
+		'click .toggle-user-state': 'toggleUserState',
+		'click .remove-user' : 'removeUser'
+	},
+	
+	toggleUserState : function() {
+		var currentState = this.model.get('enabled');
+		this.model.set('enabled', !currentState);
+		
+		this.model.save(null, {
+			success: function(response) {
+				console.log('Successfully updated user with id: ' + response.toJSON().id);
+			},
+	    error: function(model, error) {
+	        console.log(error.responseText);
+	    }
+		
+		,
+		headers: {'Content-Type' :'application/json', 'Accept' : 'application/json'}
+		
+		});
+		
+	},
+	
+	removeUser : function() {
+		this.model.destroy({
+			success: function(response) {
+				console.log('Successfully DELETED user with id: ' + response.toJSON().id);
+
+			},
+			error: function(error) {
+				console.log(error.responseText);
+			}
+		});
+	}
+	
+});
+
+var UsersTableView = Backbone.View.extend({
+	
+	model : new UsersCollection(),
+	el: $('.settings-caption'),
+	
+	render: function() {
+		var self = this;
+		
+		this.$el.html('');
+		_.each(this.model.toArray(), function(user) {
+			self.$el.append((new UserView({model: user})).render().$el);
+
+		});
+
+		return this;
+	}
+});
+
+var SF5SettingsView = Backbone.View.extend({
+	
+	el: $('#sf5-settings-page'),
+	
+	render: function() {
+		this.$el.show();
+		return this;
+	},
+	
+	initialize : function() {
+		// Here we should initialize all variables and views that this page contains.
+		var TPsView = new transpondersPresentationView(); // show table
+
+		var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
+
+		var SettingsViewItem = new SettingsView();
+
+
+		var SettingsDD = new SettingsDropdown();
+
+		var SelectSettingCLView = new CLSelectionView();
+
+		var CLEditViewItem = new CLEditView();
+
+		var SettingCaptionViewItem = new SettingCaptionView();
+		SettingCaptionViewItem.render();
+		
+	}
+	
+});
+
+var UsersPageView = Backbone.View.extend({
+	
+	el: $('#users-page'),
+	
+	render: function() {
+		this.$el.show();
+		return this;
+	}
+
+});
+
+// This view should switch between settings and users.
+
+var SwitchTab = Backbone.View.extend({
+	model : currentUser,
+	
+	el: $('.tab-switch-div'),
+	
+	initialize: function() {
+		this.template = _.template($('.switcher-buttons-template').html());
+	},
+	
+	render: function() {
+		this.$el.html('');
+		var arrayAuthorities = currentUser.get('authorities');
+		var collectionAuthorities = new UsersCollection(arrayAuthorities);
+		
+		var isAdmin = (collectionAuthorities.where({authority : 'ROLE_ADMIN'}).length > 0);
+	//	console.log(isAdmin);
+		currentUser.set('isadmin', isAdmin);
+		
+		this.$el.html(this.template(currentUser.toJSON()));
+		return this;
+	},
+	
+	events : {
+		'click .switch-settings': 'switchSettings',
+		'click .switch-users' : 'switchUsers'
+	},
+	
+	switchSettings : function() {
+		$('#sf5-settings-page').show();
+		$('#users-page').hide();
+	},
+	
+	switchUsers : function() {
+		$('#sf5-settings-page').hide();
+		$('#users-page').show();
+	}
+	
+});
+
+// These views are included into default settings view
 var TPsView = new transpondersPresentationView(); // show table
 
 var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
@@ -1117,8 +1265,11 @@ var CLEditViewItem = new CLEditView();
 var SettingCaptionViewItem = new SettingCaptionView();
 SettingCaptionViewItem.render();
 
+// End of included into article views
+
 var ShowCurrentUserItem = new ShowCurrentUser();
 
+var SwitchTabItem = new SwitchTab();
 
 $(document).ready(function() {
 	
@@ -1158,10 +1309,7 @@ $(document).ready(function() {
 		
 		});
 
-//		setting.save();	
-		
-		// MyCollection.fetch( { headers: {'Authorization' :'Basic USERNAME:PASSWORD'} } );
-		// will refetch collection; Doesn't work
+
 		setting.set('theLastEntry', new Date());
 		settingsCollection.add(setting);
 		
@@ -1338,12 +1486,11 @@ $(document).ready(function() {
 	
 	currentUsers.fetch({
 		success: function(collection){
-	    // Callback triggered only after receiving the data.
-	 //  console.log(collection.length);
 		currentUser = currentUsers.at(0);
-		// console.log(currentUser.get("username"));
 	  
-	  ShowCurrentUserItem.render();
+		ShowCurrentUserItem.render();
+	  
+		SwitchTabItem.render();
 	  
 	},
 	error: function() {
@@ -1354,6 +1501,69 @@ $(document).ready(function() {
 
 })
 
+
+
+
+//var Workspace = Backbone.Router.extend({
+//
+//	routes: {
+//		"sf5settings": "sf5settings",
+//		
+//		"users": 		"users"
+//		
+//	},
+//
+//	initialize : function() {
+//		// Start the router.
+//		Backbone.history.start();
+//	},
+//	
+//	sf5settings : function {
+//		var SF5SettingsViewItem = new SF5SettingsView();
+//		
+//		ViewManager.showView(SF5SettingsViewItem);
+//		
+//	},
+//	
+//	users : function() {
+//		var UsersPageViewItem = new UsersPageView(); 
+//			
+//		var UsersTableViewItem = new UsersTableView();
+//		UsersTableViewItem.render();
+//		
+//		ViewManager.showView(UsersPageViewItem);
+//		
+//	}
+//	
+//});	
+
+
+// Trying to start router
+//var WorkspaceItem = new Workspace();
+
+// http://stackoverflow.com/questions/22184049/how-to-switch-views-with-the-backbone-js-router
+
+var ViewManager = {
+        // A property to store the current view being displayed.
+		currentView : null,
+
+        // Display a Backbone View. Closes the previously displayed view gracefully.
+		showView : function (view) {
+            // Close the previous view
+			if(this.currentView != null) {
+                // Invoke the close method on the view.
+                // All views have this method, defined via the 'Backbone.View.prototype.close' method.
+				this.currentView.close();
+			}
+
+            // Display the current view
+			this.currentView = view;
+			return this.currentView.render();
+		}
+	};
+
+
+
 Array.prototype.move = function (old_index, new_index) {
     if (new_index >= this.length) {
         var k = new_index - this.length;
@@ -1363,4 +1573,14 @@ Array.prototype.move = function (old_index, new_index) {
     }
     this.splice(new_index, 0, this.splice(old_index, 1)[0]);
     return this; // for testing purposes
+};
+
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] == obj) {
+            return true;
+        }
+    }
+    return false;
 };

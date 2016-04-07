@@ -23,7 +23,12 @@
 		</td>
 		</tr>
 		</table>
-		
+		<div class="tab-switch-div">
+
+		</div>
+		<section>
+
+		<article id="sf5-settings-page" data-role="page" data-title="OpenBox SF-5 settings">
 		<table  class="table">
 		<tr>
 			<td>
@@ -194,7 +199,28 @@
          	</table>
          	</td>
          	</tr>
-         </table>
+         	</table>
+          </article> <!-- End of Openbox SF-5 settings -->
+          
+          <article id="users-page" data-role="page" data-title="User administration" style="display:none;">
+          <h3>List of users</h3>
+          <table  class="table">
+        	<thead>
+            <tr>
+            <th>Action</th>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Enabled</th>
+            <th>List of roles</th>
+
+            </tr>
+            </thead>
+            <tbody class="users-list">
+            
+            </tbody>          
+          </table>
+          </article>
+         </section>
 	</div>
 
 <!-- 	<td><span class="selection checkbox-inline"><input id="test" type="checkbox" name="selection" value="selection"></span></td> -->
@@ -376,8 +402,55 @@
 		<td><span class="id" style="display:none"><%= id %></span></td>
 	</script>
 	
+	<script type="text/template" class="userline-template">
+		<td>
+
+		<div class="col-xs-6 text-left">
+
+		<table>
+		<tr>
+
+
+
+		<td> 
+		<button class="btn btn-warning btn-sm toggle-user-state"
+
+		>Enable/disable</button>
+		</td>
+
+		<td>
+		<button class="btn btn-danger btn-sm remove-user"
+
+		>Delete</button>
+		</td>
+
+		</tr>
+		</table>
+		</div>
+		</td>
+		
+		<td><span class="userid"><%= id %></span></td>
+		<td><span class="username"><%= username %></span></td>
+		<td><span class="userenabled"><%= enabled %></span></td>
+		<td><span class="list">
+			<% _(authorities).each(function(t) { %>
+    		<%= t.authority %><%= (authorities.indexOf(t) == authorities.length + 1) ? "" : "," %>   
+			<% }); %>
+		</span></td>
+
+	</script>
+	
 	<script type="text/template" class="setting-caption-template">
 		<h3>Lines of currently edited setting: <%= (name == "") ? "-new setting-" : name %> </h3>
+	</script>
+	
+	<script type="text/template" class="switcher-buttons-template">
+		<% if (isadmin) { %>
+		<ul class="nav nav-tabs">
+		<li class="active"><button class="btn btn-primary switch-settings">OpenBox SF-5 settings</button></li>
+		<li><button class="btn btn-primary switch-users">User administration</button></li>
+		</ul>
+		<% } %>
 	</script>
 	
 	<script src="js/libs/jquery/dist/jquery.js"></script>
