@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 import org.openbox.sf5.dao.DAO;
+import org.openbox.sf5.model.Settings;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.service.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ public class UsersJsonizer {
 	}
 
 	public void removeUser(long userId) {
+		// First we need to select all user settings and remove them
+		Users user = getUserById(userId);
+		List<Settings> userSettings = settingsJsonizer.getSettingsByUser(user);
+		userSettings.stream().forEach(t -> objectsController.remove(Settings.class, t.getId()));
+
 		objectsController.remove(Users.class, userId);
 	}
 
@@ -79,6 +85,9 @@ public class UsersJsonizer {
 
 	@Autowired
 	private DAO objectsController;
+
+	@Autowired
+	private SettingsJsonizer settingsJsonizer;
 
 	public DAO getObjectsController() {
 		return objectsController;
