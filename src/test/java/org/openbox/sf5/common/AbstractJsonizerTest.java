@@ -2,6 +2,7 @@ package org.openbox.sf5.common;
 
 import org.hibernate.SessionFactory;
 import org.openbox.sf5.dao.DAO;
+import org.openbox.sf5.service.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractJsonizerTest {
@@ -12,8 +13,8 @@ public abstract class AbstractJsonizerTest {
 	@Autowired
 	public SessionFactory sessionFactory;
 
-	// @Autowired
-	// public CriterionService criterionService;
+	@Autowired
+	public CriterionService criterionService;
 
 	public void setUpAbstract() {
 		disableLogsWhenTesting();

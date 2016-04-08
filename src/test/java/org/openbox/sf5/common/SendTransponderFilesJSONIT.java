@@ -40,7 +40,7 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 			final FormDataMultiPart multipart = (FormDataMultiPart) new FormDataMultiPart().field("foo", "bar")
 					.bodyPart(filePart);
 
-			Invocation.Builder invocationBuilder = serviceTarget.path("upload").request(MediaType.APPLICATION_JSON);
+			Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.APPLICATION_JSON);
 
 			Response responsePost = invocationBuilder.post(Entity.entity(multipart, multipart.getMediaType()));
 			Boolean result = responsePost.readEntity(Boolean.class);

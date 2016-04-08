@@ -70,19 +70,26 @@ public class Intersections {
 					// preparedStatement.setLong(1, Object.getId());
 					// preparedStatement.execute();
 
-					// With MySQL let's try to split temp tables creation.
-					preparedStatement = connection.prepareStatement(fillFirstTempTable(dialect));
-					preparedStatement.setLong(1, Object.getId());
-					preparedStatement.execute();
+					if (dialect instanceof MySQL5Dialect) {
+						// With MySQL let's try to split temp tables creation.
+						preparedStatement = connection.prepareStatement(fillFirstTempTable(dialect));
+						preparedStatement.setLong(1, Object.getId());
+						preparedStatement.execute();
 
-					preparedStatement = connection.prepareStatement(fillSecondTempTable(dialect));
-					preparedStatement.execute();
+						preparedStatement = connection.prepareStatement(fillSecondTempTable(dialect));
+						preparedStatement.execute();
 
-					preparedStatement = connection.prepareStatement(fillThirdTempTable(dialect));
-					preparedStatement.execute();
+						preparedStatement = connection.prepareStatement(fillThirdTempTable(dialect));
+						preparedStatement.execute();
+
+					} else {
+						// fill temp tables
+						preparedStatement = connection.prepareStatement(fillTempTables(dialect));
+						preparedStatement.setLong(1, Object.getId());
+						preparedStatement.execute();
+					}
 
 					preparedStatement = connection.prepareStatement(getIntersectionQuery());
-					// preparedStatement.setLong(1, Object.getId());
 					resultSet = preparedStatement.executeQuery();
 
 					// 11.08.2015, trying to remove locks
@@ -171,22 +178,12 @@ public class Intersections {
 		// return
 
 		// http://stackoverflow.com/questions/1915074/understanding-the-in-javas-format-strings
-		// String tempTableCreate = dialect.getCreateTableString();
-		// String tempTableCreate = dialect.get
-
-		String tempTableCreate = "";
-
-		if (dialect instanceof MySQL5Dialect) {
-			tempTableCreate = "CREATE TEMPORARY TABLE IF NOT EXISTS";
-		} else {
-			tempTableCreate = dialect.getCreateTableString();
-		}
-
-		String fromatString = "\n" + "%1$s CONVERSIONTABLE  AS ( \n" + "SELECT \n" + "lineNumber \n"
+		String tempTableCreate = dialect.getCreateTableString();
+		String fromatString = "\n" + "%1$s CONVERSIONTABLE  AS ( \n" + "SELECT \n" + "LineNumber \n"
 
 				+ ", tp.frequency \n"
 
-				+ ", 0 as theLineOfIntersection \n"
+				+ ", 0 as TheLineOfIntersection \n"
 
 				// + " into #ConversionTable \n"
 
@@ -194,83 +191,43 @@ public class Intersections {
 
 				+ "inner join Transponders tp \n"
 
-				+ "on conv.transponder = tp.id \n"
+				+ "on conv.Transponder = tp.id \n"
 
 				+ " where parent_id = ? \n"
 
-				+ " ); \n\n"
+				+ " ); \n"
 
-				+ "%1$s ManyFrequencies " + ""
+				// + "CREATE MEMORY TEMPORARY TABLE ManyFrequencies AS ( \n"
+				+ "%1$s ManyFrequencies AS (  \n"
 
-				+ "\n"
+				+ "select \n" + "p1.LineNumber \n" + ", p1.frequency \n" + ", p1.TheLineOfIntersection \n"
+				// + "into #ManyFrequencies \n"
 
-				+ "select \n" + "p1.lineNumber \n" + ", p1.frequency \n" + ", p1.theLineOfIntersection \n"
+				+ "from ConversionTable p1  \n"
 
-				+ "from ConversionTable p1"
+				+ "union  \n"
 
-				+ " \n"
+				+ "select  \n" + "p2.LineNumber  \n" + ", p2.frequency + 1 \n"
+				+ ", p2.TheLineOfIntersection AS  TheLineOfIntersection \n" + "from ConversionTable p2 \n"
 
-				+ "UNION \n"
+				+ "union \n"
 
-				+ "select \n" + "p2.lineNumber \n" + ", p2.frequency + 1 \n"
-				+ ", p2.theLineOfIntersection AS theLineOfIntersection \n" + "from ConversionTable p2 \n"
+				+ "select \n" + "p3.LineNumber \n" + ", p3.frequency - 1 \n" + ", p3.TheLineOfIntersection \n"
+				+ "from ConversionTable p3 \n"
 
-				+ "UNION \n"
-
-				+ "select \n" + "p3.lineNumber \n" + ", p3.frequency - 1 \n" + ", p3.theLineOfIntersection \n"
-				+ "from ConversionTable p3; \n\n"
-
-				// + "%1$s ManyFrequencies LIKE CONVERSIONTABLE; \n"
-				//
-				// + "INSERT INTO ManyFrequencies \n"
-				//
-				// + "select \n"
-				//
-				// + "p1.lineNumber \n"
-				//
-				// + ", p1.frequency \n"
-				//
-				// + ", p1.theLineOfIntersection \n"
-				//
-				// + "from ConversionTable p1; \n"
-				//
-				// + "INSERT INTO ManyFrequencies \n"
-				//
-				// + "select \n"
-				//
-				// + "p2.lineNumber \n"
-				//
-				// + ", p2.frequency + 1 \n"
-				//
-				// + ", p2.theLineOfIntersection AS theLineOfIntersection \n"
-				//
-				// + "from ConversionTable p2; \n"
-				//
-				// + "INSERT INTO ManyFrequencies \n"
-				//
-				// + "select \n"
-				//
-				// + "p3.lineNumber \n"
-				//
-				// + ", p3.frequency - 1 \n"
-				//
-				// + ", p3.theLineOfIntersection \n"
-				//
-				// + "from ConversionTable p3; \n"
+				+ " ); \n"
 
 				// + "CREATE MEMORY TEMPORARY TABLE IntersectionTable AS ( \n"
 				+ "%1$s IntersectionTable AS (   \n"
 
-				+ "select \n" + "t1.lineNumber \n" + ", t1.frequency \n" + ", t2.lineNumber as theLineOfIntersection \n"
+				+ "select \n" + "t1.LineNumber \n" + ", t1.frequency \n" + ", t2.LineNumber as TheLineOfIntersection \n"
 				// + "into #IntersectionTable \n"
 				+ "from ManyFrequencies t1 \n" + "inner join ManyFrequencies t2 \n"
-				+ "on t1.frequency = t2.frequency \n" + "and t1.lineNumber <> t2.lineNumber \n"
+				+ "on t1.frequency = t2.frequency \n" + "and t1.LineNumber <> t2.LineNumber \n"
 
 				+ " ); \n";
 
-		String resultQuery = String.format(fromatString, tempTableCreate);
-
-		return resultQuery;
+		return String.format(fromatString, tempTableCreate);
 
 	}
 

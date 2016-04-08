@@ -173,6 +173,9 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 
+	<!-- For integration test we will open transponders endpoint -->
+	<security:intercept-url pattern="${jaxrs.path}/transponders/*" access="isAnonymous()"/>
+
 	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
 		 
 	<security:form-login 

@@ -270,7 +270,7 @@
       		</executions>
 		</plugin>
 		
-		<plugin>
+<!-- 		<plugin>
       		<groupId>ro.isdc.wro4j</groupId>
       		<artifactId>wro4j-maven-plugin</artifactId>
       		<version>1.7.6</version>
@@ -311,21 +311,9 @@
 					<artifactId>cujojs-curl</artifactId>
 					<version>0.8.1</version>
 				</dependency>
-				
-				
-        		
-<!--         		<dependency>
-          			<groupId>org.webjars</groupId>
-          			<artifactId>angularjs</artifactId>
-          			<version>1.5.0</version>
-        		</dependency>
-        		<dependency>
-          			<groupId>org.webjars</groupId>
-          			<artifactId>bootstrap</artifactId>
-          			<version>3.2.0</version>
-        		</dependency> -->
+
       		</dependencies>
-    	</plugin>
+    	</plugin> -->
 		
  	</plugins>
     </build>	
@@ -505,13 +493,6 @@
 		<version>5.2.3.Final</version>
 	</dependency>
 	
-		<!-- Jackson dependencies -->
-	<dependency>
-    	<groupId>com.fasterxml.jackson.core</groupId>
-    	<artifactId>jackson-databind</artifactId>
-    	<version>${jackson.version}</version>
-    	<scope>provided</scope>
-	</dependency>
 	
 	<!--  APIs -->
 	<dependency>
