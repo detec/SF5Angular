@@ -2,13 +2,20 @@ package org.openbox.sf5.json.endpoints;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -50,6 +57,8 @@ public abstract class AbstractServiceTest {
 
 	public Logger LOGGER = Logger.getLogger(getClass().getName());
 
+	public NewCookie cookie;
+
 	public Client createAdminClient() {
 
 		// https://jersey.java.net/documentation/latest/user-guide.html#d0e5127
@@ -87,7 +96,7 @@ public abstract class AbstractServiceTest {
 
 				.register(JacksonFeature.class)
 
-				. register(JacksonJaxbXMLProvider.class)
+				.register(JacksonJaxbXMLProvider.class)
 
 				// .register(jacksonProvider)
 
@@ -125,6 +134,27 @@ public abstract class AbstractServiceTest {
 		client = createAdminClient();
 		loadProperties();
 		commonTarget = client.target(appLocation).path(property.getProperty("context.path")).path(jsonPath);
+	}
+
+	private void authenticateWithCookies(boolean forAdmin) {
+		Invocation.Builder invocationBuilder = client.target(appLocation).path("login")
+				.request(MediaType.APPLICATION_JSON);
+
+		Response response = invocationBuilder.get();
+
+		Form form = new Form();
+		form.param("username", (forAdmin) ? "admin" : testUsername);
+		form.param("password", (forAdmin) ? "1" : testUserPassword);
+
+		response = serviceTarget.request(MediaType.APPLICATION_JSON_TYPE)
+				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+
+		Map<String, NewCookie> cookies = response.getCookies();
+		cookie = cookies.get("JSESSIONID");
+		// if (!cookies.isEmpty()) {
+		// // cookies.entrySet().
+		// }
+
 	}
 
 }
