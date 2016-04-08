@@ -1390,9 +1390,7 @@ $(document).ready(function() {
 	
 	// move selected transponders to setting conversion lines
 	$('.select-transponder').on('click', function() {
-		// transponderPresentations
-		// var selectedTransponders = transponderPresentations.where({selection : true});
-		// console.log(transponderPresentations.models.length);
+
 		_.each(selectedTranspondersArray.models, function(transponder) {
 			var newLine = new ConversionLine();
 			newLine.set('transponder', transponder);
@@ -1414,6 +1412,8 @@ $(document).ready(function() {
 		// and we cannot control list of transponders.
 		// TPsView.render();
 		transponderPresentations.fetch();
+		
+		editedCLTable.renumber();
 	});
 	
 	$('.select-clines').on('click', function() {

@@ -106,6 +106,13 @@ public class UsersService {
 		// throw new IllegalArgumentException("Not created! Username already
 		// exists.");
 		// }
+
+		// Check not to disable admin user.
+		if (user.getenabled() == false
+				&& user.getauthorities().stream().filter(t -> t.getAuthority().equals("ROLE_ADMIN")).count() > 0) {
+			throw new IllegalStateException("It is not allowed to disable user with admin role!");
+		}
+
 		HttpStatus statusResult = null;
 
 		try {
