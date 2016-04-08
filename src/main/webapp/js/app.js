@@ -33,6 +33,14 @@ var User = Backbone.Model.extend({
                 parse: true
             });
         return response;
+    },
+    
+    isAdmin : function() {
+		var arrayAuthorities = this.get('authorities');
+		var collectionAuthorities = new UserAuthorityCollection(arrayAuthorities);
+		
+		var isAdmin = (collectionAuthorities.where({authority : 'ROLE_ADMIN'}).length > 0);
+		return isAdmin;
     }
 
 });
@@ -1090,6 +1098,12 @@ var UserView = Backbone.View.extend({
 	},
 	
 	toggleUserState : function() {
+		
+		if (this.model.isAdmin()) {
+			alert('Cannot change state of user with administrative function!');
+			return;
+		}
+		
 		var currentState = this.model.get('enabled');
 		this.model.set('enabled', !currentState);
 		
@@ -1109,6 +1123,12 @@ var UserView = Backbone.View.extend({
 	},
 	
 	removeUser : function() {
+
+		if (this.model.isAdmin()) {
+			alert('Cannot delete user with administrative function!');
+			return;
+		}
+		
 		this.model.destroy({
 			success: function(response) {
 				console.log('Successfully DELETED user with id: ' + response.toJSON().id);
@@ -1217,12 +1237,12 @@ var SwitchTab = Backbone.View.extend({
 	
 	render: function() {
 		this.$el.html('');
-		var arrayAuthorities = currentUser.get('authorities');
-		var collectionAuthorities = new UserAuthorityCollection(arrayAuthorities);
-		
-		var isAdmin = (collectionAuthorities.where({authority : 'ROLE_ADMIN'}).length > 0);
+//		var arrayAuthorities = currentUser.get('authorities');
+//		var collectionAuthorities = new UserAuthorityCollection(arrayAuthorities);
+//		
+//		var isAdmin = (collectionAuthorities.where({authority : 'ROLE_ADMIN'}).length > 0);
 	//	console.log(isAdmin);
-		currentUser.set('isadmin', isAdmin);
+		currentUser.set('isadmin', currentUser.isAdmin());
 		
 		this.$el.html(this.template(currentUser.toJSON()));
 		return this;
@@ -1323,6 +1343,9 @@ $(document).ready(function() {
 		
 		editedCLTable.reset();
 		CurrentEditedSetting = new Setting();
+		
+		// enable input of new setting.
+		$('.name-input').show();
 				
 		
 	});

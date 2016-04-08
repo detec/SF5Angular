@@ -54,8 +54,8 @@ public class UsersService {
 			throw new IllegalArgumentException("No user found in database for id: " + userId);
 		}
 
-		if (user.getauthorities().contains("ROLE_ADMIN")) {
-			throw new IllegalArgumentException("Cannot delete administrative user!");
+		if (isAdmin(user)) {
+			throw new IllegalStateException("Cannot delete administrative user!");
 		}
 
 		try {
@@ -109,7 +109,7 @@ public class UsersService {
 
 		// Check not to disable admin user.
 		if (user.getenabled() == false
-				&& user.getauthorities().stream().filter(t -> t.getAuthority().equals("ROLE_ADMIN")).count() > 0) {
+				&& isAdmin(user)) {
 			throw new IllegalStateException("It is not allowed to disable user with admin role!");
 		}
 
@@ -131,6 +131,10 @@ public class UsersService {
 		// return new ResponseEntity<Long>(new Long(user.getId()), headers,
 		// HttpStatus.CREATED);
 		return new ResponseEntity<Users>(user, headers, statusResult);
+	}
+
+	private boolean isAdmin(Users user) {
+		return user.getauthorities().stream().filter(t -> t.getAuthority().equals("ROLE_ADMIN")).count() > 0;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
