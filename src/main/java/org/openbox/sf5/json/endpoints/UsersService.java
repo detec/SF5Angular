@@ -133,6 +133,13 @@ public class UsersService {
 		return new ResponseEntity<Users>(user, headers, statusResult);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
+	// with REST.
+	@RequestMapping(value = "{userId}", method = RequestMethod.PUT)
+	public ResponseEntity<Users> updateUser(@RequestBody Users user) {
+		return saveUser(user);
+	}
+
 	@RequestMapping(value = "exists/username/{login}", method = RequestMethod.GET)
 	public ResponseEntity<Boolean> ifSuchLoginExists(@PathVariable("login") String login) {
 		Boolean result = usersJsonizer.checkIfUsernameExists(login);

@@ -633,20 +633,6 @@ var SettingView = Backbone.View.extend({
 		// showing table with conversion lines
 		CurrentEditedSetting = this.model;
 		
-//		var collectionOfLines = CurrentEditedSetting.get('conversion'); 
-//		// sometimes null object may appear, it causes error.
-//		var cleanArray = [];
-//
-//		_.each(collectionOfLines, function(cline) {
-//			if (cline == null || cline == undefined) {
-//			}
-//			else {
-//				cleanArray.push(cline);
-//			}
-//		});
-//		
-//		editedCLTable.reset(cleanArray);
-		
 		editedCLTable.cleanReset(CurrentEditedSetting.get('conversion'));
 
 		// as we cannot fire change event - rendering it explicitly.
@@ -667,25 +653,6 @@ var SettingView = Backbone.View.extend({
 		
 		editedCLTable.renumber();
 		this.model.set('conversion', editedCLTable);
-		
-		// Here we should transform models.
-		// cline.unset('selection');
-		// Let's recreate table from the scratch.
-//		var LinesToSave = new ConversionCollection();
-//		_.each(editedCLTable.models, function(cline) {
-//			var CLine = new ConversionLine();
-//			CLine.set('lineNumber', 	cline.get('lineNumber'));
-//			CLine.set('note', 			cline.get('note'));
-//			CLine.set('satindex', 		cline.get('satindex'));
-//			CLine.set('tpindex', 		cline.get('tpindex'));
-//			CLine.set('theLineOfIntersection', 	cline.get('theLineOfIntersection'));
-//			CLine.set('parent_id', 		cline.get('parent_id'));
-//			CLine.set('transponder', 	cline.get('transponder'));
-//			LinesToSave.push(CLine);
-//		});
-		
-		// this.model.set('conversion', new ConversionCollection(editedCLTable));
-		// this.model.set('conversion', LinesToSave);
 
 		this.model.save(null, {
 			success: function(response) {
@@ -1186,7 +1153,9 @@ var UsersTableView = Backbone.View.extend({
 			}
 		});
 		
-		this.listenTo(this.model, 'reset', this.render); 
+		this.listenTo(this.model, 'reset', this.render);
+		
+		this.model.on('remove', this.render, this);
 		
 	},
 	
@@ -1211,36 +1180,6 @@ var UsersTableView = Backbone.View.extend({
 	}
 });
 
-//var SF5SettingsView = Backbone.View.extend({
-//	
-//	el: $('#sf5-settings-page'),
-//	
-//	render: function() {
-//		this.$el.show();
-//		return this;
-//	},
-//	
-//	initialize : function() {
-//		// Here we should initialize all variables and views that this page contains.
-//		var TPsView = new transpondersPresentationView(); // show table
-//
-//		var SatDropdownView = new SatelliteDropdownView(); // show dropdown with satellites
-//
-//		var SettingsViewItem = new SettingsView();
-//
-//
-//		var SettingsDD = new SettingsDropdown();
-//
-//		var SelectSettingCLView = new CLSelectionView();
-//
-//		var CLEditViewItem = new CLEditView();
-//
-//		var SettingCaptionViewItem = new SettingCaptionView();
-//		SettingCaptionViewItem.render();
-//		
-//	}
-//	
-//});
 
 var UsersPageView = Backbone.View.extend({
 	
@@ -1550,6 +1489,18 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('.refresh-users').on('click', function() {
+		usersToManage.fetch({reset : true, success: function(response) {
+			_.each(response.toJSON(), function(user) {
+				// console.log('Successfully GOT user with id: ' + user.id);
+			});
+
+		},
+		error: function() {
+			console.log('Failed to get users!');
+		}});
+	});
+	
 	currentUsers.fetch({
 		success: function(collection){
 		currentUser = currentUsers.at(0);
@@ -1567,45 +1518,6 @@ $(document).ready(function() {
 
 })
 
-
-
-
-//var Workspace = Backbone.Router.extend({
-//
-//	routes: {
-//		"sf5settings": "sf5settings",
-//		
-//		"users": 		"users"
-//		
-//	},
-//
-//	initialize : function() {
-//		// Start the router.
-//		Backbone.history.start();
-//	},
-//	
-//	sf5settings : function {
-//		var SF5SettingsViewItem = new SF5SettingsView();
-//		
-//		ViewManager.showView(SF5SettingsViewItem);
-//		
-//	},
-//	
-//	users : function() {
-//		var UsersPageViewItem = new UsersPageView(); 
-//			
-//		var UsersTableViewItem = new UsersTableView();
-//		UsersTableViewItem.render();
-//		
-//		ViewManager.showView(UsersPageViewItem);
-//		
-//	}
-//	
-//});	
-
-
-// Trying to start router
-//var WorkspaceItem = new Workspace();
 
 // http://stackoverflow.com/questions/22184049/how-to-switch-views-with-the-backbone-js-router
 
