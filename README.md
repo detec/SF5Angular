@@ -6,6 +6,10 @@ Idea of this pet project derives from my old 1C:Enterprise 8.2 (<http://1c-dn.co
 
 Backend implementation has been taken from <https://github.com/detec/SF5Spring> with enhancements and RESTful service modified to comply with common Javascript frameworks practices.
 
+## Openshift ##
+
+This application is hosted in Openshift cloud. Its address is <http://sf5backbonejs-detec.rhcloud.com/>. Its database already has user logins 'admin' (password '1') and 'user' (password 'user') with sample gadget settings saved in every profile. Anyone can register its own user and start creating Openbox SF-5 gadget settings.
+
 ## Features ##
 
 Leaving behind satellite television details, Openbox SF-5 settings editor is a representation of a typical full-cycle CRUD application. It is able to:
@@ -13,7 +17,8 @@ Leaving behind satellite television details, Openbox SF-5 settings editor is a r
 - import catalogue data from structured text files (refreshed transponder data from resources like <http://ru.kingofsat.net>) into relational database;
 - create and edit own entities (gadget settings) using catalogue data, store them in database and reuse when needed;
 - export gadget settings into structured XML files for exchange with vendor owned gadget application;
-- output user composed gadget settings to a print form, so that a user can have a hard copy of settings when using Openbox SF-5.
+- output user composed gadget settings to a print form, so that a user can have a hard copy of settings when using Openbox SF-5;
+- for admin user - ability to enable/disable and delete registered users, except admin oneself.
 
 This project implementation has undergone significant transformation from its desktop 1C:Enterprise 8.2 original with transition points like JavaFX 8 and Spring MVC. I hardly tried to repeat all GUI features that I had previously implemented in its original, 1C:Enterprise desktop version, in final destination technology, BackboneJS single page application, to ensure good end-user experience. It includes:
 
@@ -44,12 +49,15 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 	- jaxrs/transponders/ POST							- upload .ini file with transponders for further import. Content-type should be multipart/form-data.
 	
 - Users (most endpoints require form login authentication)
+	- jaxrs/users/ GET 									- get all users, for ADMIN role only;
+	- jaxrs/users/{userId} DELETE 						- delete user with all its settings, for ADMIN role only;
+	- jaxrs/users/ POST 								- create new user, for ADMIN role only, user ID is returned in "UserId" HTTP header;
+	- jaxrs/users/{userId} PUT 							- update user,  for ADMIN role only;
 	- jaxrs/users/filter/username/{login} GET 			- get user by its login, for ADMIN role or user authenticated;
-	- jaxrs/users/create POST 							- create new user, only for ADMIN role, new user ID is returned in "UserId" HTTP header; 
 	- jaxrs/users/currentuser GET 						- get currently authenticated user;
 	- jaxrs/users/exists/username/{login} GET 			- check if such username exists, boolean value returned.
 	
-- OpenBox SF-5 settings (require form login authentication)
+- OpenBox SF-5 settings (endpoints require form login authentication)
 	- jaxrs/usersettings/ POST								- post user setting to this endpoint to create a new setting, user authenticated and the one in setting should coincide;
 	- jaxrs/usersettings/calculateIntersection={booleanValue} POST	- post user setting to this endpoint with option to discover lines with transponder frequency intersection;
 	- jaxrs/usersettings/{settingId} PUT 					- update user setting, user authenticated and the one in setting should coincide;
@@ -60,6 +68,15 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 	- jaxrs/usersettings/{settingId} GET 			- get setting by its ID, based on credentials provided;
 	- jaxrs/usersettings/{settingId}/sf5 GET				- get setting by its ID, based on credentials provided, in Openbox SF-5 XML format; only "text/plain" "Accept" HTTP header is supported.
 
+## Maven profiles ##
+
+Different Maven profiles are required to use different database schemes and integration tests. Openbox SF-5 settings editor uses 3 maven profiles:
+
+	- dev 	Default profile, database url is jdbc:mysql://localhost:3306/sf5backbonedev. 
+			This database url is used in Eclipse-based container deploy.
+	- test 	Profile for tests, run with Cargo Maven plugin in H2 in-memory mode;
+	- openshift Profile for deployment in an OpenShift cloud.
+	
 ## System requirements ##
 
 - configured non-XA datasource with JNDI name "java:jboss/datasources/MySQLDS"; MySQL and H2 supported;
@@ -69,13 +86,14 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 
 ## Technologies ##
 
-- Backbone.js;
+- Backbone.js (with partner libraries Underscore, JQuery);
+- Bootstrap;
 - Spring 4 (Spring Core, Security, MVC, XML-based and Java configuration combined);
 - Hibernate ORM 5.0.7;
 - Hibernate Validator 5.2;
 - Jackson 2.5;
 - JDBC (for Spring Security only);
-- Maven 3.3 with plugins compiler, surefire, resources, war, tomcat7, cargo, jaxws;
+- Maven 3.3 with plugins compiler, surefire, resources, war, cargo;
 - WildFly 10;
 - Java 8.
 
