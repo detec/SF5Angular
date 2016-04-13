@@ -13,8 +13,10 @@ import org.hibernate.criterion.Order;
 import org.openbox.sf5.model.AbstractDbEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public class DAOImpl implements DAO, Serializable {
 
 	@Override
@@ -47,6 +49,7 @@ public class DAOImpl implements DAO, Serializable {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public <T extends AbstractDbEntity> T select(Class<T> type, long id) {
 		Session s = sessionFactory.openSession();
 		s.beginTransaction();
@@ -67,6 +70,7 @@ public class DAOImpl implements DAO, Serializable {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@Transactional(readOnly = true)
 	public <T extends AbstractDbEntity> List<T> ObjectsList(Class<T> type) {
 
 		List<T> list = new ArrayList<>();
@@ -80,6 +84,7 @@ public class DAOImpl implements DAO, Serializable {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public <T extends AbstractDbEntity> List<T> ObjectsCriterionList(Class<T> type, Criterion criterion) {
 		Session s = sessionFactory.openSession();
 		Criteria criteria = s.createCriteria(type)

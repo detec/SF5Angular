@@ -33,7 +33,6 @@
 
 <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
 
-<tx:annotation-driven/>
 
 <!-- In tests we need only few beans -->
 
@@ -55,6 +54,12 @@
     </property> 
 </bean>
 
+<bean id="transactionManager"
+    class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+<tx:annotation-driven transaction-manager="transactionManager" />
 
 <bean id="jacksonObjectMapper" 
 	class="org.openbox.sf5.json.service.CustomObjectMapper">

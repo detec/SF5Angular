@@ -389,30 +389,10 @@
     	<artifactId>spring-beans</artifactId>
     	<version>${spring.version}</version>
 	</dependency>
-    <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
-        <version>${spring.security.version}</version>
-	</dependency>
- 	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-config</artifactId>
-		<version>${spring.security.version}</version>
-	</dependency>
- 	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-core</artifactId>
-		<version>${spring.security.version}</version>
-	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-jdbc</artifactId>
-		<version>${spring.security.version}</version>
-	</dependency>
-	<dependency>
-    	<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-taglibs</artifactId>
-    	<version>${spring.security.version}</version>
+		<version>${spring.version}</version>
 	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
@@ -435,6 +415,27 @@
 		<version>${spring.version}</version>
 	</dependency>
 	
+	<!-- Spring security -->
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
+	</dependency>
+ 	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-config</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+ 	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-core</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.springframework.security</groupId>
+    	<artifactId>spring-security-taglibs</artifactId>
+    	<version>${spring.security.version}</version>
+	</dependency>	
 	<!-- Work with JSP - for login -->
 	<dependency>
 		<groupId>javax.servlet</groupId>
