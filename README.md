@@ -72,16 +72,15 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 
 Different Maven profiles are required to use different database schemes and integration tests. Openbox SF-5 settings editor uses 3 maven profiles:
 
-	- dev 	Default profile, database url is jdbc:mysql://localhost:3306/sf5backbonedev. 
-			This database url is used in Eclipse-based container deploy.
-	- test 	Profile for tests, run with Cargo Maven plugin in H2 in-memory mode;
-	- openshift Profile for deployment in an OpenShift cloud.
+	- dev 	- default profile;
+	- test 	- profile for tests, run with Cargo Maven plugin in H2 in-memory mode;
+	- openshift - profile for deployment in an OpenShift cloud.
 	
 ## System requirements ##
 
 - configured non-XA datasource with JNDI name "java:jboss/datasources/MySQLDS"; MySQL and H2 supported;
 - WildFly 10 application server;
-- MySQL 5+ database server, running at the same host with WildFly (for profiles dev, prod and openshift);
+- MySQL 5+ database server (for profiles dev and openshift);
 - Java 8.
 
 ## Technologies ##
