@@ -13,6 +13,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -35,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "Settings")
+@Table(name = "Settings", indexes = { @Index(columnList = "user", name = "user") })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Settings extends AbstractDbEntity implements Serializable {
