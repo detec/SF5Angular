@@ -3,10 +3,9 @@ package org.openbox.sf5.common;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +61,11 @@ public class IniReader implements Serializable {
 
 	public void readData() throws IOException {
 		// Open the file
-		FileInputStream fstream = new FileInputStream(filepath);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+		// FileInputStream fstream = new FileInputStream(filepath);
+		// BufferedReader br = new BufferedReader(new
+		// InputStreamReader(fstream));
+		FileReader fileReader = new FileReader(filepath);
+		BufferedReader br = new BufferedReader(fileReader);
 
 		String strLine;
 
@@ -82,7 +84,7 @@ public class IniReader implements Serializable {
 
 		}
 
-		fstream.close();
+		fileReader.close();
 		br.close();
 
 		result = true;
