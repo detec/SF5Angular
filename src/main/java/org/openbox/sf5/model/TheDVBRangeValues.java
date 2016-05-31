@@ -14,7 +14,7 @@ public class TheDVBRangeValues extends AbstractDbEntity implements Serializable 
 	private static final long serialVersionUID = 1635144675404567877L;
 
 	@Id
-	RangesOfDVB rangeOfDVB;
+	private RangesOfDVB rangeOfDVB;
 
 	public RangesOfDVB getRangeOfDVB() {
 		return this.rangeOfDVB;
@@ -52,40 +52,6 @@ public class TheDVBRangeValues extends AbstractDbEntity implements Serializable 
 		this.lowerThreshold = LowerThreshold;
 		this.upperThreshold = UpperThreshold;
 
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (lowerThreshold ^ (lowerThreshold >>> 32));
-		result = prime * result + ((rangeOfDVB == null) ? 0 : rangeOfDVB.hashCode());
-		result = prime * result + (int) (upperThreshold ^ (upperThreshold >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		TheDVBRangeValues other = (TheDVBRangeValues) obj;
-		if (lowerThreshold != other.lowerThreshold) {
-			return false;
-		}
-		if (rangeOfDVB != other.rangeOfDVB) {
-			return false;
-		}
-		if (upperThreshold != other.upperThreshold) {
-			return false;
-		}
-		return true;
 	}
 
 	public TheDVBRangeValues() {

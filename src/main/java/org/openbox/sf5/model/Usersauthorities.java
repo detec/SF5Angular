@@ -96,25 +96,4 @@ public class Usersauthorities extends AbstractDbEntity implements Serializable {
 	public Usersauthorities() {
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		if (other == this) {
-			return true;
-		}
-
-		if (!(other instanceof Usersauthorities)) {
-			return false;
-		}
-		Usersauthorities otherUsersauthorities = (Usersauthorities) other;
-		if (otherUsersauthorities.username.equals(username) && otherUsersauthorities.authority.equals(authority)) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
 }

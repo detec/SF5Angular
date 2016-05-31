@@ -174,40 +174,6 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		} while (curClass != null);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + ((parent_id == null) ? 0 : parent_id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SettingsConversion other = (SettingsConversion) obj;
-		if (id != other.id) {
-			return false;
-		}
-		if (parent_id == null) {
-			if (other.parent_id != null) {
-				return false;
-			}
-		} else if (!parent_id.equals(other.parent_id)) {
-			return false;
-		}
-		return true;
-	}
-
 	public Settings getParent_id() {
 		return parent_id;
 	}
