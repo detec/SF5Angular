@@ -8,8 +8,8 @@
   <description>Openbox SF-5 settings editor, web implementation with REST</description>
   
 	<properties>
-  		<spring.version>4.2.4.RELEASE</spring.version>
-  		<spring.security.version>4.0.3.RELEASE</spring.security.version>
+  		<spring.version>4.2.6.RELEASE</spring.version>
+  		<spring.security.version>4.1.0.RELEASE</spring.security.version>
   		<hibernate.version>5.0.7.Final</hibernate.version> <!-- Comply with JavaEE 6 -->
   		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   		<jackson.version>2.5.4</jackson.version>
@@ -52,7 +52,7 @@
 <plugins>
 	<plugin>
     	<artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.5.1</version>
         <configuration>
         	<source>1.8</source>
           	<target>1.8</target>
@@ -62,7 +62,7 @@
 	<plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-surefire-plugin</artifactId>
-		<version>2.18.1</version>
+		<version>2.19.1</version>
 		<configuration>
 			<includes>
 				<include>**/*Tests.java</include>
@@ -76,7 +76,7 @@
 	<plugin>
 		<groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.7</version>
+        <version>3.0.1</version>
         <configuration>
           <!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
           <encoding>UTF-8</encoding>
