@@ -10,13 +10,4 @@ public class AbstractDbEntity implements Serializable {
 
 	private static final long serialVersionUID = -4019144518870996041L;
 
-	@Override
-	public boolean equals(Object obj) {
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return 0;
-	}
 }

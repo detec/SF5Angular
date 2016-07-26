@@ -40,7 +40,9 @@
 <context:component-scan base-package="org.openbox.sf5.service" />
 <context:component-scan base-package="org.openbox.sf5.common" />
 <context:component-scan base-package="org.openbox.sf5.json" />
-<context:component-scan base-package="org.openbox.sf5.jaxws" />
+<!-- <context:component-scan base-package="org.openbox.sf5.json.service" />
+<context:component-scan base-package="org.openbox.sf5.json.endpoints" /> -->
+
 
 <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
 
@@ -132,19 +134,5 @@
 <!-- From http://stackoverflow.com/questions/4882988/how-to-get-formatted-xml-output-from-jaxb-in-spring -->   
 
 <bean class="org.springframework.web.util.UriComponentsBuilder"> </bean>
-
-<!-- <security:authentication-manager  alias="authenticationManager">
-	<security:authentication-provider>
-	<security:jdbc-user-service id="JDBCUserService"
-		data-source-ref="dataSource"
-		users-by-username-query="
-			select	username, password, enabled from users	where username =?"
-		authorities-by-username-query="select username, authority from usersauthorities where username =?" />
-	</security:authentication-provider>
-</security:authentication-manager>	 -->
-		
-		
-<!-- http://cxf.apache.org/docs/writing-a-service-with-spring.html -->
-<!--  <jaxws:endpoint id="OpenboxSF5" implementor="org.openbox.sf5.jaxws.OpenboxSF5Impl" address="/jaxws/OpenboxSF5Service"/>		 -->
 		
 </beans>  		

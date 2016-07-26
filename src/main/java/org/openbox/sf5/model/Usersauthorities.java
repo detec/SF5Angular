@@ -24,6 +24,34 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @XmlRootElement
 public class Usersauthorities extends AbstractDbEntity implements Serializable {
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((authority == null) ? 0 : authority.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Usersauthorities other = (Usersauthorities) obj;
+		if (authority == null) {
+			if (other.authority != null) {
+				return false;
+			}
+		} else if (!authority.equals(other.authority)) {
+			return false;
+		}
+		return true;
+	}
+
 	private static final long serialVersionUID = 108703010218830663L;
 
 	@Id

@@ -24,32 +24,17 @@
 <context:annotation-config />
 
 <!-- This section enables autowiring -->	
-<context:component-scan base-package="org.openbox.sf5.model" />
-<context:component-scan base-package="org.openbox.sf5.dao" /> <!-- Probably this is for autowiring -->
-<!-- <context:component-scan base-package="org.openbox.sf5.service" /> -->
+<!-- <context:component-scan base-package="org.openbox.sf5.model" />
+<context:component-scan base-package="org.openbox.sf5.dao" />
 <context:component-scan base-package="org.openbox.sf5.common" />
-<context:component-scan base-package="org.openbox.sf5.json" />
-<!-- <context:component-scan base-package="org.openbox.sf5.jaxws" /> -->
+<context:component-scan base-package="org.openbox.sf5.json.endpoints" />
+<context:component-scan base-package="org.openbox.sf5.json.service" /> -->
+
 
 
 <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
 <!-- application.properties are for Eclipse - file contains dev properties -->
-<context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
-
-
-<!-- <jee:jndi-lookup jndi-name="java:jboss/datasources/MySQLDS" id="dataSource" />
-
-
-<bean id="transactionManager" 
-	class="org.springframework.transaction.jta.JtaTransactionManager"> 
-	<property name="dataSource" ref="dataSource"/>	
-</bean>
-
-
-<tx:annotation-driven/>
-
-
-<tx:jta-transaction-manager transaction-manager="transactionManager"/> -->
+<!-- <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/> -->
 
 
 <import resource="autowired-beans.xml"/>

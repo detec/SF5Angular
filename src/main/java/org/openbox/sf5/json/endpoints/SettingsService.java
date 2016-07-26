@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.util.UriComponentsBuilder;
 
 // @EnableWebMvc  // This annotation limits to HEAD, POST, GET
@@ -38,6 +39,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 // @PreAuthorize("hasRole('ROLE_USER')")
 // Be careful not to use annotations produces, consumes - it kicks away
 // requests.
+@EnableWebMvc
 @RequestMapping(value = "${jaxrs.path}/usersettings/")
 public class SettingsService {
 
@@ -52,18 +54,15 @@ public class SettingsService {
 	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException {
-		// System.out.println("Post setting called");
+
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 
 		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		if (!currentUser.equals(setting.getUser())) {
 			// authenticated user and setting user do not coincide.
-			// return new ResponseEntity<Long>(HttpStatus.NOT_ACCEPTABLE);
 			throw new UsersDoNotCoincideException("Authenticated user " + currentUser.getId()
 					+ " and the one in setting - " + setting.getUser().getId() + " do not coincide!");
 		}
@@ -73,8 +72,6 @@ public class SettingsService {
 
 		// Define return status. For existing settings request method is PUT,
 		// for new - POST.
-		// HttpStatus returnStatus = (setting.getId() > 0) ? HttpStatus.OK :
-		// HttpStatus.CREATED;
 		HttpStatus statusResult = null;
 		try {
 			statusResult = settingsJsonizer.saveNewSetting(setting, calculateIntersection);
@@ -83,27 +80,23 @@ public class SettingsService {
 		} catch (Exception e) {
 			throw new IllegalStateException("Error when saving new setting", e);
 		}
-		// if (statusResult.equals(HttpStatus.CONFLICT)) {
-		// // return new ResponseEntity<Long>(HttpStatus.CONFLICT);
-		// throw new IllegalStateException();
-		// }
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("SettingId", Long.toString(setting.getId()));
 		// it can be called out of JAX-WS
 		try {
-			headers.setLocation(ucBuilder.path("/" + jaxRSPath + "/").path("usersettings/filter/id/{id}")
+			headers.setLocation(ucBuilder.path("/" + jaxRSPath + "/").path("usersettings/{id}")
 					.buildAndExpand(setting.getId()).toUri());
 		} catch (Exception e) {
 
 		}
 
-		// return new ResponseEntity<Long>(new Long(setting.getId()), headers,
-		// HttpStatus.CREATED);
-		// Backbone requires return of the whole object to get id.
-		// return new ResponseEntity<Settings>(setting, headers,
-		// HttpStatus.CREATED);
-		return new ResponseEntity<Settings>(setting, headers, statusResult);
+		// For test purposes
+		// if (1 == 1) {
+		// throw new NotAuthenticatedException("Testing exceptions!");
+		// }
+
+		return new ResponseEntity<>(setting, headers, statusResult);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
@@ -123,19 +116,17 @@ public class SettingsService {
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
 
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
-			// return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
 			throw new ItemNotFoundException(
 					"Unable to delete. Setting with id " + settingId + " not found for user " + currentUser);
 		}
 
 		settingsJsonizer.deleteSetting(settingId);
-		return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	// @PreAuthorize("hasRole('ROLE_USER')")
@@ -151,16 +142,14 @@ public class SettingsService {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		List<Settings> settList = settingsJsonizer.getSettingsByUser(currentUser);
 		if (settList.isEmpty()) {
-			return new ResponseEntity<List<Settings>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Settings>>(settList, HttpStatus.OK);
+		return new ResponseEntity<>(settList, HttpStatus.OK);
 
 	}
 
@@ -174,16 +163,14 @@ public class SettingsService {
 		List<Settings> settList = new ArrayList<>();
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		settList = settingsJsonizer.getSettingsByArbitraryFilter(fieldName, typeValue, currentUser);
 		if (settList.isEmpty()) {
-			return new ResponseEntity<List<Settings>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Settings>>(settList, HttpStatus.OK);
+		return new ResponseEntity<>(settList, HttpStatus.OK);
 
 	}
 
@@ -194,28 +181,25 @@ public class SettingsService {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
-			return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<Settings>(setting, HttpStatus.OK);
+		return new ResponseEntity<>(setting, HttpStatus.OK);
 
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}/sf5", method = RequestMethod.GET
 
-	// , produces = MediaType.APPLICATION_XML
 			, produces = MediaType.TEXT_PLAIN // This removes <String> tags
 
 	)
-	// @ResponseBody
+
 	public
 
 			ResponseEntity<String>
@@ -226,15 +210,12 @@ public class SettingsService {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
 			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
 		}
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
-			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
-			// return "";
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
 		StringWriter sw = new StringWriter();
@@ -247,7 +228,7 @@ public class SettingsService {
 		springMarshaller.marshal(sat, new StreamResult(sw));
 
 		// return new ResponseEntity<String>(sw.toString(), HttpStatus.OK);
-		return new ResponseEntity<String>(sw.toString(), HttpStatus.OK);
+		return new ResponseEntity<>(sw.toString(), HttpStatus.OK);
 
 		// Cannot fix <String>&lt;sat> and so on
 		// return sw.toString();
@@ -272,7 +253,7 @@ public class SettingsService {
 		}
 
 		settingsJsonizer.deleteSettingLine(lineId);
-		return new ResponseEntity<SettingsConversion>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@Autowired

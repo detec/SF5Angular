@@ -9,11 +9,11 @@
   
 	<properties>
   		<spring.version>4.2.6.RELEASE</spring.version>
-  		<spring.security.version>4.1.0.RELEASE</spring.security.version>
+  		<spring.security.version>4.1.1.RELEASE</spring.security.version>
   		<hibernate.version>5.0.7.Final</hibernate.version> <!-- Comply with JavaEE 6 -->
   		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   		<jackson.version>2.5.4</jackson.version>
-  		<jersey.version>2.22.1</jersey.version>
+  		<jersey.version>2.23.1</jersey.version>
   		<resteasy.version>3.0.14.Final</resteasy.version>
   		<moxy.version>2.6.2</moxy.version>
 	</properties>  

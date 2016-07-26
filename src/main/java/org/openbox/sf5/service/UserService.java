@@ -24,9 +24,6 @@ public class UserService implements IUserService, Serializable {
 	@Autowired
 	private DAO objectsController;
 
-	// @Autowired
-	// private DAO listService;
-
 	// @Transactional // IJ031017: You cannot set autocommit during a managed
 	// transaction
 	@Override
@@ -39,7 +36,7 @@ public class UserService implements IUserService, Serializable {
 		Users newUser = new Users();
 		newUser.setusername(accountDto.getUsername());
 		newUser.setPassword(accountDto.getPassword());
-		List<Usersauthorities> listAuthorities = new ArrayList<Usersauthorities>();
+		List<Usersauthorities> listAuthorities = new ArrayList<>();
 
 		Usersauthorities newLine = new Usersauthorities(accountDto.getUsername(), "ROLE_USER", newUser, 1);
 		listAuthorities.add(newLine);

@@ -19,10 +19,11 @@
     http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 	 
 
-<context:component-scan base-package="org.openbox.sf5.application" />
+<!-- Defined in ManualWebMvcConfiguration -->
+<!-- <context:component-scan base-package="org.openbox.sf5.application" />
 <context:component-scan base-package="org.openbox.sf5.converters" />
-<context:component-scan base-package="org.openbox.sf5.json.endpoints" />
-<context:component-scan base-package="org.openbox.sf5.json.service" />
+<context:component-scan base-package="org.openbox.sf5.json" /> -->
+
 
 
 <!--  http://stackoverflow.com/questions/23395984/requestmapping-with-placeholder-not-working   

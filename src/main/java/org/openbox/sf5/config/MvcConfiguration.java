@@ -65,4 +65,16 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
 	}
 
+	// http://www.programcreek.com/java-api-examples/index.php?source_dir=hydra-java-master/hydra-spring/src/test/java/de/escalon/hypermedia/spring/hydra/HydraMessageConverterTest.java
+	// @Override
+	// public void
+	// configureHandlerExceptionResolvers(List<HandlerExceptionResolver>
+	// exceptionResolvers) {
+	//
+	// final ExceptionHandlerExceptionResolver resolver = new
+	// ExceptionHandlerExceptionResolver();
+	// resolver.setWarnLogCategory(resolver.getClass().getName());
+	// exceptionResolvers.add(resolver);
+	// }
+
 }

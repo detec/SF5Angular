@@ -173,4 +173,15 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		// MappingJackson2XmlHttpMessageConverter(Jackson2ObjectMapperBuilder.xml().build()));
 
 	}
+
+	// @Override
+	// public void
+	// configureHandlerExceptionResolvers(List<HandlerExceptionResolver>
+	// exceptionResolvers) {
+	//
+	// final ExceptionHandlerExceptionResolver resolver = new
+	// ExceptionHandlerExceptionResolver();
+	// resolver.setWarnLogCategory(resolver.getClass().getName());
+	// exceptionResolvers.add(resolver);
+	// }
 }
