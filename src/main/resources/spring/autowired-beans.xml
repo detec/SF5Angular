@@ -90,22 +90,10 @@
 		<value>classpath:hibernate.cfg.xml</value> 
     </property>  -->
 	
-<bean id="adminCheck" class="org.openbox.sf5.service.AdminCheck" init-method="initialize"></bean>
+<!-- We defined it as component -->	
+<!-- <bean id="adminCheck" class="org.openbox.sf5.service.AdminCheck" init-method="initialize"></bean> -->
    
    
-<!-- Trying to enable pretty printing 
-!! It is used in message-converters
--->
-<!-- <bean id="jacksonObjectMapper" 
-	class="org.openbox.sf5.json.service.CustomObjectMapper">
-	
-</bean>    -->
-
-<!-- Transferred to test-autowired-beans as it is not needed on server -->
-<!-- <bean id="jacksonXMLMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper">
-
-</bean> -->
-
 
 <!-- For converting to SF5 XML format -->
 <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller"> 

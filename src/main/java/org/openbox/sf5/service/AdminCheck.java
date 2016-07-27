@@ -3,19 +3,25 @@ package org.openbox.sf5.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.model.Usersauthorities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-//@Component // NFO: Overriding bean definition for bean
+@Component // NFO: Overriding bean definition for bean
 public class AdminCheck {
 
 	@Autowired
 	private DAO objectsController;
 
+	private boolean adminHasBeenChanged = false;
+
+	@PostConstruct
 	public void initialize() {
 
 		Criterion criterea = Restrictions.eq("username", "admin");
@@ -25,7 +31,6 @@ public class AdminCheck {
 			List<Usersauthorities> rolesList = new ArrayList<>();
 
 			Users admin = new Users("admin", "1", true, rolesList);
-			// objectsController.saveOrUpdate(admin);
 
 			fillTables(admin, rolesList);
 			objectsController.saveOrUpdate(admin);
@@ -37,14 +42,17 @@ public class AdminCheck {
 			List<Usersauthorities> rolesList = adminUser.getauthorities();
 
 			fillTables(adminUser, rolesList);
-			objectsController.saveOrUpdate(adminUser);
+
+			if (adminHasBeenChanged = true) {
+				objectsController.saveOrUpdate(adminUser);
+			}
 
 		}
 
 	}
 
 	public void fillTables(Users adminUser, List<Usersauthorities> rolesList) {
-		List<String> textRoles = new ArrayList<String>();
+		List<String> textRoles = new ArrayList<>();
 		textRoles.add("ROLE_ADMIN");
 		textRoles.add("ROLE_USER");
 
@@ -52,6 +60,7 @@ public class AdminCheck {
 		Usersauthorities checkRoleAdmin = new Usersauthorities(adminUser.getusername(), "ROLE_ADMIN", adminUser, 1);
 
 		if (!rolesList.contains(checkRoleAdmin)) {
+			adminHasBeenChanged = true;
 			rolesList.add(checkRoleAdmin);
 		}
 
@@ -59,6 +68,7 @@ public class AdminCheck {
 		Usersauthorities checkRoleUser = new Usersauthorities(adminUser.getusername(), "ROLE_USER", adminUser, 2);
 
 		if (!rolesList.contains(checkRoleUser)) {
+			adminHasBeenChanged = true;
 			rolesList.add(checkRoleUser);
 		}
 
