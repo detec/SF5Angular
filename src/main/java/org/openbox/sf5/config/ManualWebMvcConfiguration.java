@@ -7,11 +7,11 @@ import java.util.List;
 import org.openbox.sf5.common.JsonObjectFiller;
 import org.openbox.sf5.json.service.CustomObjectMapper;
 import org.openbox.sf5.json.service.CustomXMLMapper;
-import org.openbox.sf5.model.Sat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
@@ -23,7 +23,6 @@ import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConve
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -34,10 +33,19 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Configuration
 @ComponentScan(basePackages = { "org.openbox.sf5.common", "org.openbox.sf5.json" })
+@ImportResource({ "/WEB-INF/springWebMultipartContext.xml" })
 public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	@Autowired
 	private Jaxb2Marshaller springMarshaller;
+
+	// we use this method to enable forwarding to the “default” Servlet. The
+	// “default” Serlvet is used to handle static content such as CSS, HTML and
+	// images.
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
 
 	@Bean
 	@Primary
@@ -67,14 +75,6 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		return handlerMapping;
 	}
 
-	// we use this method to enable forwarding to the “default” Servlet. The
-	// “default” Serlvet is used to handle static content such as CSS, HTML and
-	// images.
-	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
-	}
-
 	@Bean
 	public InternalResourceViewResolver getInternalResourceViewResolver() {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -93,13 +93,17 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 	 * Configure ResourceHandlers to serve static resources like CSS/ Javascript
 	 * etc...
 	 */
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
-		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-		// For static html pages.
-		registry.addResourceHandler("/registration/**").addResourceLocations("/html/");
-	}
+	// @Override
+	// public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	// registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+	// registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+	// // For static html pages.
+	// registry.addResourceHandler("/registration/**").addResourceLocations("/html/");
+	//
+	// // let's add here index.html.
+	// registry.addResourceHandler("/index.html").addResourceLocations("index.html");
+	//
+	// }
 
 	// @Override
 	// public void configureContentNegotiation(ContentNegotiationConfigurer
@@ -147,7 +151,8 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		MarshallingHttpMessageConverter jaxbc = new MarshallingHttpMessageConverter();
 		jaxbc.setMarshaller(springMarshaller);
 
-		boolean doesSupport = jaxbc.canWrite(Sat.class, MediaType.APPLICATION_XML);
+		// boolean doesSupport = jaxbc.canWrite(Sat.class,
+		// MediaType.APPLICATION_XML);
 
 		// http://stackoverflow.com/questions/26982466/spring-mvc-response-body-xml-has-extra-string-tags-why
 

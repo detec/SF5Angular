@@ -5,22 +5,30 @@ import javax.servlet.Filter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class SpringConfigurationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+// Now will mark this as deprecated.
+public class SpringConfigurationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
+
+{
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { AppConfiguration.class };
 	}
 
+	// let's not use config classes.
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] {
-				// let's use "erroneous" class MvcConfiguration, as in the
-				// original Spring project
-				// ManualWebMvcConfiguration.class
-				MvcConfiguration.class
+		// return new Class[] {
+		// // let's use "erroneous" class MvcConfiguration, as in the
+		// // original Spring project
+		//
+		// // ManualWebMvcConfiguration.class - we get trash when we use
+		// // multiple config classes.
+		// ManualWebMvcConfiguration.class
+		//
+		// };
 
-		};
+		return new Class[] {};
 	}
 
 	@Override
