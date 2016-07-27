@@ -43,7 +43,7 @@ public class AdminCheck {
 
 			fillTables(adminUser, rolesList);
 
-			if (adminHasBeenChanged = true) {
+			if (adminHasBeenChanged == true) {
 				objectsController.saveOrUpdate(adminUser);
 			}
 
