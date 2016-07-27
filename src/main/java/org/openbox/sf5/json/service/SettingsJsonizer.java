@@ -33,10 +33,11 @@ public class SettingsJsonizer {
 		HttpStatus returnStatus = (id > 0) ? HttpStatus.OK : HttpStatus.CREATED;
 		try {
 			// let's make a copy of conversion lines
-			List<SettingsConversion> originalLines = setting.getConversion();
-			List<SettingsConversion> copiedList = new ArrayList<SettingsConversion>(originalLines);
-			originalLines.clear();
-			setting.setConversion(copiedList);
+			// List<SettingsConversion> originalLines = setting.getConversion();
+			// List<SettingsConversion> copiedList = new
+			// ArrayList<SettingsConversion>(originalLines);
+			// originalLines.clear();
+			// setting.setConversion(copiedList);
 
 			objectsController.saveOrUpdate(setting);
 		} catch (Exception e) {

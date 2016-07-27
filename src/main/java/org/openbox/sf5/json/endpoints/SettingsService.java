@@ -78,7 +78,7 @@ public class SettingsService {
 		} catch (SQLException se) {
 			throw new IllegalStateException("Error when calculating intersection lines", se);
 		} catch (Exception e) {
-			throw new IllegalStateException("Error when saving new setting", e);
+			throw new IllegalStateException("Error when saving setting", e);
 		}
 
 		HttpHeaders headers = new HttpHeaders();

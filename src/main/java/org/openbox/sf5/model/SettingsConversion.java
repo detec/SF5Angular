@@ -146,7 +146,7 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		}
 
 		// filter only SettingsConversion fields
-		List<String> SCClassList = new ArrayList<String>();
+		List<String> SCClassList = new ArrayList<>();
 
 		Field[] thisClassFieldsArray = SettingsConversion.class.getDeclaredFields();
 

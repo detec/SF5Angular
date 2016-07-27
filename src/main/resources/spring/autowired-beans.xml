@@ -35,14 +35,14 @@
 <context:annotation-config />
 
 <!-- This section enables autowiring -->	
-<context:component-scan base-package="org.openbox.sf5.model" />
-<context:component-scan base-package="org.openbox.sf5.dao" /> <!-- Probably this is for autowiring -->
+<!-- <context:component-scan base-package="org.openbox.sf5.model" />
+<context:component-scan base-package="org.openbox.sf5.dao" />
 <context:component-scan base-package="org.openbox.sf5.service" />
 <context:component-scan base-package="org.openbox.sf5.common" />
-<context:component-scan base-package="org.openbox.sf5.json" />
-<!-- <context:component-scan base-package="org.openbox.sf5.json.service" />
-<context:component-scan base-package="org.openbox.sf5.json.endpoints" /> -->
+<context:component-scan base-package="org.openbox.sf5.json" /> -->
 
+<context:component-scan base-package="org.openbox.sf5.model, org.openbox.sf5.dao
+, org.openbox.sf5.service, org.openbox.sf5.common, org.openbox.sf5.json" />
 
 <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
 
