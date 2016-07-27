@@ -4,8 +4,8 @@
   <artifactId>SF5BackboneJS</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>openboxsf5-angular</name>
-  <description>Openbox SF-5 settings editor, web implementation with REST</description>
+  <name>openboxsf5-BackboneJS</name>
+  <description>Openbox SF-5 settings editor, web implementation with REST and BackboneJS</description>
   
 	<properties>
   		<spring.version>4.2.6.RELEASE</spring.version>

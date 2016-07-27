@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-//import javax.persistence.CascadeType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.openbox.sf5.converters.TimestampAdapter;
 
@@ -109,11 +107,13 @@ public class Settings extends AbstractDbEntity implements Serializable {
 		this.user = User;
 	}
 
-	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	// @OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval
+	// = true)
+	// @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
 	@OrderColumn(name = "lineNumber")
 	@JsonManagedReference
-	private List<SettingsConversion> conversion = new ArrayList<SettingsConversion>();
+	private List<SettingsConversion> conversion = new ArrayList<>();
 
 	public List<SettingsConversion> getConversion() {
 		return conversion;
@@ -126,7 +126,7 @@ public class Settings extends AbstractDbEntity implements Serializable {
 	public Settings(String Name, Timestamp lastEntry, Users User, List<SettingsConversion> Conversion) {
 
 		this.name = Name;
-		theLastEntry = lastEntry;
+		this.theLastEntry = lastEntry;
 		this.user = User;
 		this.conversion = Conversion;
 
