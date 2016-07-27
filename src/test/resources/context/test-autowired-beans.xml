@@ -24,12 +24,13 @@
 <context:annotation-config />
 
 <!-- This section enables autowiring -->	
-<context:component-scan base-package="org.openbox.sf5.model" />
-<context:component-scan base-package="org.openbox.sf5.dao" /> <!-- Probably this is for autowiring -->
+<!-- <context:component-scan base-package="org.openbox.sf5.model" />
+<context:component-scan base-package="org.openbox.sf5.dao" /> Probably this is for autowiring
 <context:component-scan base-package="org.openbox.sf5.service" />
-<context:component-scan base-package="org.openbox.sf5.common" />
-<!-- <context:component-scan base-package="org.openbox.sf5.json" /> -->
-<!-- <context:component-scan base-package="org.openbox.sf5.jaxws" /> -->
+<context:component-scan base-package="org.openbox.sf5.common" /> -->
+
+<context:component-scan base-package="org.openbox.sf5.model, org.openbox.sf5.dao
+, org.openbox.sf5.service, org.openbox.sf5.common" />
 
 <context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
 
@@ -49,10 +50,22 @@
 <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="packagesToScan" value="org.openbox.sf5.model" />   
-    <property name="configLocation"> 
-		<value>classpath:hibernate.cfg.xml</value> 
-    </property> 
+	
+	<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.show_sql">false</prop>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+			<prop key="hibernate.current_session_context_class">thread</prop>
+			
+		</props>
+	</property>
 </bean>
+
+
+<!--     <property name="configLocation"> 
+		<value>classpath:hibernate.cfg.xml</value> 
+    </property>  -->
 
 <bean id="transactionManager"
     class="org.springframework.orm.hibernate5.HibernateTransactionManager">
