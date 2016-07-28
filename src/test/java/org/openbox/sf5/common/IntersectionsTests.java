@@ -146,7 +146,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		setting.setTheLastEntry(new java.sql.Timestamp(System.currentTimeMillis()));
 		DAO.saveOrUpdate(setting);
 
-		List<Transponders> transList = DAO.ObjectsList(Transponders.class);
+		List<Transponders> transList = DAO.findAll(Transponders.class);
 
 		List<SettingsConversion> scList = new ArrayList<>();
 		for (int i = 7; i < 39; i++) {

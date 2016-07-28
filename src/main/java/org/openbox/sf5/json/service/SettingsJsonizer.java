@@ -38,7 +38,10 @@ public class SettingsJsonizer {
 			// originalLines.clear();
 			// setting.setConversion(copiedList);
 
-			objectsController.saveOrUpdate(setting);
+			// objectsController.saveOrUpdate(setting);
+			// Let's try to use EntityManager method.
+			setting = objectsController.updateEM(setting);
+
 		} catch (Exception e) {
 			returnStatus = HttpStatus.CONFLICT;
 		}
@@ -50,7 +53,8 @@ public class SettingsJsonizer {
 			int rows = intersections.checkIntersection(scList, setting);
 
 			setting.setConversion(scList);
-			objectsController.saveOrUpdate(setting);
+			// objectsController.saveOrUpdate(setting);
+			setting = objectsController.updateEM(setting);
 		}
 
 		return returnStatus;

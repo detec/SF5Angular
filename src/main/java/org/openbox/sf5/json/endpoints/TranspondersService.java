@@ -30,10 +30,10 @@ public class TranspondersService {
 
 			result = transpondersJsonizer.uploadTransponders(file);
 		} else {
-			return new ResponseEntity<Boolean>(result, HttpStatus.NOT_IMPLEMENTED);
+			return new ResponseEntity<>(result, HttpStatus.NOT_IMPLEMENTED);
 		}
 
-		return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = "application/json")
@@ -41,19 +41,19 @@ public class TranspondersService {
 			@PathVariable("typeValue") String typeValue) {
 		List<Transponders> transList = transpondersJsonizer.getTranspondersByArbitraryFilter(fieldName, typeValue);
 		if (transList.isEmpty()) {
-			return new ResponseEntity<List<Transponders>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Transponders>>(transList, HttpStatus.OK);
+		return new ResponseEntity<>(transList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "filter/id/{transponderId}", method = RequestMethod.GET)
 	public ResponseEntity<Transponders> getTransponderById(@PathVariable("transponderId") long tpId) {
 		Transponders trans = objectController.select(Transponders.class, tpId);
 		if (trans == null) {
-			return new ResponseEntity<Transponders>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<Transponders>(trans, HttpStatus.OK);
+		return new ResponseEntity<>(trans, HttpStatus.OK);
 
 	}
 
@@ -63,18 +63,18 @@ public class TranspondersService {
 
 		List<Transponders> transList = transpondersJsonizer.getTranspondersBySatelliteId(satId);
 		if (transList.isEmpty()) {
-			return new ResponseEntity<List<Transponders>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Transponders>>(transList, HttpStatus.OK);
+		return new ResponseEntity<>(transList, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Transponders>> getTransponders() {
-		List<Transponders> transList = objectController.ObjectsList(Transponders.class);
+		List<Transponders> transList = objectController.findAll(Transponders.class);
 		if (transList.isEmpty()) {
-			return new ResponseEntity<List<Transponders>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Transponders>>(transList, HttpStatus.OK);
+		return new ResponseEntity<>(transList, HttpStatus.OK);
 	}
 
 	public DAO getObjectController() {

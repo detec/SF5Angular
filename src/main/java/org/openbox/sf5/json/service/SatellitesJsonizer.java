@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.criterion.Criterion;
-import org.openbox.sf5.common.JsonObjectFiller;
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.model.Satellites;
 import org.openbox.sf5.service.CriterionService;
@@ -14,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SatellitesJsonizer implements Serializable {
 
-	public String getSatellitesList() {
-		List<Satellites> satList = listService.ObjectsList(Satellites.class);
-		String result = JsonObjectFiller.getJsonFromObjectsList(satList);
-
-		return result;
-	}
+	// public String getSatellitesList() {
+	// List<Satellites> satList = listService.findAll(Satellites.class);
+	// String result = JsonObjectFiller.getJsonFromObjectsList(satList);
+	//
+	// return result;
+	// }
 
 	public List<Satellites> getSatellitesByArbitraryFilter(String fieldName, String typeValue) {
 

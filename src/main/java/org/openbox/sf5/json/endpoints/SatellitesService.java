@@ -25,22 +25,22 @@ public class SatellitesService {
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<List<Satellites>> getAllSatellites() {
-		List<Satellites> satList = objectController.ObjectsList(Satellites.class);
+		List<Satellites> satList = objectController.findAll(Satellites.class);
 		if (satList.isEmpty()) {
-			return new ResponseEntity<List<Satellites>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<List<Satellites>>(satList, HttpStatus.OK);
+		return new ResponseEntity<>(satList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "filter/id/{satelliteId}", method = RequestMethod.GET)
 	public ResponseEntity<Satellites> getSatelliteById(@PathVariable("satelliteId") long satId) {
 		Satellites sat = objectController.select(Satellites.class, satId);
 		if (sat == null) {
-			return new ResponseEntity<Satellites>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<Satellites>(sat, HttpStatus.OK);
+		return new ResponseEntity<>(sat, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
@@ -49,10 +49,10 @@ public class SatellitesService {
 
 		List<Satellites> satList = jsonizer.getSatellitesByArbitraryFilter(fieldName, typeValue);
 		if (satList.isEmpty()) {
-			return new ResponseEntity<List<Satellites>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<List<Satellites>>(satList, HttpStatus.OK);
+		return new ResponseEntity<>(satList, HttpStatus.OK);
 	}
 
 	@Autowired

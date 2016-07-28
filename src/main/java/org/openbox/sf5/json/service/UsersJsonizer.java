@@ -59,7 +59,7 @@ public class UsersJsonizer {
 	}
 
 	public List<Users> getAllUsers() {
-		List<Users> listOfUsers = objectsController.ObjectsList(Users.class);
+		List<Users> listOfUsers = objectsController.findAll(Users.class);
 		return listOfUsers;
 
 	}
