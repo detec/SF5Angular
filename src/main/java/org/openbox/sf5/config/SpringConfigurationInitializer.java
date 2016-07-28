@@ -1,6 +1,8 @@
 package org.openbox.sf5.config;
 
 import javax.servlet.Filter;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletRegistration;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -44,5 +46,35 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
 
 		return new Filter[] { new CharacterEncodingFilter() };
 	}
+
+	// http://websystique.com/springmvc/spring-mvc-4-file-upload-example-using-multipartconfigelement/
+	@Override
+	protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+		registration.setMultipartConfig(getMultipartConfigElement());
+	}
+
+	private MultipartConfigElement getMultipartConfigElement() {
+		MultipartConfigElement multipartConfigElement = new MultipartConfigElement(LOCATION, MAX_FILE_SIZE,
+				MAX_REQUEST_SIZE, FILE_SIZE_THRESHOLD);
+		return multipartConfigElement;
+	}
+
+	private static final String LOCATION = ""; // Temporary location
+												// where files will be
+												// stored
+
+	private static final long MAX_FILE_SIZE = 5242880; // 5MB : Max file size.
+														// Beyond that size
+														// spring will throw
+														// exception.
+	private static final long MAX_REQUEST_SIZE = 20971520; // 20MB : Total
+															// request size
+															// containing Multi
+															// part.
+
+	private static final int FILE_SIZE_THRESHOLD = 5242880; // Size threshold
+															// after
+	// which files will be
+	// written to disk
 
 }

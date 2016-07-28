@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
@@ -22,6 +21,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -33,7 +33,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Configuration
 @ComponentScan(basePackages = { "org.openbox.sf5.common", "org.openbox.sf5.json" })
-@ImportResource({ "/WEB-INF/springWebMultipartContext.xml" })
 public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	@Autowired
@@ -59,6 +58,11 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 	XmlMapper customXMLMapper() {
 		CustomXMLMapper xmlMapper = new CustomXMLMapper();
 		return xmlMapper;
+	}
+
+	@Bean(name = "multipartResolver")
+	public StandardServletMultipartResolver resolver() {
+		return new StandardServletMultipartResolver();
 	}
 
 	// @Override

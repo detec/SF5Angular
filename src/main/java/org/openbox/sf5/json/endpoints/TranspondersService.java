@@ -2,6 +2,8 @@ package org.openbox.sf5.json.endpoints;
 
 import java.util.List;
 
+import javax.servlet.annotation.MultipartConfig;
+
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.json.service.TranspondersJsonizer;
 import org.openbox.sf5.model.Transponders;
@@ -20,6 +22,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @RestController
 @EnableWebMvc
 @RequestMapping("${jaxrs.path}/transponders/")
+@MultipartConfig(fileSizeThreshold = 5242880, maxFileSize = 5242880, // 5
+		// MB
+		maxRequestSize = 20971520) // 20 MB
 public class TranspondersService {
 
 	@RequestMapping(method = RequestMethod.POST, headers = "content-type=multipart/form-data")
