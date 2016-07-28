@@ -21,7 +21,7 @@ public interface DAO {
 
 	public <T extends AbstractDbEntity> List<T> findAll(Class<T> type);
 
-	public <T extends AbstractDbEntity> List<T> ObjectsCriterionList(Class<T> type, Criterion criterion);
+	public <T extends AbstractDbEntity> List<T> findAllWithRestrictions(Class<T> type, Criterion criterion);
 
 	public SessionFactory getSessionFactory();
 

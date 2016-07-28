@@ -90,7 +90,7 @@ public class SettingsJsonizer {
 		List<Settings> settList = new ArrayList<>();
 
 		Criterion userCriterion = Restrictions.eq("user", user);
-		settList = objectsController.ObjectsCriterionList(Settings.class, userCriterion);
+		settList = objectsController.findAllWithRestrictions(Settings.class, userCriterion);
 
 		return settList;
 
@@ -104,7 +104,7 @@ public class SettingsJsonizer {
 			return settList;
 		}
 
-		settList = objectsController.ObjectsCriterionList(Settings.class, userCriterion);
+		settList = objectsController.findAllWithRestrictions(Settings.class, userCriterion);
 
 		return settList;
 	}

@@ -13,18 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class SatellitesJsonizer implements Serializable {
 
-	// public String getSatellitesList() {
-	// List<Satellites> satList = listService.findAll(Satellites.class);
-	// String result = JsonObjectFiller.getJsonFromObjectsList(satList);
-	//
-	// return result;
-	// }
-
 	public List<Satellites> getSatellitesByArbitraryFilter(String fieldName, String typeValue) {
 
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Satellites.class, fieldName,
 				typeValue);
-		List<Satellites> satList = listService.ObjectsCriterionList(Satellites.class, criterion);
+		List<Satellites> satList = listService.findAllWithRestrictions(Satellites.class, criterion);
 
 		return satList;
 	}

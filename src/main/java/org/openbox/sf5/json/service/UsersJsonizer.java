@@ -50,7 +50,7 @@ public class UsersJsonizer {
 			return returnUser;
 		}
 
-		List<Users> userList = objectsController.ObjectsCriterionList(Users.class, criterion);
+		List<Users> userList = objectsController.findAllWithRestrictions(Users.class, criterion);
 		if (userList.size() == 0) {
 			return returnUser;
 		}
@@ -73,7 +73,7 @@ public class UsersJsonizer {
 		if (criterion == null) {
 			return result;
 		}
-		List<Users> userList = objectsController.ObjectsCriterionList(Users.class, criterion);
+		List<Users> userList = objectsController.findAllWithRestrictions(Users.class, criterion);
 
 		result = (userList.size() == 0) ? false : true;
 

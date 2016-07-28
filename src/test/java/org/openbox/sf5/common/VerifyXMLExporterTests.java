@@ -48,7 +48,7 @@ public class VerifyXMLExporterTests extends AbstractJsonizerTest {
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Settings.class, "name",
 				"Intersections test");
 
-		List<Settings> settList = DAO.ObjectsCriterionList(Settings.class, criterion);
+		List<Settings> settList = DAO.findAllWithRestrictions(Settings.class, criterion);
 
 		assertEquals(1, settList.size());
 

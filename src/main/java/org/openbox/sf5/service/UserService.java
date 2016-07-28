@@ -51,7 +51,7 @@ public class UserService implements IUserService, Serializable {
 	public boolean userExists(String username) {
 
 		Criterion criterion = Restrictions.eq("username", username);
-		List<Users> rec = objectsController.ObjectsCriterionList(Users.class, criterion);
+		List<Users> rec = objectsController.findAllWithRestrictions(Users.class, criterion);
 		if (rec.isEmpty()) {
 			return false;
 		} else {

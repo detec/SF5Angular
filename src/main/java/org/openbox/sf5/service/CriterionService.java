@@ -75,7 +75,7 @@ public class CriterionService implements Serializable {
 		Criterion userCriterion = null;
 
 		criterion = Restrictions.eq("username", login);
-		List<Users> usersList = objectController.ObjectsCriterionList(Users.class, criterion);
+		List<Users> usersList = objectController.findAllWithRestrictions(Users.class, criterion);
 
 		if (usersList.size() == 0) {
 			return criterion;

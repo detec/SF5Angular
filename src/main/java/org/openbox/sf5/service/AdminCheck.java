@@ -25,7 +25,7 @@ public class AdminCheck {
 	public void initialize() {
 
 		Criterion criterea = Restrictions.eq("username", "admin");
-		List<Users> adminsList = objectsController.ObjectsCriterionList(Users.class, criterea);
+		List<Users> adminsList = objectsController.findAllWithRestrictions(Users.class, criterea);
 
 		if (adminsList.isEmpty()) {
 			List<Usersauthorities> rolesList = new ArrayList<>();

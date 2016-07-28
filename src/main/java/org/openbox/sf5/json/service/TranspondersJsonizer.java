@@ -30,7 +30,7 @@ public class TranspondersJsonizer {
 	}
 
 	public List<Transponders> getTranspondersByArbitraryFilter(String fieldName, String typeValue) {
-		List<Transponders> transList = new ArrayList<Transponders>();
+		List<Transponders> transList = new ArrayList<>();
 
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Transponders.class, fieldName,
 				typeValue);
@@ -39,14 +39,14 @@ public class TranspondersJsonizer {
 			return transList;
 		}
 
-		transList = objectsController.ObjectsCriterionList(Transponders.class, criterion);
+		transList = objectsController.findAllWithRestrictions(Transponders.class, criterion);
 
 		return transList;
 
 	}
 
 	public List<Transponders> getTranspondersBySatelliteId(long satId) {
-		List<Transponders> transList = new ArrayList<Transponders>();
+		List<Transponders> transList = new ArrayList<>();
 
 		Satellites filterSatellite = objectsController.select(Satellites.class, satId);
 		if (filterSatellite == null) {
@@ -54,7 +54,7 @@ public class TranspondersJsonizer {
 		}
 		Criterion criterion = Restrictions.eq("satellite", filterSatellite);
 
-		transList = objectsController.ObjectsCriterionList(Transponders.class, criterion);
+		transList = objectsController.findAllWithRestrictions(Transponders.class, criterion);
 
 		return transList;
 

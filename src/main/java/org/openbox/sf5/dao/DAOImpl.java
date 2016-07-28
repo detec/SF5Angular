@@ -98,7 +98,7 @@ public class DAOImpl implements DAO, Serializable {
 
 	@Override
 	@Transactional(readOnly = true)
-	public <T extends AbstractDbEntity> List<T> ObjectsCriterionList(Class<T> type, Criterion criterion) {
+	public <T extends AbstractDbEntity> List<T> findAllWithRestrictions(Class<T> type, Criterion criterion) {
 		Session s = openSession();
 
 		Criteria criteria = s.createCriteria(type)

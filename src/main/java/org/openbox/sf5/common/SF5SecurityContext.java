@@ -36,7 +36,7 @@ public class SF5SecurityContext {
 		String username = secUser.getUsername();
 		Criterion criterion = Restrictions.eq("username", username);
 
-		List<Users> usersList = listService.ObjectsCriterionList(Users.class, criterion);
+		List<Users> usersList = listService.findAllWithRestrictions(Users.class, criterion);
 		if (!usersList.isEmpty()) {
 			returnUser = usersList.get(0);
 		}
