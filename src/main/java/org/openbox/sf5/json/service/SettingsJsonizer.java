@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -45,8 +44,8 @@ public class SettingsJsonizer {
 		}
 
 		if (calculateIntersection) {
-			Intersections intersections = new Intersections();
-			intersections.setSessionFactory(sessionFactory);
+			// Intersections intersections = new Intersections();
+			// intersections.setSessionFactory(sessionFactory);
 			List<SettingsConversion> scList = setting.getConversion();
 			int rows = intersections.checkIntersection(scList, setting);
 
@@ -71,7 +70,7 @@ public class SettingsJsonizer {
 			return settList;
 		}
 
-		Session session = sessionFactory.openSession();
+		Session session = objectsController.openSession();
 		Criteria criteria = session.createCriteria(Settings.class).add(userCriterion).add(arbitraryCriterion);
 		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 
@@ -113,7 +112,7 @@ public class SettingsJsonizer {
 
 		Criterion settingIdCriterion = Restrictions.eq("id", settingId);
 
-		Session session = sessionFactory.openSession();
+		Session session = objectsController.openSession();
 		@SuppressWarnings("unchecked")
 		List<Settings> records = session.createCriteria(Settings.class).add(userCriterion).add(settingIdCriterion)
 				.list();
@@ -140,11 +139,14 @@ public class SettingsJsonizer {
 	@Autowired
 	private CriterionService criterionService;
 
-	@Autowired
-	private SessionFactory sessionFactory;
+	// @Autowired
+	// private SessionFactory sessionFactory;
 
 	@Autowired
 	private DAO objectsController;
+
+	@Autowired
+	private Intersections intersections;
 
 	public DAO getObjectsController() {
 		return objectsController;
@@ -162,12 +164,12 @@ public class SettingsJsonizer {
 		this.criterionService = criterionService;
 	}
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+	// public SessionFactory getSessionFactory() {
+	// return sessionFactory;
+	// }
+	//
+	// public void setSessionFactory(SessionFactory sessionFactory) {
+	// this.sessionFactory = sessionFactory;
+	// }
 
 }

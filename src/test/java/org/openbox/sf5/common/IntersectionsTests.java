@@ -37,6 +37,12 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 	@Autowired
 	private TableFillerTests tft;
 
+	@Autowired
+	private IniReader iniReader;
+
+	@Autowired
+	private Intersections intersections;
+
 	@Before
 	public void setUp() {
 		super.setUpAbstract();
@@ -46,7 +52,10 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		// TableFillerTests tft = new TableFillerTests();
 		tft.setUpAbstract(); // disable logging, formerly used to set up
 								// dependencies.
-		tft.executeTableFiller();
+
+		// TableFiller is a component that is created automatically with
+		// context.
+		// tft.executeTableFiller();
 	}
 
 	@Test
@@ -78,9 +87,9 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 
 	public int getIniImportResult() throws IOException, URISyntaxException {
 
-		IniReader iniReader = new IniReader();
-		iniReader.setSessionFactory(sessionFactory);
-		iniReader.setObjectController(DAO);
+		// IniReader iniReader = new IniReader();
+		// iniReader.setSessionFactory(sessionFactory);
+		// iniReader.setObjectController(DAO);
 
 		List<Boolean> resultList = new ArrayList<>();
 
@@ -119,7 +128,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		usr.setusername("login");
 		usr.setPassword("empty");
 
-		List<Usersauthorities> rolesList = new ArrayList<Usersauthorities>();
+		List<Usersauthorities> rolesList = new ArrayList<>();
 
 		Usersauthorities checkRoleUser = new Usersauthorities(usr.getusername(), "ROLE_USER", usr, 2);
 
@@ -139,7 +148,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 
 		List<Transponders> transList = DAO.ObjectsList(Transponders.class);
 
-		List<SettingsConversion> scList = new ArrayList<SettingsConversion>();
+		List<SettingsConversion> scList = new ArrayList<>();
 		for (int i = 7; i < 39; i++) {
 			// adding lines to setting
 			SettingsConversion newLine = new SettingsConversion(setting);
@@ -148,8 +157,8 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 			scList.add(newLine);
 		}
 
-		Intersections intersections = new Intersections();
-		intersections.setSessionFactory(sessionFactory);
+		// Intersections intersections = new Intersections();
+		// intersections.setSessionFactory(sessionFactory);
 		// if something is wrong - test will fail.
 		int rows = intersections.checkIntersection(scList, setting);
 

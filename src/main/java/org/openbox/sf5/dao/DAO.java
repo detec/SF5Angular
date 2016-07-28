@@ -2,6 +2,7 @@ package org.openbox.sf5.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.openbox.sf5.model.AbstractDbEntity;
@@ -24,6 +25,9 @@ public interface DAO {
 
 	public SessionFactory getSessionFactory();
 
-	public void setSessionFactory(SessionFactory sessionFactory);
+	public Session openSession();
+
+	//
+	// public void setSessionFactory(SessionFactory sessionFactory);
 
 }

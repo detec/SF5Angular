@@ -31,7 +31,6 @@ public class LoginController {
 	// http://websystique.com/spring-security/spring-security-4-custom-login-form-annotation-example/
 
 	@Autowired
-	// @Qualifier("userService")
 	private IUserService userService;
 
 	@Autowired
@@ -142,15 +141,5 @@ public class LoginController {
 
 		return "login";
 	}
-
-	// http://stackoverflow.com/questions/8781558/neither-bindingresult-nor-plain-target-object-for-bean-name-available-as-request
-	// @RequestMapping(value = "/", method = RequestMethod.GET)
-	// public String displayLogin(Model model) {
-	//
-	// UserDto userDto = new UserDto();
-	// model.addAttribute("user", userDto);
-	//
-	// return "login";
-	// }
 
 }

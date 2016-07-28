@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,8 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class DAOImpl implements DAO, Serializable {
 
 	@Override
+	public Session openSession() {
+		Session session = getSessionFactory().openSession();
+		// Session session = entityManager.unwrap(Session.class);
+		return session;
+	}
+
+	@Override
 	public <T extends AbstractDbEntity> void add(T obj) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
 		s.beginTransaction();
 		s.save(obj);
 		s.getTransaction().commit();
@@ -31,7 +42,7 @@ public class DAOImpl implements DAO, Serializable {
 
 	@Override
 	public <T extends AbstractDbEntity> void remove(Class<T> type, long id) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
 		s.beginTransaction();
 		Object c = s.get(type, id);
 		s.delete(c);
@@ -41,7 +52,7 @@ public class DAOImpl implements DAO, Serializable {
 
 	@Override
 	public <T extends AbstractDbEntity> void update(T obj) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
 		s.beginTransaction();
 		s.update(obj);
 		s.getTransaction().commit();
@@ -51,7 +62,8 @@ public class DAOImpl implements DAO, Serializable {
 	@Override
 	@Transactional(readOnly = true)
 	public <T extends AbstractDbEntity> T select(Class<T> type, long id) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
+
 		s.beginTransaction();
 		@SuppressWarnings("unchecked")
 		T obj = s.get(type, id);
@@ -61,7 +73,8 @@ public class DAOImpl implements DAO, Serializable {
 
 	@Override
 	public <T extends AbstractDbEntity> void saveOrUpdate(T obj) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
+
 		s.beginTransaction();
 		s.saveOrUpdate(obj);
 		s.getTransaction().commit();
@@ -75,7 +88,7 @@ public class DAOImpl implements DAO, Serializable {
 
 		List<T> list = new ArrayList<>();
 
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
 		s.beginTransaction();
 		list = s.createQuery("from " + type.getName() + " order by id").list();
 		s.getTransaction().commit();
@@ -86,7 +99,8 @@ public class DAOImpl implements DAO, Serializable {
 	@Override
 	@Transactional(readOnly = true)
 	public <T extends AbstractDbEntity> List<T> ObjectsCriterionList(Class<T> type, Criterion criterion) {
-		Session s = sessionFactory.openSession();
+		Session s = openSession();
+
 		Criteria criteria = s.createCriteria(type)
 
 				.add(criterion)
@@ -103,6 +117,9 @@ public class DAOImpl implements DAO, Serializable {
 	}
 
 	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+
+	// @Autowired
 	private SessionFactory sessionFactory;
 
 	public DAOImpl() {
@@ -111,16 +128,34 @@ public class DAOImpl implements DAO, Serializable {
 
 	@Override
 	public SessionFactory getSessionFactory() {
+		if (sessionFactory == null) {
+			// Session session = entityManager.unwrap(Session.class);
+			// sessionFactory = session.getSessionFactory();
+
+			sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+
+		}
 		return sessionFactory;
+
 	}
 
-	@Override
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
 	public DAOImpl(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	private EntityManager entityManager;
+
+	protected EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	@PersistenceContext
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	private static final long serialVersionUID = 643710250463318145L;

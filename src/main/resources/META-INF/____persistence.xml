@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+   xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+        http://java.sun.com/xml/ns/persistence
+        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	
+	<!-- Modified according to 
+	https://gist.github.com/aziz781/1336488
+	 -->
+	
+	<!-- http://www.adam-bien.com/roller/abien/entry/don_t_use_jpa_s
+	Article about datasources in JEE environment
+	 -->
+	<persistence-unit name="primary" transaction-type="JTA">
+	<!-- http://stackoverflow.com/questions/33113661/cant-bind-hibernate-session-factory-into-javaapp-in-wildfly-8-2-1
+	specifying provider
+	 -->
+		<jta-data-source>java:jboss/datasources/MySQLDS</jta-data-source>
+	
+    	<properties>
+    		<property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/SF5Spring/persistence" />
+    	<!-- Properties for Hibernate -->
+  			<property name="show_sql" value="true"/>
+  			<property name="hibernate.hbm2ddl.auto" value="${db.hbm2ddl}"/>
+  			<property name="hibernate.current_session_context_class" value="thread" />
+  			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+   			<property name="hibernate.connection.isolation" value="SERIALIZABLE"/>
+			<property name="eclipselink.logging.level" value="OFF" />
+		</properties>
+
+	</persistence-unit>
+</persistence>

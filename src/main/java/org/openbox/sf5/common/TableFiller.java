@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.model.CarrierFrequency;
@@ -29,13 +28,13 @@ public final class TableFiller implements Serializable {
 	@PostConstruct
 	public void init() {
 
-		List<RangesOfDVB> list = new ArrayList<RangesOfDVB>();
+		List<RangesOfDVB> list = new ArrayList<>();
 		list.add(RangesOfDVB.C);
 		list.add(RangesOfDVB.Ku);
 
 		TheDVBRangeValues newRecord = null;
 
-		Session session = sessionFactory.openSession();
+		Session session = objectController.openSession();
 
 		for (RangesOfDVB e : list) {
 
@@ -125,14 +124,14 @@ public final class TableFiller implements Serializable {
 		this.objectController = objectController;
 	}
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	@Autowired
-	private SessionFactory sessionFactory;
+	// public SessionFactory getSessionFactory() {
+	// return sessionFactory;
+	// }
+	//
+	// public void setSessionFactory(SessionFactory sessionFactory) {
+	// this.sessionFactory = sessionFactory;
+	// }
+	//
+	// @Autowired
+	// private SessionFactory sessionFactory;
 }

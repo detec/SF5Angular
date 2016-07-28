@@ -69,8 +69,8 @@
 
 <tx:annotation-driven transaction-manager="transactionManager" />
 
-
-<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+<!-- We cannot use simultaneously in JTA environments two methods -->
+<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
 	<property name="jtaTransactionManager" ref="transactionManager"/>
     <property name="packagesToScan" value="org.openbox.sf5.model" />   
@@ -84,7 +84,7 @@
 			<prop key="hibernate.transaction.coordinator_class">jta</prop>
 		</props>
 	</property>
-</bean>
+</bean> -->
 
 <!--     <property name="configLocation"> 
 		<value>classpath:hibernate.cfg.xml</value> 
@@ -131,5 +131,30 @@
 <!-- From http://stackoverflow.com/questions/4882988/how-to-get-formatted-xml-output-from-jaxb-in-spring -->   
 
 <bean class="org.springframework.web.util.UriComponentsBuilder"> </bean>
+
+<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<property name="jpaVendorAdapter">
+		<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			<property name="showSql" value="true" />
+			<property name="generateDdl" value="true" />
+		</bean>
+	</property>
+	<property name="jpaProperties">
+		<props>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+			<prop key="hibernate.current_session_context_class">jta</prop>
+			<prop key="hibernate.transaction.coordinator_class">jta</prop>
+		</props>
+	</property>
+	<property name="packagesToScan">
+	 	<array>
+			<value>org.openbox.sf5.model</value> 
+		</array>
+	</property>
+	<property name="persistenceUnitName" value="emf"/>
+	<property name="dataSource" ref="dataSource" />
+</bean>
+
 		
 </beans>  		

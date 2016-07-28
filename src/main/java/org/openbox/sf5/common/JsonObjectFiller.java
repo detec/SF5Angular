@@ -106,7 +106,7 @@ public class JsonObjectFiller {
 
 		List<Field> fieldList = Arrays.asList(fields);
 		Class<T> clazz = null;
-		List<Class<T>> classList = new ArrayList<Class<T>>();
+		List<Class<T>> classList = new ArrayList<>();
 
 		// find field with the given name and return its class
 		fieldList.stream().filter(t -> t.getName().equals(fieldName)).forEach(t -> {
@@ -159,40 +159,6 @@ public class JsonObjectFiller {
 		return sw.toString();
 
 	}
-
-	// public static <T> ResponseEntity<GenericXMLListWrapper<T>>
-	// returnGenericWrapperResponseBySatList(List<T> entityList,
-	// Class<T> type) {
-	//
-	// GenericXMLListWrapper<T> wrapper = new GenericXMLListWrapper<T>();
-	// wrapper.setWrappedList(entityList);
-	//
-	// //
-	// http://stackoverflow.com/questions/14268981/modify-a-class-definitions-annotation-string-parameter-at-runtime
-	// //
-	// http://stackoverflow.com/questions/16545868/exception-converting-object-to-xml-using-jaxb
-	//
-	// // We should replace stub for satellites in root element
-	// final XmlRootElement classAnnotation =
-	// wrapper.getClass().getAnnotation(XmlRootElement.class);
-	// ChangeAnnotation.changeAnnotationValue(classAnnotation, "name",
-	// type.getSimpleName().toLowerCase()); // this
-	// // seems
-	// // to
-	// // work
-	//
-	// // we should also change annotation of @XmlSeeAlso
-	// final XmlSeeAlso classSeeAlsoAnnotation =
-	// wrapper.getClass().getAnnotation(XmlSeeAlso.class);
-	// // Player[] thePlayers = new Player[playerCount + 1];
-	// Class[] clazzArray = new Class[1];
-	// clazzArray[0] = type;
-	// ChangeAnnotation.changeAnnotationValue(classSeeAlsoAnnotation, "value",
-	// clazzArray);
-	//
-	// return new ResponseEntity<GenericXMLListWrapper<T>>(wrapper,
-	// HttpStatus.OK);
-	// }
 
 	public static SimpleDateFormat getJsonDateFormatter() {
 		// SimpleDateFormat formatter = new
