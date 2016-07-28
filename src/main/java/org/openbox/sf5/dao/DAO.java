@@ -27,6 +27,8 @@ public interface DAO {
 
 	public Session openSession();
 
+	public <T extends AbstractDbEntity> T updateEM(T entity);
+
 	//
 	// public void setSessionFactory(SessionFactory sessionFactory);
 
