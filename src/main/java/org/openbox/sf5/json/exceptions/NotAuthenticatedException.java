@@ -4,10 +4,8 @@ public class NotAuthenticatedException extends Exception {
 
 	private static final long serialVersionUID = -7459104804583637687L;
 
-	private String messsage;
-
 	public NotAuthenticatedException(String messsage) {
-		this.messsage = messsage;
+		super(messsage);
 	}
 
 }
