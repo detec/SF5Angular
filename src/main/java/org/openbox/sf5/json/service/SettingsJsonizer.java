@@ -16,48 +16,54 @@ import org.openbox.sf5.model.SettingsConversion;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.service.CriterionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SettingsJsonizer {
 
-	public HttpStatus saveNewSetting(Settings setting, boolean calculateIntersection) throws SQLException {
+	public Settings saveNewSetting(Settings setting, boolean calculateIntersection) throws SQLException {
 		long id = setting.getId();
 		// if we receive non-empty id
 		// We use the same method for new and existing settings
 		// if (id != 0) {
 		// return HttpStatus.CONFLICT;
 		// }
-		HttpStatus returnStatus = (id > 0) ? HttpStatus.OK : HttpStatus.CREATED;
-		try {
-			// let's make a copy of conversion lines
-			// List<SettingsConversion> originalLines = setting.getConversion();
-			// List<SettingsConversion> copiedList = new
-			// ArrayList<SettingsConversion>(originalLines);
-			// originalLines.clear();
-			// setting.setConversion(copiedList);
 
-			// objectsController.saveOrUpdate(setting);
-			// Let's try to use EntityManager method.
+		// HttpStatus returnStatus = (id > 0) ? HttpStatus.OK :
+		// HttpStatus.CREATED;
+
+		// let's make a copy of conversion lines
+		// List<SettingsConversion> originalLines = setting.getConversion();
+		// List<SettingsConversion> copiedList = new
+		// ArrayList<SettingsConversion>(originalLines);
+		// originalLines.clear();
+		// setting.setConversion(copiedList);
+
+		// objectsController.saveOrUpdate(setting);
+		// Let's try to use EntityManager method.
+		if (setting.getId() > 0) {
 			setting = objectsController.updateEM(setting);
-
-		} catch (Exception e) {
-			returnStatus = HttpStatus.CONFLICT;
+		} else {
+			setting = objectsController.saveEM(setting);
 		}
 
 		if (calculateIntersection) {
 			// Intersections intersections = new Intersections();
 			// intersections.setSessionFactory(sessionFactory);
 			List<SettingsConversion> scList = setting.getConversion();
-			int rows = intersections.checkIntersection(scList, setting);
+			try {
+				int rows = intersections.checkIntersection(scList, setting);
+			} catch (SQLException se) {
+				throw new SQLException("Error when calculating intersection lines", se);
+			}
 
 			setting.setConversion(scList);
-			// objectsController.saveOrUpdate(setting);
+
 			setting = objectsController.updateEM(setting);
+
 		}
 
-		return returnStatus;
+		return setting;
 	}
 
 	@SuppressWarnings("unchecked")

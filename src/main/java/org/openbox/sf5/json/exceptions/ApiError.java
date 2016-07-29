@@ -10,13 +10,6 @@ public class ApiError {
 	private String message;
 	private List<String> errors = new ArrayList<>();;
 
-	// public ApiError(HttpStatus status, String message, List<String> errors) {
-	// super();
-	// this.status = status;
-	// this.message = message;
-	// this.errors = errors;
-	// }
-
 	public HttpStatus getStatus() {
 		return status;
 	}

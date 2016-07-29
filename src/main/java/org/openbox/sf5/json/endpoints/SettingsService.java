@@ -53,7 +53,7 @@ public class SettingsService {
 	@RequestMapping(method = { RequestMethod.POST })
 	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
-			throws NotAuthenticatedException, UsersDoNotCoincideException {
+			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 
@@ -72,14 +72,9 @@ public class SettingsService {
 
 		// Define return status. For existing settings request method is PUT,
 		// for new - POST.
-		HttpStatus statusResult = null;
-		try {
-			statusResult = settingsJsonizer.saveNewSetting(setting, calculateIntersection);
-		} catch (SQLException se) {
-			throw new IllegalStateException("Error when calculating intersection lines", se);
-		} catch (Exception e) {
-			throw new IllegalStateException("Error when saving setting", e);
-		}
+		HttpStatus returnStatus = (setting.getId() > 0) ? HttpStatus.OK : HttpStatus.CREATED;
+
+		settingsJsonizer.saveNewSetting(setting, calculateIntersection);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("SettingId", Long.toString(setting.getId()));
@@ -91,12 +86,7 @@ public class SettingsService {
 
 		}
 
-		// For test purposes
-		// if (1 == 1) {
-		// throw new NotAuthenticatedException("Testing exceptions!");
-		// }
-
-		return new ResponseEntity<>(setting, headers, statusResult);
+		return new ResponseEntity<>(setting, headers, returnStatus);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
@@ -104,7 +94,7 @@ public class SettingsService {
 	public ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@PathVariable("settingId") long settingId,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
-			throws NotAuthenticatedException, UsersDoNotCoincideException {
+			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
 
 		return createSetting(setting, ucBuilder, calculateIntersection);
 	}
@@ -128,13 +118,6 @@ public class SettingsService {
 		settingsJsonizer.deleteSetting(settingId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-
-	// @PreAuthorize("hasRole('ROLE_USER')")
-	// @RequestMapping(method = RequestMethod.DELETE)
-	// public ResponseEntity<Settings> deleteStub() {
-	// System.out.println("Delete setting stub accessed!");
-	// return new ResponseEntity<Settings>(HttpStatus.NO_CONTENT);
-	// }
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")

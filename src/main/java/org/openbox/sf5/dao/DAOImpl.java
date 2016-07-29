@@ -122,6 +122,12 @@ public class DAOImpl implements DAO, Serializable {
 		return mergedEntity;
 	}
 
+	@Override
+	public <T extends AbstractDbEntity> T saveEM(T entity) {
+		getEntityManager().persist(entity);
+		return entity;
+	}
+
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
 

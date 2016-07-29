@@ -1,6 +1,7 @@
 package org.openbox.sf5.json;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,9 +44,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
 	}
 
-	@ExceptionHandler(value = { IllegalStateException.class, IOException.class })
+	@ExceptionHandler(value = { IllegalStateException.class, IOException.class, SQLException.class })
 	public ResponseEntity<ApiError> handleServerException(Exception ex, WebRequest request) {
-		return constructSerializedException(ex, HttpStatus.CONFLICT);
+		return constructSerializedException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
