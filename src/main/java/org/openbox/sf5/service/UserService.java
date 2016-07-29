@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.openbox.sf5.dao.DAO;
-import org.openbox.sf5.json.exceptions.UserNotFoundException;
 import org.openbox.sf5.model.UserDto;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.model.Usersauthorities;
@@ -27,10 +26,10 @@ public class UserService implements IUserService, Serializable {
 	// @Transactional // IJ031017: You cannot set autocommit during a managed
 	// transaction
 	@Override
-	public Users registerNewUserAccount(UserDto accountDto) throws UserNotFoundException {
+	public Users registerNewUserAccount(UserDto accountDto) {
 
 		if (userExists(accountDto.getUsername())) {
-			throw new UserNotFoundException("There is an account with that username: " + accountDto.getUsername());
+			throw new IllegalArgumentException("There is an account with that username: " + accountDto.getUsername());
 		}
 
 		Users newUser = new Users();

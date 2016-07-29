@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.openbox.sf5.json.exceptions.ApiError;
 import org.openbox.sf5.json.exceptions.ItemNotFoundException;
 import org.openbox.sf5.json.exceptions.NotAuthenticatedException;
-import org.openbox.sf5.json.exceptions.UserNotFoundException;
 import org.openbox.sf5.json.exceptions.UsersDoNotCoincideException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		// // 202
 		// return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(),
 		// HttpStatus.ACCEPTED, request);
-		return constructSerializedException(ex, HttpStatus.ACCEPTED);
+		return constructSerializedException(ex, HttpStatus.BAD_REQUEST);
 
 	}
 
@@ -86,14 +85,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
 	}
 
-	@ExceptionHandler(value = { UserNotFoundException.class, ItemNotFoundException.class })
+	@ExceptionHandler(value = { ItemNotFoundException.class })
 	public ResponseEntity<ApiError> handleUserNotFound(Exception ex, WebRequest request) {
 		// String bodyOfResponse = ex.getMessage();
 		//
 		// return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(),
 		// HttpStatus.NO_CONTENT, request);
 
-		return constructSerializedException(ex, HttpStatus.NO_CONTENT);
+		return constructSerializedException(ex, HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -107,6 +106,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		// apiError.getStatus());
 
 		return constructSerializedException(ex, HttpStatus.NOT_FOUND, error);
+	}
+
+	// Default error handler for other unforeseen exceptions.
+	@ExceptionHandler({ Exception.class })
+	public ResponseEntity<ApiError> handleAll(Exception ex, WebRequest request) {
+		return constructSerializedException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	// @Override
