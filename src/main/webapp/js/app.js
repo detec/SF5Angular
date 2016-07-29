@@ -328,8 +328,8 @@ currentUsers.fetch({
   // console.log(currentUser.get("username"));
   
 },
-error: function() {
-	console.log('Failed to get current user!');
+error: function(collection, response, options) {
+	console.log('Failed to get current user!' + response.responseText);
 }
 });
 
@@ -420,8 +420,8 @@ var transpondersPresentationView = Backbone.View.extend({
 //				})
 			success: function(collection){
 			},
-			error: function() {
-				console.log('Failed to get transponders!');
+			error: function(collection, response, options) {
+				console.log('Failed to get transponders! ' + response.responseText);
 			}
 			});
 		
@@ -491,8 +491,8 @@ var SatelliteDropdownView = Backbone.View.extend({
 
 		success: function(collection){
 		},
-		error: function() {
-			console.log('Failed to get satellites!');
+		error: function(collection, response, options) {
+			console.log('Failed to get satellites! ' + response.responseText);
 		}});
         
     },    
@@ -547,18 +547,8 @@ var SettingsDropdown = Backbone.View.extend({
         this.collection = settingsCollection;            
         this.collection.on('sync',this.render,this);
 		this.collection.on('remove', this.render, this); 
-        
-/*      Let's try not to fetch the collection again 
- *  this.collection.fetch({
-
-		success: function(collection){
-		},
-		error: function() {
-			console.log('Failed to get user settings!');
-		}});
-		
-		*/
-        
+       
+       
     },
     
     render:function(){
@@ -672,8 +662,8 @@ var SettingView = Backbone.View.extend({
 				// self.parse(response);
 				// Backbone should automatically refresh models after save.
 			},
-			error: function(error) {
-				console.log(error.responseText);
+			error: function(model, response, options) {
+				console.log("Failed to update setting! " + response.responseText);
 			}
 		});
 		
@@ -703,8 +693,8 @@ var SettingView = Backbone.View.extend({
 				console.log('Successfully DELETED setting with id: ' + response.toJSON().id);
 
 			},
-			error: function(error) {
-				console.log(error.responseText);
+			error: function(model, response, options) {
+				console.log(response.responseText);
 			}
 		});
 	},
@@ -981,8 +971,8 @@ var SettingsView = Backbone.View.extend({
 					// console.log('Successfully GOT setting with id: ' + item.id);
 				})
 			},
-			error: function() {
-				console.log('Failed to get settings!');
+			error: function(collection, response, options) {
+				console.log('Failed to get settings! ' + response.responseText);
 			}
 		});
 		
@@ -1111,8 +1101,8 @@ var UserView = Backbone.View.extend({
 			success: function(response) {
 				console.log('Successfully updated user with id: ' + response.toJSON().id);
 			},
-	    error: function(model, error) {
-	        console.log(error.responseText);
+	    error: function(model, response, options) {
+	        console.log(response.responseText);
 	    }
 		
 		,
@@ -1134,8 +1124,8 @@ var UserView = Backbone.View.extend({
 				console.log('Successfully DELETED user with id: ' + response.toJSON().id);
 
 			},
-			error: function(error) {
-				console.log(error.responseText);
+			error: function(model, response, options) {
+				console.log(response.responseText);
 			}
 		});
 	}
@@ -1168,8 +1158,8 @@ var UsersTableView = Backbone.View.extend({
 				// we have already redefined fetch function
 				self.render();
 			},
-			error: function() {
-				console.log('Failed to get users!');
+			error: function(collection, response, options) {
+				console.log('Failed to get users! ' + response.responseText);
 			}
 		});
 		
@@ -1325,8 +1315,8 @@ $(document).ready(function() {
 			success: function(response) {
 				console.log('Successfully SAVED new setting');
 			},
-	    error: function(model, error) {
-	        console.log(error.responseText);
+	    error: function(model, response, options) {
+	        console.log(response.responseText);
 	    }
 		
 		,
@@ -1446,8 +1436,8 @@ $(document).ready(function() {
 				// CurrentEditedSetting.parse(response);
 				editedCLTable.cleanReset(response.get('conversion'));
 			},
-			error: function(error) {
-				console.log(error.responseText);
+			error: function(model, response, options) {
+				console.log(response.responseText);
 			}
 		});
 		
@@ -1519,8 +1509,8 @@ $(document).ready(function() {
 			});
 
 		},
-		error: function() {
-			console.log('Failed to get users!');
+		error: function(collection, response, options) {
+			console.log('Failed to get users! ' + response.responseText);
 		}});
 	});
 	
@@ -1533,8 +1523,8 @@ $(document).ready(function() {
 		SwitchTabItem.render();
 	  
 	},
-	error: function() {
-		console.log('Failed to get current user!');
+	error: function(model, response, options) {
+		console.log('Failed to get current user! ' + response.responseText);
 	}
 	});
 
