@@ -1,6 +1,7 @@
 package org.openbox.sf5.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +14,7 @@ public class ValueOfTheCarrierFrequency extends AbstractDbEntity implements Seri
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((polarization == null) ? 0 : polarization.hashCode());
-		result = prime * result + ((typeOfCarrierFrequency == null) ? 0 : typeOfCarrierFrequency.hashCode());
-		return result;
+		return Objects.hash(this.polarization, this.typeOfCarrierFrequency);
 	}
 
 	@Override
@@ -32,13 +29,10 @@ public class ValueOfTheCarrierFrequency extends AbstractDbEntity implements Seri
 			return false;
 		}
 		ValueOfTheCarrierFrequency other = (ValueOfTheCarrierFrequency) obj;
-		if (polarization != other.polarization) {
-			return false;
-		}
-		if (typeOfCarrierFrequency != other.typeOfCarrierFrequency) {
-			return false;
-		}
-		return true;
+
+		return Objects.equals(typeOfCarrierFrequency, other.typeOfCarrierFrequency)
+				&& Objects.equals(polarization, other.polarization);
+
 	}
 
 	private static final long serialVersionUID = -6095308495476745108L;
@@ -79,13 +73,13 @@ public class ValueOfTheCarrierFrequency extends AbstractDbEntity implements Seri
 		this.upperThreshold = UpperThreshold;
 	}
 
-	public ValueOfTheCarrierFrequency(CarrierFrequency TypeOfCarrierFrequency, KindsOfPolarization Polarization,
-			long LowerThreshold, long UpperThreshold) {
+	public ValueOfTheCarrierFrequency(CarrierFrequency typeOfCarrierFrequency, KindsOfPolarization polarization,
+			long lowerThreshold, long upperThreshold) {
 
-		this.typeOfCarrierFrequency = TypeOfCarrierFrequency;
-		this.polarization = Polarization;
-		this.lowerThreshold = LowerThreshold;
-		this.upperThreshold = UpperThreshold;
+		this.typeOfCarrierFrequency = typeOfCarrierFrequency;
+		this.polarization = polarization;
+		this.lowerThreshold = lowerThreshold;
+		this.upperThreshold = upperThreshold;
 
 	}
 
