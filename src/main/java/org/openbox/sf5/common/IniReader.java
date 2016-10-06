@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,7 +35,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class IniReader implements Serializable {
+public class IniReader {
+
+	private Satellites sat;
+
+	@Autowired
+	private DAO objectController;
+
+	final String REGEX = "(\\d{1,3})=(\\d{5}),(H|V|L|R),(\\d{4,5}),(\\d{2}),(DVB-S|S2),(QPSK|8PSK)(\\sACM)?";
+	private Pattern pattern;
+	private Matcher matcher;
+
+	private boolean result = false;
 
 	public IniReader() {
 
@@ -92,7 +102,7 @@ public class IniReader implements Serializable {
 
 	private void readSatData(BufferedReader br) throws IOException {
 
-		br.readLine(); // 1=0130
+		String hat = br.readLine(); // 1=0130
 		String satline = br.readLine();
 
 		String satName = satline.substring(2); // 2 characters
@@ -281,14 +291,6 @@ public class IniReader implements Serializable {
 		}
 	}
 
-	// public SessionFactory getSessionFactory() {
-	// return sessionFactory;
-	// }
-	//
-	// public void setSessionFactory(SessionFactory sessionFactory) {
-	// this.sessionFactory = sessionFactory;
-	// }
-
 	public DAO getObjectController() {
 		return objectController;
 	}
@@ -296,22 +298,6 @@ public class IniReader implements Serializable {
 	public void setObjectController(DAO objectController) {
 		this.objectController = objectController;
 	}
-
-	private static final long serialVersionUID = -1699774508872380035L;
-
-	private Satellites sat;
-
-	// @Autowired
-	// private SessionFactory sessionFactory;
-
-	@Autowired
-	private DAO objectController;
-
-	final String REGEX = "(\\d{1,3})=(\\d{5}),(H|V|L|R),(\\d{4,5}),(\\d{2}),(DVB-S|S2),(QPSK|8PSK)(\\sACM)?";
-	private static Pattern pattern;
-	private static Matcher matcher;
-
-	private boolean result = false;
 
 	public boolean isResult() {
 		return result;

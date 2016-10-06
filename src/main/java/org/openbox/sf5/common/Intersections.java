@@ -27,17 +27,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class Intersections {
 
-	// @Autowired
-	// private SessionFactory sessionFactory;
-
 	public SessionFactory getSessionFactory() {
 		// return sessionFactory;
 		return objectController.getSessionFactory();
 	}
-
-	// public void setSessionFactory(SessionFactory sessionFactory) {
-	// this.sessionFactory = sessionFactory;
-	// }
 
 	@Autowired
 	private DAO objectController;
@@ -61,19 +54,13 @@ public class Intersections {
 				// String tempTableDrop = dialect.getDropTemporaryTableString();
 
 				// drop tables
-				try {
-					preparedStatement = connection.prepareStatement(getDropTempTables(dialect));
-					preparedStatement.execute();
+				try (PreparedStatement ps = connection.prepareStatement(getDropTempTables(dialect));) {
+					ps.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 
 				try {
-					// fill temp tables
-					// preparedStatement =
-					// connection.prepareStatement(fillTempTables(dialect));
-					// preparedStatement.setLong(1, Object.getId());
-					// preparedStatement.execute();
 
 					if (dialect instanceof MySQL5Dialect) {
 						// With MySQL let's try to split temp tables creation.
@@ -124,6 +111,11 @@ public class Intersections {
 					return resultSet;
 				} catch (SQLException e) {
 					throw e;
+				}
+
+				finally {
+					preparedStatement.close();
+					connection.close();
 				}
 
 			}

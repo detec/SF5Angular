@@ -19,10 +19,10 @@ public enum Polarization {
 
 		KindsOfPolarization aKindsOfPolarization = KindsOfPolarization.Linear;
 
-		if (Pol.equals(H) | Pol.equals(V)) {
+		if (Pol.equals(H) || Pol.equals(V)) {
 			aKindsOfPolarization = KindsOfPolarization.Linear;
 		}
-		if (Pol.equals(R) | Pol.equals(L)) {
+		if (Pol.equals(R) || Pol.equals(L)) {
 			aKindsOfPolarization = KindsOfPolarization.Pie;
 		}
 
@@ -32,10 +32,10 @@ public enum Polarization {
 
 	public static String getXMLpresentation(Polarization Pol) {
 		String result = "";
-		if (Pol.equals(H) | Pol.equals(L)) {
+		if (Pol.equals(H) || Pol.equals(L)) {
 			result = "1";
 		}
-		if (Pol.equals(V) | Pol.equals(R)) {
+		if (Pol.equals(V) || Pol.equals(R)) {
 			result = "0";
 		}
 		return result;

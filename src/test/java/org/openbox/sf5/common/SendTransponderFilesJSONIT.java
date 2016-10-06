@@ -44,6 +44,9 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 
 			Response responsePost = invocationBuilder.cookie(cookie)
 					.post(Entity.entity(multipart, multipart.getMediaType()));
+
+			// .post(Entity.entity(filePart, filePart.getMediaType()));
+
 			Boolean result = responsePost.readEntity(Boolean.class);
 			assertThat(result.booleanValue()).isTrue();
 
