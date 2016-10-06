@@ -1,6 +1,5 @@
 package org.openbox.sf5.service;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CriterionService implements Serializable {
+public class CriterionService {
+
+	@Autowired
+	private DAO objectController;
 
 	public <T extends AbstractDbEntity> Criterion getCriterionByClassFieldAndStringValue(Class<T> type,
 			String fieldName, String typeValue) {
@@ -102,10 +104,5 @@ public class CriterionService implements Serializable {
 	public void setObjectController(DAO objectController) {
 		this.objectController = objectController;
 	}
-
-	private static final long serialVersionUID = -2669096886833468746L;
-
-	@Autowired
-	private DAO objectController;
 
 }

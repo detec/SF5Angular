@@ -38,6 +38,10 @@ public class Usersauthorities extends AbstractDbEntity implements Serializable {
 			return true;
 		}
 
+		if (obj == null) {
+			return false;
+		}
+
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
