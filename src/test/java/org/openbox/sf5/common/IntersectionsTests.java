@@ -87,21 +87,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 
 	public int getIniImportResult() throws IOException, URISyntaxException {
 
-		// IniReader iniReader = new IniReader();
-		// iniReader.setSessionFactory(sessionFactory);
-		// iniReader.setObjectController(DAO);
-
 		List<Boolean> resultList = new ArrayList<>();
-
-		// URL transpondersFolderUrl =
-		// Thread.currentThread().getContextClassLoader().getResource("transponders/");
-		//
-		// assertThat(transpondersFolderUrl).isNotNull();
-		//
-		// Path path = Paths.get(transpondersFolderUrl.toURI());
-		//
-		// Stream<Path> streamPath = Files.find(path, 2, (newpath, attr) ->
-		// String.valueOf(newpath).endsWith(".ini"));
 
 		Stream<Path> streamPath = getTransponderFilesStreamPath();
 

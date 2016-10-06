@@ -34,6 +34,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Class to parse transponder files.
+ *
+ * @author duplyk.a
+ *
+ */
 @Service
 public class IniReader {
 
@@ -42,16 +48,24 @@ public class IniReader {
 	@Autowired
 	private DAO objectController;
 
-	final String REGEX = "(\\d{1,3})=(\\d{5}),(H|V|L|R),(\\d{4,5}),(\\d{2}),(DVB-S|S2),(QPSK|8PSK)(\\sACM)?";
+	private static final String regex = "(\\d{1,3})=(\\d{5}),(H|V|L|R),(\\d{4,5}),(\\d{2}),(DVB-S|S2),(QPSK|8PSK)(\\sACM)?";
+	private static final String FREQUENCY_CONSTANT = "Frequency";
 	private Pattern pattern;
 	private Matcher matcher;
 
 	private boolean result = false;
 
 	public IniReader() {
-
+		// default constructor
 	}
 
+	/**
+	 * Accepts {@link MultipartFile} from controller
+	 *
+	 * @param file
+	 *            {@link MultipartFile}
+	 * @throws IOException
+	 */
 	public void readMultiPartFile(MultipartFile file) throws IOException {
 
 		// create a temp file
@@ -70,9 +84,7 @@ public class IniReader {
 
 	public void readData() throws IOException {
 		// Open the file
-		// FileInputStream fstream = new FileInputStream(filepath);
-		// BufferedReader br = new BufferedReader(new
-		// InputStreamReader(fstream));
+
 		FileReader fileReader = new FileReader(filepath);
 		BufferedReader br = new BufferedReader(fileReader);
 
@@ -83,11 +95,11 @@ public class IniReader {
 		// Read File Line By Line
 		while ((strLine = br.readLine()) != null) {
 
-			if (strLine.equals("[SATTYPE]")) {
+			if ("[SATTYPE]".equals(strLine)) {
 				readSatData(br);
 			}
 
-			if (strLine.equals("[DVB]")) {
+			if ("[DVB]".equals(strLine)) {
 				readTransponderData(br);
 			}
 
@@ -109,7 +121,6 @@ public class IniReader {
 
 		String hql = "select id from Satellites where name = :name";
 
-		// Session session = sessionFactory.openSession();
 		Session session = objectController.openSession();
 
 		Query query = session.createQuery(hql);
@@ -134,14 +145,14 @@ public class IniReader {
 	@SuppressWarnings("unchecked")
 	private void readTransponderData(BufferedReader br) throws IOException {
 
-		Transponders selectedTrans = null;
+		Transponders selectedTrans;
 		// replace with Java core
 
 		String transCountString = br.readLine().substring(2);
 
 		int transCount = Integer.parseInt(transCountString);
 
-		pattern = Pattern.compile(REGEX);
+		pattern = Pattern.compile(regex);
 
 		for (int i = 1; i <= transCount; i++) {
 			String transDataString = br.readLine();
@@ -149,45 +160,41 @@ public class IniReader {
 			// Initialize
 
 			matcher = pattern.matcher(transDataString);
-			RangesOfDVB rangeEnum = null;
-			CarrierFrequency carrierEnum = null;
+			RangesOfDVB rangeEnum;
+			CarrierFrequency carrierEnum;
 
-			// 62=11919,V,27500,23,S2,8PSK ACM/VCM
-			// int count = 0;
 			while (matcher.find()) {
-				// count++;
 
 				// name will be transponder number in
-				// String Name = matcher.group(1);
 
 				// let's check, that it isn't Multistream
-				String Multistream = matcher.group(8);
-				if (Multistream != null) {
+				String multistream = matcher.group(8);
+				if (multistream != null) {
 					continue;
 				}
 
 				// frequency
-				String FrequencyString = matcher.group(2);
-				// System.out.println(FrequencyString);
-				Long Frequency = Long.parseLong(FrequencyString);
+				String frequencyString = matcher.group(2);
+
+				Long frequency = Long.parseLong(frequencyString);
 
 				// polarization
 				Polarization aPolarization = Polarization.valueOf(matcher.group(3));
 
 				// speed
-				Long Speed = Long.parseLong(matcher.group(4));
+				Long speed = Long.parseLong(matcher.group(4));
 
 				// FEC
 				TypesOfFEC FEC = TypesOfFEC.valueOf("_" + matcher.group(5));
 
 				// DVB standard
 				DVBStandards DVBStandard = null;
-				String Standard = matcher.group(6);
-				if (Standard.equals("DVB-S")) {
+				String standard = matcher.group(6);
+				if ("DVB-S".equals(standard)) {
 					DVBStandard = DVBStandards.DVBS;
 				}
 
-				if (Standard.equals("S2")) {
+				if ("S2".equals(standard)) {
 					DVBStandard = DVBStandards.DVBS2;
 				}
 
@@ -207,7 +214,7 @@ public class IniReader {
 				Session session = objectController.openSession();
 
 				List<TheDVBRangeValues> range = session.createSQLQuery(sqltext).addScalar("rangeOfDVB", myEnumType)
-						.setParameter("Frequency", Frequency)
+						.setParameter(FREQUENCY_CONSTANT, frequency)
 						.setResultTransformer(Transformers.aliasToBean(TheDVBRangeValues.class)).list();
 
 				if (!range.isEmpty()) {
@@ -234,7 +241,7 @@ public class IniReader {
 
 						.addScalar("typeOfCarrierFrequency", myEnumType)
 
-						.setParameter("Frequency", Frequency)
+						.setParameter(FREQUENCY_CONSTANT, frequency)
 
 						.setParameter("KindOfPolarization", Polarization.getPolarizationKind(aPolarization).ordinal())
 
@@ -253,11 +260,11 @@ public class IniReader {
 				List<Object> transIdList = new ArrayList<>();
 				transIdList = session.createSQLQuery(sqltext).addScalar("id", StandardBasicTypes.LONG)
 
-						.setParameter("Frequency", Frequency)
+						.setParameter(FREQUENCY_CONSTANT, frequency)
 
 						.setParameter("satelliteId", sat.getId()).list();
 
-				Transponders newTrans = new Transponders(Frequency, aPolarization, FEC, carrierEnum, Speed, DVBStandard,
+				Transponders newTrans = new Transponders(frequency, aPolarization, FEC, carrierEnum, speed, DVBStandard,
 						rangeEnum, sat);
 
 				if (transIdList.isEmpty()) {
@@ -275,11 +282,11 @@ public class IniReader {
 						// trans.
 						selectedTrans.setCarrier(carrierEnum);
 						selectedTrans.setFEC(FEC);
-						selectedTrans.setFrequency(Frequency);
+						selectedTrans.setFrequency(frequency);
 						selectedTrans.setPolarization(aPolarization);
 						selectedTrans.setRangeOfDVB(rangeEnum);
 						selectedTrans.setSatellite(sat);
-						selectedTrans.setSpeed(Speed);
+						selectedTrans.setSpeed(speed);
 						selectedTrans.setVersionOfTheDVB(DVBStandard);
 						objectController.update(selectedTrans);
 					}
