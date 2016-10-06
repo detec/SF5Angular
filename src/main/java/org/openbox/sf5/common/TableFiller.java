@@ -1,6 +1,5 @@
 package org.openbox.sf5.common;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class TableFiller implements Serializable {
+public final class TableFiller {
+
+	@Autowired
+	private DAO objectController;
 
 	public TableFiller() {
 
@@ -111,11 +113,6 @@ public final class TableFiller implements Serializable {
 
 	}
 
-	private static final long serialVersionUID = 8464537239822198552L;
-
-	@Autowired
-	private DAO objectController;
-
 	public DAO getObjectController() {
 		return objectController;
 	}
@@ -124,14 +121,4 @@ public final class TableFiller implements Serializable {
 		this.objectController = objectController;
 	}
 
-	// public SessionFactory getSessionFactory() {
-	// return sessionFactory;
-	// }
-	//
-	// public void setSessionFactory(SessionFactory sessionFactory) {
-	// this.sessionFactory = sessionFactory;
-	// }
-	//
-	// @Autowired
-	// private SessionFactory sessionFactory;
 }
