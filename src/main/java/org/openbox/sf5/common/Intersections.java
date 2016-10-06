@@ -43,7 +43,7 @@ public class Intersections {
 
 			@Override
 			public ResultSet execute(Connection connection) throws SQLException {
-				PreparedStatement preparedStatement = null;
+				// PreparedStatement preparedStatement = null;
 				ResultSet resultSet = null;
 
 				// syntax changed due to H2 and Postgre limitations.
@@ -60,28 +60,36 @@ public class Intersections {
 					e.printStackTrace();
 				}
 
-				try {
+				// try {
 
-					if (dialect instanceof MySQL5Dialect) {
-						// With MySQL let's try to split temp tables creation.
-						preparedStatement = connection.prepareStatement(fillFirstTempTable(dialect));
-						preparedStatement.setLong(1, Object.getId());
-						preparedStatement.execute();
+				if (dialect instanceof MySQL5Dialect) {
+					// With MySQL let's try to split temp tables creation.
 
-						preparedStatement = connection.prepareStatement(fillSecondTempTable(dialect));
-						preparedStatement.execute();
-
-						preparedStatement = connection.prepareStatement(fillThirdTempTable(dialect));
-						preparedStatement.execute();
-
-					} else {
-						// fill temp tables
-						preparedStatement = connection.prepareStatement(fillTempTables(dialect));
+					try (PreparedStatement preparedStatement = connection
+							.prepareStatement(fillFirstTempTable(dialect));) {
 						preparedStatement.setLong(1, Object.getId());
 						preparedStatement.execute();
 					}
 
-					preparedStatement = connection.prepareStatement(getIntersectionQuery());
+					try (PreparedStatement preparedStatement = connection
+							.prepareStatement(fillSecondTempTable(dialect));) {
+						preparedStatement.execute();
+					}
+
+					try (PreparedStatement preparedStatement = connection
+							.prepareStatement(fillThirdTempTable(dialect));) {
+						preparedStatement.execute();
+					}
+
+				} else {
+					// fill temp tables
+					try (PreparedStatement preparedStatement = connection.prepareStatement(fillTempTables(dialect));) {
+						preparedStatement.setLong(1, Object.getId());
+						preparedStatement.execute();
+					}
+				}
+
+				try (PreparedStatement preparedStatement = connection.prepareStatement(getIntersectionQuery());) {
 					resultSet = preparedStatement.executeQuery();
 
 					// 11.08.2015, trying to remove locks
@@ -109,14 +117,15 @@ public class Intersections {
 					}
 
 					return resultSet;
-				} catch (SQLException e) {
-					throw e;
 				}
-
-				finally {
-					preparedStatement.close();
-					connection.close();
-				}
+				// } catch (SQLException e) {
+				// throw e;
+				// }
+				//
+				// finally {
+				// preparedStatement.close();
+				// connection.close();
+				// }
 
 			}
 		};
