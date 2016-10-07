@@ -92,7 +92,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		Stream<Path> streamPath = getTransponderFilesStreamPath();
 
 		streamPath.forEach(t -> {
-			iniReader.setFilepath(t.toString());
+			iniReader.setFilePath(t.toString());
 			try {
 				iniReader.readData();
 				resultList.add(iniReader.isResult());
