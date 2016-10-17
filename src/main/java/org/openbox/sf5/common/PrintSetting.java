@@ -21,11 +21,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Class to present setting in printed form. Better done with Spring MVC.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Controller
 @PreAuthorize("hasRole('ROLE_USER')")
 @Scope("request")
 public class PrintSetting {
 
+	@Autowired
+	private DAO objectsController;
+
+	private long id;
+
+	private Timestamp theLastEntry;
+
+	private Settings settingsObject;
+
+	private Users user;
+
+	private String name;
+
+	private List<SettingsConversion> dataSettingsConversion = new ArrayList<>();
+
+	/**
+	 * print endpoint
+	 *
+	 * @param pid
+	 * @param model
+	 * @param session
+	 * @return
+	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/print", method = RequestMethod.GET)
 	public String printSetting(@RequestParam(value = "id", required = true) long pid, Model model,
@@ -67,11 +96,11 @@ public class PrintSetting {
 	}
 
 	public Settings getSettingsObject() {
-		return SettingsObject;
+		return settingsObject;
 	}
 
 	public void setSettingsObject(Settings settingsObject) {
-		SettingsObject = settingsObject;
+		this.settingsObject = settingsObject;
 	}
 
 	public Users getUser() {
@@ -98,7 +127,7 @@ public class PrintSetting {
 		this.dataSettingsConversion = dataSettingsConversion;
 	}
 
-	public void renumerateLines() {
+	private void renumerateLines() {
 
 		int i = 1;
 
@@ -108,22 +137,22 @@ public class PrintSetting {
 		}
 	}
 
-	public void readAndFillBeanfromSetting(long pid) {
+	private void readAndFillBeanfromSetting(long pid) {
 
-		SettingsObject = objectsController.select(Settings.class, pid);
+		settingsObject = objectsController.select(Settings.class, pid);
 
 		// fill form values.
 		writeFromSettingsObjectToSettingsForm();
 	}
 
 	// makes conversion of properties from db layer to controller
-	public void writeFromSettingsObjectToSettingsForm() {
-		id = SettingsObject.getId();
-		name = SettingsObject.getName();
-		user = SettingsObject.getUser();
-		theLastEntry = SettingsObject.getTheLastEntry();
+	private void writeFromSettingsObjectToSettingsForm() {
+		id = settingsObject.getId();
+		name = settingsObject.getName();
+		user = settingsObject.getUser();
+		theLastEntry = settingsObject.getTheLastEntry();
 
-		List<SettingsConversion> listRead = SettingsObject.getConversion();
+		List<SettingsConversion> listRead = settingsObject.getConversion();
 
 		dataSettingsConversion.clear();
 
@@ -138,20 +167,5 @@ public class PrintSetting {
 		}
 
 	}
-
-	@Autowired
-	private DAO objectsController;
-
-	private long id;
-
-	private Timestamp theLastEntry;
-
-	private Settings SettingsObject;
-
-	private Users user;
-
-	private String name;
-
-	private List<SettingsConversion> dataSettingsConversion = new ArrayList<SettingsConversion>();
 
 }
