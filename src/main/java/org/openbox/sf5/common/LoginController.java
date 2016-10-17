@@ -23,12 +23,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
+/**
+ * Login is better performed with Spring MVC
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Controller
 @Scope("request")
 public class LoginController {
 
 	// It probably uses
 	// http://websystique.com/spring-security/spring-security-4-custom-login-form-annotation-example/
+
+	private static final String CONSTANT_LOGIN = "login";
+
+	private static final String CONSTANT_VIEW_ERROR = "viewErrMsg";
 
 	@Autowired
 	private IUserService userService;
@@ -37,55 +47,69 @@ public class LoginController {
 	@Qualifier("authenticationManager")
 	protected AuthenticationManager authenticationManager;
 
+	/**
+	 * register endpoint
+	 *
+	 * @param request
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String showRegistrationForm(WebRequest request, Model model) {
 		UserDto userDto = new UserDto();
 		model.addAttribute("user", userDto);
-		// return "register";
-
 		return "register.html";
 	}
 
+	/**
+	 * register endpoint
+	 *
+	 * @param accountDto
+	 * @param result
+	 * @param request
+	 * @param errors
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String registerUserAccount(@ModelAttribute("user") UserDto accountDto, BindingResult result,
 			HttpServletRequest request, Errors errors, Model model) {
 
 		// Let's manually check if password and other fields are empty
-		if (accountDto.getUsername().equals("")) {
-			model.addAttribute("viewErrMsg", "Field 'Username' cannot be empty!");
-			return "login";
+		if (accountDto.getUsername().isEmpty()) {
+			model.addAttribute(CONSTANT_VIEW_ERROR, "Field 'Username' cannot be empty!");
+			return CONSTANT_LOGIN;
 		}
 
-		if (accountDto.getPassword().equals("")) {
-			model.addAttribute("viewErrMsg", "Field 'Password' cannot be empty!");
-			// return new ModelAndView("register",
-			return "login";
+		if (accountDto.getPassword().isEmpty()) {
+			model.addAttribute(CONSTANT_VIEW_ERROR, "Field 'Password' cannot be empty!");
+			return CONSTANT_LOGIN;
 		}
 
-		if (accountDto.getMatchingPassword().equals("")) {
-			model.addAttribute("viewErrMsg", "Field 'Matching password' cannot be empty!");
-			return "login";
+		if (accountDto.getMatchingPassword().isEmpty()) {
+			model.addAttribute(CONSTANT_VIEW_ERROR, "Field 'Matching password' cannot be empty!");
+			return CONSTANT_LOGIN;
 		}
 
 		if (!accountDto.getPassword().equals(accountDto.getMatchingPassword())) {
-			model.addAttribute("viewErrMsg", "Passwords do not match!");
-			return "login";
+			model.addAttribute(CONSTANT_VIEW_ERROR, "Passwords do not match!");
+			return CONSTANT_LOGIN;
 		}
 
 		Users user = new Users();
 		if (!result.hasErrors()) {
-			user = createUserAccount(accountDto, result);
+			user = createUserAccount(accountDto);
 		}
 		if (user == null) {
 
-			model.addAttribute("viewErrMsg", "User not created! There is a user with such name!");
-			return "login";
+			model.addAttribute(CONSTANT_VIEW_ERROR, "User not created! There is a user with such name!");
+			return CONSTANT_LOGIN;
 		}
 
 		if (result.hasErrors()) {
 
-			model.addAttribute("viewErrMsg", "Unknown error!");
-			return "login";
+			model.addAttribute(CONSTANT_VIEW_ERROR, "Unknown error!");
+			return CONSTANT_LOGIN;
 		} else {
 
 			// I added this from stackoverflow example
@@ -93,7 +117,6 @@ public class LoginController {
 
 			model.addAttribute("username", user.getusername());
 			model.addAttribute("viewMsg", user.getusername() + " successfully registered!");
-			// return "login";
 			// Let's redirect to html page
 			return "redirect:/index.html";
 
@@ -101,7 +124,7 @@ public class LoginController {
 
 	}
 
-	private Users createUserAccount(UserDto accountDto, BindingResult result) {
+	private Users createUserAccount(UserDto accountDto) {
 		Users registered = null;
 		try {
 			registered = userService.registerNewUserAccount(accountDto);
@@ -128,6 +151,13 @@ public class LoginController {
 	// It probably uses
 	// http://websystique.com/spring-security/spring-security-4-custom-login-form-annotation-example/
 
+	/**
+	 * login endpoint
+	 *
+	 * @param loginError
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(@RequestParam(value = "error", required = false) boolean loginError, Model model) {
 
@@ -139,7 +169,7 @@ public class LoginController {
 		UserDto userDto = new UserDto();
 		model.addAttribute("user", userDto);
 
-		return "login";
+		return CONSTANT_LOGIN;
 	}
 
 }
