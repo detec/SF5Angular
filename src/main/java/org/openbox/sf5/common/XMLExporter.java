@@ -8,13 +8,16 @@ import org.openbox.sf5.model.Sat;
 import org.openbox.sf5.model.Sat.Satid;
 import org.openbox.sf5.model.Sat.Satid.Tp;
 import org.openbox.sf5.model.SettingsConversion;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 // Should be replaced by http://stackoverflow.com/questions/13346101/generate-pojos-without-an-xsd
 // https://wiki.eclipse.org/EclipseLink/Examples/MOXy/JAXB/Compiler
 
+/**
+ * Exports setting in a fixed XML format.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public class XMLExporter {
 
 	// xjc -d f:\My\Java\SF5Spring\src\main\java\org\openbox\sf5\model -encoding
@@ -23,6 +26,12 @@ public class XMLExporter {
 	// https://github.com/FasterXML/jackson-module-jaxb-annotations/issues/51
 	// Jackson JAXB problem is discussed there
 
+	/**
+	 * Main conversion method call.
+	 *
+	 * @param dataSettingsConversion
+	 * @return constructed Sat element, ready for export to XML.
+	 */
 	public static Sat exportSettingsConversionPresentationToSF5Format(List<SettingsConversion> dataSettingsConversion) {
 
 		// Generating sat/tp structure
@@ -43,12 +52,8 @@ public class XMLExporter {
 			newTp.setFreq((int) e.getTransponder().getFrequency());
 			newTp.setIndex(String.valueOf(e.getTpindex()));
 			newTp.setLnbFreq(String.valueOf(e.getTransponder().getCarrier()));
-			newTp.setPolar(
-					Integer.valueOf(Polarization.getXMLpresentation(e.getTransponder().getPolarization())).intValue());
+			newTp.setPolar(Integer.parseInt(Polarization.getXMLpresentation(e.getTransponder().getPolarization())));
 			newTp.setSymbol((int) e.getTransponder().getSpeed());
-
-			// int indexOfE = dataSettingsConversion.indexOf(e);
-			// int currentLineNumber = indexOfE + 1;
 
 			// check if satid exists
 			if (root.getSatid().size() < e.getSatindex()) {
@@ -66,13 +71,11 @@ public class XMLExporter {
 
 	}
 
-	// utility method to create text node
-	private static Node getTpElements(Document doc, String name, String value) {
-		Element node = doc.createElement(name);
-		node.appendChild(doc.createTextNode(value));
-		return node;
-	}
-
+	/**
+	 * Fills sat and tp numbering.
+	 *
+	 * @param dataSettingsConversion
+	 */
 	public static void generateSatTp(List<SettingsConversion> dataSettingsConversion) {
 		// Generating sat/tp structure
 		long sat = 1;
