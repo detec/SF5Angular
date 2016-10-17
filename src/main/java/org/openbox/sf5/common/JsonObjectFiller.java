@@ -1,14 +1,11 @@
 package org.openbox.sf5.common;
 
-import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import javax.json.Json;
@@ -16,30 +13,31 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.stream.JsonGenerator;
 
 import org.hibernate.collection.internal.PersistentList;
 import org.openbox.sf5.model.AbstractDbEntity;
 
-// This class is intended for static functions that convert DB objects into JSON.
+/**
+ * This class is intended for static functions that convert DB objects into
+ * JSON.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public class JsonObjectFiller {
 
-	// seems to be the first correct implementation for hibernate mapping
-	// projects using 1C mapping tool.
-	public static <T, L> JsonObjectBuilder getJsonObjectBuilderFromClassInstance(T object)
-			throws IllegalArgumentException, IllegalAccessException {
-		Field fields[];
+	private static <T, L> JsonObjectBuilder getJsonObjectBuilderFromClassInstance(T object)
+			throws IllegalAccessException {
+		Field[] fields;
 		fields = object.getClass().getDeclaredFields();
 
-		JsonObjectBuilder JOB = Json.createObjectBuilder();
+		JsonObjectBuilder job = Json.createObjectBuilder();
 		// use reflection
 		// arrayOfTransponders.add(arg0)
 		for (int i = 0; i < fields.length; i++) {
 
 			String fieldName = fields[i].getName();
-			if (fieldName.equals("serialVersionUID")) {
+			if ("serialVersionUID".equals(fieldName)) {
 				continue;
 			}
 
@@ -53,18 +51,15 @@ public class JsonObjectFiller {
 				@SuppressWarnings("unchecked")
 				List<L> persistentList = (List<L>) fields[i].get(object);
 
-				// String strValue = getJsonFromObjectsList(persistentList);
-
-				JOB.add(fieldName, getJsonArray(persistentList));
+				job.add(fieldName, getJsonArray(persistentList));
 
 			} else {
 				if (fields[i].get(object) != null) {
 
 					// checking if field is boolean
 					if (fields[i].getType().equals(boolean.class)) {
-						JsonValue strValue = ((boolean) fields[i].get(object) == true) ? JsonValue.TRUE
-								: JsonValue.FALSE;
-						JOB.add(fieldName, strValue);
+						JsonValue strValue = ((boolean) fields[i].get(object)) ? JsonValue.TRUE : JsonValue.FALSE;
+						job.add(fieldName, strValue);
 					}
 
 					// checking if it is Date class
@@ -72,36 +67,42 @@ public class JsonObjectFiller {
 						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 						formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 						String strValue = formatter.format(fields[i].get(object));
-						JOB.add(fieldName, strValue);
+						job.add(fieldName, strValue);
 					}
 
 					// writing as JsonNumber
 					else if (fields[i].getType().equals(long.class)) {
 						long strValue = (long) fields[i].get(object);
-						JOB.add(fieldName, strValue);
+						job.add(fieldName, strValue);
 					}
 
 					// other classes
 					else {
 						String strValue = fields[i].get(object).toString();
-						JOB.add(fieldName, strValue);
+						job.add(fieldName, strValue);
 					}
 
 				} else {
 					JsonValue strValue = JsonValue.NULL;
-					JOB.add(fieldName, strValue);
+					job.add(fieldName, strValue);
 				}
 			}
 
 		} // end of loop
 
-		return JOB;
+		return job;
 	}
 
-	// This method returns class from the field name
+	/**
+	 * This method returns class from the field name
+	 *
+	 * @param type
+	 * @param fieldName
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends AbstractDbEntity> Class<?> getFieldClass(Class<T> type, String fieldName) {
-		Field fields[];
+		Field[] fields;
 		fields = type.getDeclaredFields();
 
 		List<Field> fieldList = Arrays.asList(fields);
@@ -109,20 +110,17 @@ public class JsonObjectFiller {
 		List<Class<T>> classList = new ArrayList<>();
 
 		// find field with the given name and return its class
-		fieldList.stream().filter(t -> t.getName().equals(fieldName)).forEach(t -> {
-			classList.add((Class<T>) t.getType());
-		});
+		fieldList.stream().filter(t -> t.getName().equals(fieldName))
+				.forEach(t -> classList.add((Class<T>) t.getType()));
 
 		if (classList.size() == 1) {
 			clazz = classList.get(0);
 		}
 
-		// o.getClass().getField("fieldName").getType().isPrimitive(); for
-		// primitives
 		return clazz;
 	}
 
-	public static <T> JsonArray getJsonArray(List<T> objList) {
+	private static <T> JsonArray getJsonArray(List<T> objList) {
 		JsonArrayBuilder arrayOfObjects = Json.createArrayBuilder();
 		objList.stream().forEach(t -> {
 
@@ -135,36 +133,13 @@ public class JsonObjectFiller {
 
 		});
 
-		JsonArray JObject = arrayOfObjects.build();
-		return JObject;
-	}
-
-	public static <T> String getJsonFromObjectsList(List<T> objList) {
-		JsonArray JObject = getJsonArray(objList);
-
-		// JSON pretty formatting - Taken from:
-		// glassfish4\docs\javaee-tutorial\examples\web\jsonp\jsonpmodel\src\main\java\javaeetutorial
-		// \jsonpmodel\ObjectModelBean.java
-		// http://stackoverflow.com/questions/23007567/java-json-pretty-print-javax-json
-		Map<String, Boolean> config = new HashMap<>();
-		config.put(JsonGenerator.PRETTY_PRINTING, true);
-		JsonWriterFactory factory = Json.createWriterFactory(config);
-
-		// http://blog.eisele.net/2013/02/test-driving-java-api-for-processing.html
-		StringWriter sw = new StringWriter();
-		try (JsonWriter jw = factory.createWriter(sw)) {
-			jw.writeArray(JObject);
-		}
-
-		return sw.toString();
+		return arrayOfObjects.build();
 
 	}
 
 	public static SimpleDateFormat getJsonDateFormatter() {
-		// SimpleDateFormat formatter = new
-		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		// formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		formatter.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
 
 		return formatter;
