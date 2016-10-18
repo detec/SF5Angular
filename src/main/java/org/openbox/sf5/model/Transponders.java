@@ -160,40 +160,40 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		return carrier;
 	}
 
-	public void setCarrier(CarrierFrequency Carrier) {
-		this.carrier = Carrier;
+	public void setCarrier(CarrierFrequency carrier) {
+		this.carrier = carrier;
 	}
 
 	public long getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(long Speed) {
-		this.speed = Speed;
+	public void setSpeed(long speed) {
+		this.speed = speed;
 	}
 
 	public DVBStandards getVersionOfTheDVB() {
 		return versionOfTheDVB;
 	}
 
-	public void setVersionOfTheDVB(DVBStandards VersionOfTheDVB) {
-		this.versionOfTheDVB = VersionOfTheDVB;
+	public void setVersionOfTheDVB(DVBStandards versionOfTheDVB) {
+		this.versionOfTheDVB = versionOfTheDVB;
 	}
 
 	public RangesOfDVB getRangeOfDVB() {
 		return rangeOfDVB;
 	}
 
-	public void setRangeOfDVB(RangesOfDVB RangeOfDVB) {
-		this.rangeOfDVB = RangeOfDVB;
+	public void setRangeOfDVB(RangesOfDVB rangeOfDVB) {
+		this.rangeOfDVB = rangeOfDVB;
 	}
 
 	public Satellites getSatellite() {
 		return satellite;
 	}
 
-	public void setSatellite(Satellites Satellite) {
-		this.satellite = Satellite;
+	public void setSatellite(Satellites satellite) {
+		this.satellite = satellite;
 	}
 
 	private void setObjectFieldsFrom(Transponders origObj) throws IllegalAccessException {

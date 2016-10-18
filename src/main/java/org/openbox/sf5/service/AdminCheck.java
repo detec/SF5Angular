@@ -3,14 +3,14 @@ package org.openbox.sf5.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.model.Users;
 import org.openbox.sf5.model.Usersauthorities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component // NFO: Overriding bean definition for bean
@@ -21,8 +21,9 @@ public class AdminCheck {
 
 	private boolean adminHasBeenChanged = false;
 
-	@PostConstruct
-	public void initialize() {
+	// @PostConstruct
+	@EventListener
+	public void handleContextRefresh(ContextRefreshedEvent event) {
 
 		Criterion criterea = Restrictions.eq("username", "admin");
 		List<Users> adminsList = objectsController.findAllWithRestrictions(Users.class, criterea);
@@ -57,7 +58,7 @@ public class AdminCheck {
 		textRoles.add("ROLE_USER");
 
 		// ROLE_ADMIN
-		Usersauthorities checkRoleAdmin = new Usersauthorities(adminUser.getusername(), "ROLE_ADMIN", adminUser, 1);
+		Usersauthorities checkRoleAdmin = new Usersauthorities(adminUser.getUsername(), "ROLE_ADMIN", adminUser, 1);
 
 		if (!rolesList.contains(checkRoleAdmin)) {
 			adminHasBeenChanged = true;
@@ -65,7 +66,7 @@ public class AdminCheck {
 		}
 
 		// ROLE_USER
-		Usersauthorities checkRoleUser = new Usersauthorities(adminUser.getusername(), "ROLE_USER", adminUser, 2);
+		Usersauthorities checkRoleUser = new Usersauthorities(adminUser.getUsername(), "ROLE_USER", adminUser, 2);
 
 		if (!rolesList.contains(checkRoleUser)) {
 			adminHasBeenChanged = true;

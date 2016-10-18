@@ -3,6 +3,12 @@ package org.openbox.sf5.model;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
+/**
+ * MVC utility class
+ * 
+ * @author Andrii Duplyk
+ *
+ */
 public class UserDto {
 
 	@NotBlank

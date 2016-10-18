@@ -111,12 +111,12 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 	@Test
 	public void shouldCheckIntersections() throws SQLException {
 		Users usr = new Users();
-		usr.setusername("login");
+		usr.setUsername("login");
 		usr.setPassword("empty");
 
 		List<Usersauthorities> rolesList = new ArrayList<>();
 
-		Usersauthorities checkRoleUser = new Usersauthorities(usr.getusername(), "ROLE_USER", usr, 2);
+		Usersauthorities checkRoleUser = new Usersauthorities(usr.getUsername(), "ROLE_USER", usr, 2);
 
 		if (!rolesList.contains(checkRoleUser)) {
 			rolesList.add(checkRoleUser);

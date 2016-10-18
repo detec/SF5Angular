@@ -30,14 +30,14 @@ public class UserService implements IUserService {
 		}
 
 		Users newUser = new Users();
-		newUser.setusername(accountDto.getUsername());
+		newUser.setUsername(accountDto.getUsername());
 		newUser.setPassword(accountDto.getPassword());
 		List<Usersauthorities> listAuthorities = new ArrayList<>();
 
 		Usersauthorities newLine = new Usersauthorities(accountDto.getUsername(), "ROLE_USER", newUser, 1);
 		listAuthorities.add(newLine);
 		newUser.setauthorities(listAuthorities);
-		newUser.setenabled(true);
+		newUser.setEnabled(true);
 		objectsController.saveOrUpdate(newUser);
 
 		return newUser;
@@ -66,7 +66,7 @@ public class UserService implements IUserService {
 
 	public static boolean hasAdminRole(Users currentUser) {
 
-		Usersauthorities checkRoleAdmin = new Usersauthorities(currentUser.getusername(), "ROLE_ADMIN", currentUser, 1);
+		Usersauthorities checkRoleAdmin = new Usersauthorities(currentUser.getUsername(), "ROLE_ADMIN", currentUser, 1);
 
 		boolean result;
 		if (currentUser.getauthorities().contains(checkRoleAdmin)) {

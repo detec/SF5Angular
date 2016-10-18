@@ -2,6 +2,7 @@ package org.openbox.sf5.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,20 +26,114 @@ import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+/**
+ * User entity.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "Users")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class Users extends AbstractDbEntity implements Serializable {
 
+	private static final long serialVersionUID = -6789497093756301793L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+
+	@Column(name = "username", unique = false, nullable = false, length = 50)
+	@XmlID
+	private String username;
+
+	@Column(name = "password", unique = false, nullable = false, length = 15)
+	private String password;
+
+	@Column(name = "enabled", unique = false, nullable = false)
+	private boolean enabled;
+
+	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true)
+	@Cascade({ CascadeType.ALL })
+	@OrderColumn(name = "lineNumber")
+	@JsonManagedReference
+	@Valid
+	@NotNull
+	@Size(min = 1)
+	private List<Usersauthorities> authorities;
+
+	/**
+	 *
+	 * @param username
+	 * @param Password
+	 * @param enabled
+	 * @param authorities
+	 */
+	public Users(String username, String password, boolean enabled, List<Usersauthorities> authorities) {
+
+		this.username = username;
+		this.password = password;
+		this.enabled = enabled;
+		this.authorities = authorities;
+
+	}
+
+	/**
+	 *
+	 */
+	public Users() {
+	}
+
+	public long getId() {
+
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public String toString() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public List<Usersauthorities> getauthorities() {
+		return authorities;
+	}
+
+	public void setauthorities(List<Usersauthorities> authorities) {
+		this.authorities = authorities;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + (enabled ? 1231 : 1237);
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
+		return Objects.hash(enabled, username, password);
 	}
 
 	@Override
@@ -55,107 +150,10 @@ public class Users extends AbstractDbEntity implements Serializable {
 			return false;
 		}
 		Users other = (Users) obj;
-		if (enabled != other.enabled) {
-			return false;
-		}
-		if (password == null) {
-			if (other.password != null) {
-				return false;
-			}
-		} else if (!password.equals(other.password)) {
-			return false;
-		}
-		if (username == null) {
-			if (other.username != null) {
-				return false;
-			}
-		} else if (!username.equals(other.username)) {
-			return false;
-		}
-		return true;
-	}
 
-	private static final long serialVersionUID = -6789497093756301793L;
+		return Objects.equals(enabled, other.enabled) && Objects.equals(password, other.password)
+				&& Objects.equals(username, other.username);
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-
-	public long getId() {
-
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	@Column(name = "username", unique = false, nullable = false, length = 50)
-	@XmlID
-	private String username;
-
-	public void setusername(String username) {
-		this.username = username;
-	}
-
-	public String getusername() {
-		return username;
-	}
-
-	@Override
-	public String toString() {
-		return username;
-	}
-
-	@Column(name = "password", unique = false, nullable = false, length = 15)
-	private String password;
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String Password) {
-		this.password = Password;
-	}
-
-	@Column(name = "enabled", unique = false, nullable = false)
-	private boolean enabled;
-
-	public boolean getenabled() {
-		return enabled;
-	}
-
-	public void setenabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
-	@OrderColumn(name = "lineNumber")
-	@JsonManagedReference
-	@Valid
-	@NotNull
-	@Size(min = 1)
-	private List<Usersauthorities> authorities;
-
-	public List<Usersauthorities> getauthorities() {
-		return authorities;
-	}
-
-	public void setauthorities(List<Usersauthorities> authorities) {
-		this.authorities = authorities;
-	}
-
-	public Users(String username, String Password, boolean enabled, List<Usersauthorities> authorities) {
-
-		this.username = username;
-		this.password = Password;
-		this.enabled = enabled;
-		this.authorities = authorities;
-
-	}
-
-	public Users() {
 	}
 
 }

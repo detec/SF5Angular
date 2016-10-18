@@ -101,13 +101,13 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 
 	private Users getNewUser() {
 		Users user = new Users();
-		user.setenabled(true);
+		user.setEnabled(true);
 		user.setPassword("1");
-		user.setusername("testuser");
+		user.setUsername("testuser");
 
 		List<Usersauthorities> rolesList = new ArrayList<>();
 
-		Usersauthorities checkRoleUser = new Usersauthorities(user.getusername(), "ROLE_USER", user, 2);
+		Usersauthorities checkRoleUser = new Usersauthorities(user.getUsername(), "ROLE_USER", user, 2);
 
 		if (!rolesList.contains(checkRoleUser)) {
 			rolesList.add(checkRoleUser);
@@ -130,11 +130,11 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 
 		SettingsConversion sc1 = getNewSettingsConversionLine();
 		sc1.setLineNumber(1);
-		sc1.setParentId(setting);
+		sc1.setParent_id(setting);
 
 		SettingsConversion sc2 = getNewSettingsConversionLine();
 		sc2.setLineNumber(2);
-		sc2.setParentId(setting);
+		sc2.setParent_id(setting);
 		sc2.setNote("Useful");
 
 		scList.add(sc1);

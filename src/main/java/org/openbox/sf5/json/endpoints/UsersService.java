@@ -105,7 +105,7 @@ public class UsersService {
 		// check if such user exists.
 
 		// Check not to disable admin user.
-		if (!user.getenabled() && isAdmin(user)) {
+		if (!user.getEnabled() && isAdmin(user)) {
 			throw new IllegalStateException("It is not allowed to disable user with admin role!");
 		}
 

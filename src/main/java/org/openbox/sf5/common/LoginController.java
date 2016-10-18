@@ -115,8 +115,8 @@ public class LoginController {
 			// I added this from stackoverflow example
 			authenticateUserAndSetSession(user, request);
 
-			model.addAttribute("username", user.getusername());
-			model.addAttribute("viewMsg", user.getusername() + " successfully registered!");
+			model.addAttribute("username", user.getUsername());
+			model.addAttribute("viewMsg", user.getUsername() + " successfully registered!");
 			// Let's redirect to html page
 			return "redirect:/index.html";
 
@@ -135,7 +135,7 @@ public class LoginController {
 	}
 
 	private void authenticateUserAndSetSession(Users user, HttpServletRequest request) {
-		String username = user.getusername();
+		String username = user.getUsername();
 		String password = user.getPassword();
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 
