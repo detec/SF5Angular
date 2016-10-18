@@ -13,6 +13,12 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Creates admin user on context load.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Component // NFO: Overriding bean definition for bean
 public class AdminCheck {
 
@@ -21,7 +27,10 @@ public class AdminCheck {
 
 	private boolean adminHasBeenChanged = false;
 
-	// @PostConstruct
+	/**
+	 *
+	 * @param event
+	 */
 	@EventListener
 	public void handleContextRefresh(ContextRefreshedEvent event) {
 
@@ -44,7 +53,7 @@ public class AdminCheck {
 
 			fillTables(adminUser, rolesList);
 
-			if (adminHasBeenChanged == true) {
+			if (adminHasBeenChanged) {
 				objectsController.saveOrUpdate(adminUser);
 			}
 
@@ -52,7 +61,7 @@ public class AdminCheck {
 
 	}
 
-	public void fillTables(Users adminUser, List<Usersauthorities> rolesList) {
+	private void fillTables(Users adminUser, List<Usersauthorities> rolesList) {
 		List<String> textRoles = new ArrayList<>();
 		textRoles.add("ROLE_ADMIN");
 		textRoles.add("ROLE_USER");

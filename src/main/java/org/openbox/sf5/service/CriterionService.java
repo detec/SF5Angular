@@ -14,12 +14,25 @@ import org.openbox.sf5.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Helper class to work with generic criteria methods.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Service
 public class CriterionService {
 
 	@Autowired
 	private DAO objectController;
 
+	/**
+	 *
+	 * @param type
+	 * @param fieldName
+	 * @param typeValue
+	 * @return
+	 */
 	public <T extends AbstractDbEntity> Criterion getCriterionByClassFieldAndStringValue(Class<T> type,
 			String fieldName, String typeValue) {
 		Criterion criterion = null;
@@ -71,15 +84,21 @@ public class CriterionService {
 		return criterion;
 	}
 
+	/**
+	 *
+	 * @param login
+	 * @param type
+	 * @return
+	 */
 	public <T extends AbstractDbEntity> Criterion getUserCriterion(String login, Class<T> type) {
 		// Find out user id.
-		SimpleExpression criterion = null;
-		Criterion userCriterion = null;
+		SimpleExpression criterion;
+		Criterion userCriterion;
 
 		criterion = Restrictions.eq("username", login);
 		List<Users> usersList = objectController.findAllWithRestrictions(Users.class, criterion);
 
-		if (usersList.size() == 0) {
+		if (usersList.isEmpty()) {
 			return criterion;
 		}
 
