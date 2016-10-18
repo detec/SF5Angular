@@ -206,11 +206,11 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		} while (curClass != null);
 	}
 
-	public Settings getParentId() {
+	public Settings getParent_id() {
 		return parent_id;
 	}
 
-	public void setParentId(Settings parent) {
+	public void setParent_id(Settings parent) {
 		this.parent_id = parent;
 	}
 
