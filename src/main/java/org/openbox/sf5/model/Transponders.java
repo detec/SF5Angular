@@ -20,6 +20,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Transponders entity.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "Transponders")
 @XmlRootElement
@@ -31,6 +37,87 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
+	@Column(name = "frequency", unique = false, nullable = false, precision = 5)
+	@Min(value = 2000)
+	private long frequency;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	@NotNull
+	private Polarization polarization;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = true)
+	@JsonProperty("FEC")
+	private TypesOfFEC FEC;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	@NotNull
+	private CarrierFrequency carrier;
+
+	@Column(name = "speed", unique = false, nullable = false, precision = 5)
+	@Min(value = 1000)
+	private long speed;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	@NotNull
+	private DVBStandards versionOfTheDVB;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	@NotNull
+	private RangesOfDVB rangeOfDVB;
+
+	@ManyToOne
+	@JoinColumn(name = "satellite", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_SatelliteTransponders"))
+	@NotNull
+	private Satellites satellite;
+
+	/**
+	 *
+	 * @param frequency
+	 * @param polarization
+	 * @param FEC
+	 * @param carrier
+	 * @param speed
+	 * @param versionOfTheDVB
+	 * @param rangeOfDVB
+	 * @param satellite
+	 */
+	public Transponders(long frequency, Polarization polarization, TypesOfFEC FEC, CarrierFrequency carrier, long speed,
+			DVBStandards versionOfTheDVB, RangesOfDVB rangeOfDVB, Satellites satellite) {
+
+		this.frequency = frequency;
+		this.polarization = polarization;
+		this.FEC = FEC;
+		this.carrier = carrier;
+		this.speed = speed;
+		this.versionOfTheDVB = versionOfTheDVB;
+		this.rangeOfDVB = rangeOfDVB;
+		this.satellite = satellite;
+
+	}
+
+	/**
+	 *
+	 */
+	public Transponders() {
+	}
+
+	/**
+	 *
+	 * @param origObj
+	 */
+	public Transponders(Transponders origObj) {
+		try {
+			setObjectFieldsFrom(origObj);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public long getId() {
 
 		return id;
@@ -40,16 +127,12 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "frequency", unique = false, nullable = false, precision = 5)
-	@Min(value = 2000)
-	private long frequency;
-
 	public long getFrequency() {
 		return frequency;
 	}
 
-	public void setFrequency(long Frequency) {
-		this.frequency = Frequency;
+	public void setFrequency(long frequency) {
+		this.frequency = frequency;
 	}
 
 	@Override
@@ -57,23 +140,13 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		return String.valueOf(frequency);
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	@NotNull
-	private Polarization polarization;
-
 	public Polarization getPolarization() {
 		return polarization;
 	}
 
-	public void setPolarization(Polarization Polarization) {
-		this.polarization = Polarization;
+	public void setPolarization(Polarization polarization) {
+		this.polarization = polarization;
 	}
-
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = true)
-	@JsonProperty("FEC")
-	private TypesOfFEC FEC;
 
 	public TypesOfFEC getFEC() {
 		return FEC;
@@ -83,11 +156,6 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		this.FEC = FEC;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	@NotNull
-	private CarrierFrequency carrier;
-
 	public CarrierFrequency getCarrier() {
 		return carrier;
 	}
@@ -95,10 +163,6 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 	public void setCarrier(CarrierFrequency Carrier) {
 		this.carrier = Carrier;
 	}
-
-	@Column(name = "speed", unique = false, nullable = false, precision = 5)
-	@Min(value = 1000)
-	private long speed;
 
 	public long getSpeed() {
 		return speed;
@@ -108,11 +172,6 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		this.speed = Speed;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	@NotNull
-	private DVBStandards versionOfTheDVB;
-
 	public DVBStandards getVersionOfTheDVB() {
 		return versionOfTheDVB;
 	}
@@ -120,11 +179,6 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 	public void setVersionOfTheDVB(DVBStandards VersionOfTheDVB) {
 		this.versionOfTheDVB = VersionOfTheDVB;
 	}
-
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	@NotNull
-	private RangesOfDVB rangeOfDVB;
 
 	public RangesOfDVB getRangeOfDVB() {
 		return rangeOfDVB;
@@ -134,11 +188,6 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		this.rangeOfDVB = RangeOfDVB;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "satellite", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_SatelliteTransponders"))
-	@NotNull
-	private Satellites satellite;
-
 	public Satellites getSatellite() {
 		return satellite;
 	}
@@ -147,28 +196,11 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		this.satellite = Satellite;
 	}
 
-	public Transponders(long Frequency, Polarization Polarization, TypesOfFEC FEC, CarrierFrequency Carrier, long Speed,
-			DVBStandards VersionOfTheDVB, RangesOfDVB RangeOfDVB, Satellites Satellite) {
+	private void setObjectFieldsFrom(Transponders origObj) throws IllegalAccessException {
+		Field[] fields;
+		Class<?> curClass = origObj.getClass();
 
-		this.frequency = Frequency;
-		this.polarization = Polarization;
-		this.FEC = FEC;
-		this.carrier = Carrier;
-		this.speed = Speed;
-		this.versionOfTheDVB = VersionOfTheDVB;
-		this.rangeOfDVB = RangeOfDVB;
-		this.satellite = Satellite;
-
-	}
-
-	public Transponders() {
-	}
-
-	protected void setObjectFieldsFrom(Transponders origObj) throws IllegalAccessException {
-		Field fields[];
-		Class curClass = origObj.getClass();
-
-		if (!curClass.isAssignableFrom(this.getClass())) {
+		if (!curClass.isAssignableFrom(getClass())) {
 			throw new IllegalArgumentException("New object must be the same class or a subclass of original");
 		}
 
@@ -177,7 +209,7 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 			fields = curClass.getDeclaredFields();
 
 			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().equals("serialVersionUID")) {
+				if ("serialVersionUID".equals(fields[i].getName())) {
 					continue;
 				}
 				fields[i].set(this, fields[i].get(origObj));
@@ -186,11 +218,4 @@ public class Transponders extends AbstractDbEntity implements Serializable {
 		} while (curClass != null);
 	}
 
-	public Transponders(Transponders origObj) {
-		try {
-			setObjectFieldsFrom(origObj);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-	}
 }

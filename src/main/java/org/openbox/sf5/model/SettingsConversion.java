@@ -100,6 +100,18 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 
 	}
 
+	/**
+	 *
+	 * @param origObj
+	 */
+	public SettingsConversion(SettingsConversion origObj) {
+		try {
+			setObjectFieldsFrom(origObj);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public long getId() {
 
 		return id;
@@ -153,14 +165,13 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		return lineNumber;
 	}
 
-	public void setLineNumber(long LineNumber) {
-		this.lineNumber = LineNumber;
+	public void setLineNumber(long lineNumber) {
+		this.lineNumber = lineNumber;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void setObjectFieldsFrom(SettingsConversion origObj) throws IllegalAccessException {
 		Field[] fields;
-		Class curClass = origObj.getClass();
+		Class<?> curClass = origObj.getClass();
 
 		if (!curClass.isAssignableFrom(this.getClass())) {
 			throw new IllegalArgumentException("New object must be the same class or a subclass of original");
@@ -199,16 +210,8 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		return parent_id;
 	}
 
-	public void setParentId(Settings parent_id) {
-		this.parent_id = parent_id;
-	}
-
-	public SettingsConversion(SettingsConversion origObj) {
-		try {
-			setObjectFieldsFrom(origObj);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+	public void setParentId(Settings parent) {
+		this.parent_id = parent;
 	}
 
 }
