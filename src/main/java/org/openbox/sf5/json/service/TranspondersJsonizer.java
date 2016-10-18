@@ -1,6 +1,6 @@
 package org.openbox.sf5.json.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.criterion.Criterion;
@@ -14,9 +14,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Helper service class for transponders.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Service
 public class TranspondersJsonizer {
 
+	@Autowired
+	private IniReader iniReader;
+
+	@Autowired
+	private DAO objectsController;
+
+	@Autowired
+	private CriterionService criterionService;
+
+	/**
+	 *
+	 * @param file
+	 * @return
+	 */
 	public Boolean uploadTransponders(MultipartFile file) {
 		try {
 			iniReader.readMultiPartFile(file);
@@ -29,45 +49,35 @@ public class TranspondersJsonizer {
 
 	}
 
+	/**
+	 *
+	 * @param fieldName
+	 * @param typeValue
+	 * @return
+	 */
 	public List<Transponders> getTranspondersByArbitraryFilter(String fieldName, String typeValue) {
-		List<Transponders> transList = new ArrayList<>();
-
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Transponders.class, fieldName,
 				typeValue);
 
 		if (criterion == null) {
-			return transList;
+			return Collections.emptyList();
 		}
 
-		transList = objectsController.findAllWithRestrictions(Transponders.class, criterion);
-
-		return transList;
+		return objectsController.findAllWithRestrictions(Transponders.class, criterion);
 
 	}
 
 	public List<Transponders> getTranspondersBySatelliteId(long satId) {
-		List<Transponders> transList = new ArrayList<>();
 
 		Satellites filterSatellite = objectsController.select(Satellites.class, satId);
 		if (filterSatellite == null) {
-			return transList;
+			return Collections.emptyList();
 		}
 		Criterion criterion = Restrictions.eq("satellite", filterSatellite);
 
-		transList = objectsController.findAllWithRestrictions(Transponders.class, criterion);
-
-		return transList;
+		return objectsController.findAllWithRestrictions(Transponders.class, criterion);
 
 	}
-
-	@Autowired
-	private IniReader iniReader;
-
-	@Autowired
-	private DAO objectsController;
-
-	@Autowired
-	private CriterionService criterionService;
 
 	public CriterionService getCriterionService() {
 		return criterionService;

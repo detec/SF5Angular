@@ -11,13 +11,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+/**
+ * Helper service class for users.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Service
 public class UsersJsonizer {
 
+	@Autowired
+	private CriterionService criterionService;
+
+	@Autowired
+	private DAO objectsController;
+
+	@Autowired
+	private SettingsJsonizer settingsJsonizer;
+
+	/**
+	 *
+	 * @param userId
+	 * @return
+	 */
 	public Users getUserById(long userId) {
 		return objectsController.select(Users.class, userId);
 	}
 
+	/**
+	 *
+	 * @param userId
+	 */
 	public void removeUser(long userId) {
 		// First we need to select all user settings and remove them
 		Users user = getUserById(userId);
@@ -27,13 +51,13 @@ public class UsersJsonizer {
 		objectsController.remove(Users.class, userId);
 	}
 
+	/**
+	 *
+	 * @param user
+	 * @return
+	 */
 	public HttpStatus saveUser(Users user) {
 		long id = user.getId();
-		// if we receive non-empty id
-		// if (id != 0) {
-		// return HttpStatus.CONFLICT;
-		// }
-
 		HttpStatus statusResult = (id != 0) ? HttpStatus.OK : HttpStatus.CREATED;
 
 		objectsController.saveOrUpdate(user);
@@ -41,6 +65,11 @@ public class UsersJsonizer {
 
 	}
 
+	/**
+	 *
+	 * @param typeValue
+	 * @return
+	 */
 	public Users getUserByLogin(String typeValue) {
 		Users returnUser = null;
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Users.class, "username",
@@ -51,20 +80,28 @@ public class UsersJsonizer {
 		}
 
 		List<Users> userList = objectsController.findAllWithRestrictions(Users.class, criterion);
-		if (userList.size() == 0) {
+		if (userList.isEmpty()) {
 			return returnUser;
 		}
-		returnUser = userList.get(0);
-		return returnUser;
+		return userList.get(0);
+
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public List<Users> getAllUsers() {
-		List<Users> listOfUsers = objectsController.findAll(Users.class);
-		return listOfUsers;
+		return objectsController.findAll(Users.class);
 
 	}
 
-	// returns false if there is no such user. Otherwise - false.
+	/**
+	 * returns false if there is no such user. Otherwise - false.
+	 *
+	 * @param typeValue
+	 * @return
+	 */
 	public Boolean checkIfUsernameExists(String typeValue) {
 		Boolean result = false;
 		Criterion criterion = criterionService.getCriterionByClassFieldAndStringValue(Users.class, "username",
@@ -75,19 +112,9 @@ public class UsersJsonizer {
 		}
 		List<Users> userList = objectsController.findAllWithRestrictions(Users.class, criterion);
 
-		result = (userList.size() == 0) ? false : true;
+		return (userList.isEmpty()) ? false : true;
 
-		return result;
 	}
-
-	@Autowired
-	private CriterionService criterionService;
-
-	@Autowired
-	private DAO objectsController;
-
-	@Autowired
-	private SettingsJsonizer settingsJsonizer;
 
 	public DAO getObjectsController() {
 		return objectsController;
