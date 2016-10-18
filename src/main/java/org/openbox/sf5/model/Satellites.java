@@ -10,6 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Satellite entity.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "Satellites")
 @XmlRootElement(name = "satellite")
@@ -24,14 +30,22 @@ public class Satellites extends AbstractDbEntity implements Serializable {
 	@Column(name = "name", unique = false, nullable = false, length = 50)
 	private String name;
 
+	public Satellites() {
+
+	}
+
+	public Satellites(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public String toString() {
 
 		return name;
 	}
 
-	public void setName(String Name) {
-		this.name = Name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
@@ -45,16 +59,6 @@ public class Satellites extends AbstractDbEntity implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public Satellites(String Name) {
-
-		this.name = Name;
-
-	}
-
-	public Satellites() {
-
 	}
 
 }

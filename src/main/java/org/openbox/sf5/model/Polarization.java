@@ -25,6 +25,7 @@ public enum Polarization {
 	 * Define Kind of Polarization by its general kind.
 	 *
 	 * @param Pol
+	 *            polarization
 	 * @return
 	 */
 	public static KindsOfPolarization getPolarizationKind(Polarization pol) {
@@ -46,6 +47,7 @@ public enum Polarization {
 	 * Define XML representation of polarization.
 	 *
 	 * @param Pol
+	 *            polarization
 	 * @return
 	 */
 	public static String getXMLpresentation(Polarization pol) {

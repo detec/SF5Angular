@@ -33,6 +33,12 @@ import org.openbox.sf5.converters.TimestampAdapter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+/**
+ * Setting entity
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "Settings", indexes = { @Index(columnList = "user", name = "user") })
 @XmlRootElement
@@ -49,6 +55,35 @@ public class Settings extends AbstractDbEntity implements Serializable {
 	@NotEmpty
 	@XmlID
 	private String name;
+
+	@Column(name = "theLastEntry", unique = false, nullable = true)
+	@XmlJavaTypeAdapter(TimestampAdapter.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Kiev")
+	@NotNull
+	private Timestamp theLastEntry;
+
+	@ManyToOne
+	@JoinColumn(name = "\"user\"", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_User"))
+	@NotNull
+	@Valid
+	private Users user;
+
+	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+	@OrderColumn(name = "lineNumber")
+	@JsonManagedReference
+	private List<SettingsConversion> conversion = new ArrayList<>();
+
+	public Settings(String Name, Timestamp lastEntry, Users User, List<SettingsConversion> Conversion) {
+
+		this.name = Name;
+		this.theLastEntry = lastEntry;
+		this.user = User;
+		this.conversion = Conversion;
+
+	}
+
+	public Settings() {
+	}
 
 	public void setName(String Name) {
 		this.name = Name;
@@ -69,21 +104,9 @@ public class Settings extends AbstractDbEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		// return Name;
 		// we must convert object to id
 		return String.valueOf(id);
 	}
-
-	@Column(name = "theLastEntry", unique = false, nullable = true)
-	@XmlJavaTypeAdapter(TimestampAdapter.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "Europe/Kiev")
-	// Will try to use Javascript's milliseconds
-	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
-	// "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Europe/Kiev")
-	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
-	// "yyyy-MM-dd'T'HH:mm:ss")
-	@NotNull
-	private Timestamp theLastEntry;
 
 	public Timestamp getTheLastEntry() {
 		return theLastEntry;
@@ -93,12 +116,6 @@ public class Settings extends AbstractDbEntity implements Serializable {
 		this.theLastEntry = TheLastEntry;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "\"user\"", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_User"))
-	@NotNull
-	@Valid
-	private Users user;
-
 	public Users getUser() {
 		return user;
 	}
@@ -107,32 +124,12 @@ public class Settings extends AbstractDbEntity implements Serializable {
 		this.user = User;
 	}
 
-	// @OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval
-	// = true)
-	// @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
-	@OneToMany(mappedBy = "parent_id", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
-	@OrderColumn(name = "lineNumber")
-	@JsonManagedReference
-	private List<SettingsConversion> conversion = new ArrayList<>();
-
 	public List<SettingsConversion> getConversion() {
 		return conversion;
 	}
 
 	public void setConversion(List<SettingsConversion> Conversion) {
 		this.conversion = Conversion;
-	}
-
-	public Settings(String Name, Timestamp lastEntry, Users User, List<SettingsConversion> Conversion) {
-
-		this.name = Name;
-		this.theLastEntry = lastEntry;
-		this.user = User;
-		this.conversion = Conversion;
-
-	}
-
-	public Settings() {
 	}
 
 }
