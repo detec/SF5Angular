@@ -9,17 +9,25 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 // http://www.journaldev.com/2676/spring-mvc-interceptors-example-handlerinterceptor-and-handlerinterceptoradapter
+/**
+ * Class for logging request/response
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter {
 
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(RequestProcessingTimeInterceptor.class);
 	private Logger logger = Logger.getLogger(RequestProcessingTimeInterceptor.class.getName());
+
+	private static final String CONSTANT_REQUEST_URL = "Request URL::";
+	private static final String CONSTANT_METHOD = ", Method: ";
+	private static final String CONSTANT_RESPONSE_STATUS = ", Response status: ";
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		long startTime = System.currentTimeMillis();
-		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + request.getMethod()
+		logger.info(CONSTANT_REQUEST_URL + request.getRequestURL().toString() + CONSTANT_METHOD + request.getMethod()
 				+ ":: Start Time=" + System.currentTimeMillis());
 		request.setAttribute("startTime", startTime);
 		// if returned false, we need to make sure 'response' is sent
@@ -29,8 +37,8 @@ public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		System.out.println("Request URL::" + request.getRequestURL().toString() + ", Response status: "
-				+ response.getStatus() + ", Method: " + request.getMethod() + " Sent to Handler :: Current Time="
+		logger.info(CONSTANT_REQUEST_URL + request.getRequestURL().toString() + CONSTANT_RESPONSE_STATUS
+				+ response.getStatus() + CONSTANT_METHOD + request.getMethod() + " Sent to Handler :: Current Time="
 				+ System.currentTimeMillis());
 		// we can add attributes in the modelAndView and use that in the view
 		// page
@@ -40,10 +48,10 @@ public class RequestProcessingTimeInterceptor extends HandlerInterceptorAdapter 
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		long startTime = (Long) request.getAttribute("startTime");
-		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + request.getMethod()
-				+ ", Response status: " + response.getStatus() + ":: End Time=" + System.currentTimeMillis());
-		logger.info("Request URL::" + request.getRequestURL().toString() + ", Method: " + request.getMethod()
-				+ ", Response status: " + response.getStatus() + ":: Time Taken="
+		logger.info(CONSTANT_REQUEST_URL + request.getRequestURL().toString() + CONSTANT_METHOD + request.getMethod()
+				+ CONSTANT_RESPONSE_STATUS + response.getStatus() + ":: End Time=" + System.currentTimeMillis());
+		logger.info(CONSTANT_REQUEST_URL + request.getRequestURL().toString() + CONSTANT_METHOD + request.getMethod()
+				+ CONSTANT_RESPONSE_STATUS + response.getStatus() + ":: Time Taken="
 				+ (System.currentTimeMillis() - startTime));
 	}
 

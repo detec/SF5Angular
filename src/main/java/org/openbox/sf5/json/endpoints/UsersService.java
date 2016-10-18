@@ -40,7 +40,7 @@ public class UsersService {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Users>> getAllUsers() throws NotAuthenticatedException {
+	ResponseEntity<List<Users>> getAllUsers() throws NotAuthenticatedException {
 		getVerifyAuthenticatedUser();
 
 		List<Users> listOfUsers = usersJsonizer.getAllUsers();
@@ -50,7 +50,7 @@ public class UsersService {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "{userId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Users> deleteUser(@PathVariable("userId") long userId) {
+	ResponseEntity<Users> deleteUser(@PathVariable("userId") long userId) {
 		Users user = null;
 		try {
 			user = usersJsonizer.getUserById(userId);
@@ -81,7 +81,7 @@ public class UsersService {
 	// We allow only for admin and enabled user.
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (#login  == authentication.name)")
 	@RequestMapping(value = "filter/username/{login}", method = RequestMethod.GET)
-	public ResponseEntity<Users> getUserByLogin(@PathVariable("login") String login) {
+	ResponseEntity<Users> getUserByLogin(@PathVariable("login") String login) {
 		Users retUser = null;
 		try {
 			retUser = usersJsonizer.getUserByLogin(login);
@@ -101,12 +101,11 @@ public class UsersService {
 	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
 											// with REST.
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Users> saveUser(@RequestBody Users user)
-			throws IllegalArgumentException, IllegalStateException {
+	ResponseEntity<Users> saveUser(@RequestBody Users user) {
 		// check if such user exists.
 
 		// Check not to disable admin user.
-		if (user.getenabled() == false && isAdmin(user)) {
+		if (!user.getenabled() && isAdmin(user)) {
 			throw new IllegalStateException("It is not allowed to disable user with admin role!");
 		}
 
@@ -127,18 +126,18 @@ public class UsersService {
 	}
 
 	private boolean isAdmin(Users user) {
-		return user.getauthorities().stream().filter(t -> t.getAuthority().equals("ROLE_ADMIN")).count() > 0;
+		return user.getauthorities().stream().filter(t -> "ROLE_ADMIN".equals(t.getAuthority())).count() > 0;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
 	// with REST.
 	@RequestMapping(value = "{userId}", method = RequestMethod.PUT)
-	public ResponseEntity<Users> updateUser(@RequestBody Users user) {
+	ResponseEntity<Users> updateUser(@RequestBody Users user) {
 		return saveUser(user);
 	}
 
 	@RequestMapping(value = "exists/username/{login}", method = RequestMethod.GET)
-	public ResponseEntity<Boolean> ifSuchLoginExists(@PathVariable("login") String login) {
+	ResponseEntity<Boolean> ifSuchLoginExists(@PathVariable("login") String login) {
 		Boolean result = usersJsonizer.checkIfUsernameExists(login);
 		if (!result) {
 			return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
@@ -149,7 +148,7 @@ public class UsersService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "currentuser", method = RequestMethod.GET)
-	public ResponseEntity<List<Users>> getCurrentlyAuthenticatedUser() throws NotAuthenticatedException {
+	ResponseEntity<List<Users>> getCurrentlyAuthenticatedUser() throws NotAuthenticatedException {
 		Users currentUser = getVerifyAuthenticatedUser();
 
 		List<Users> listOfUsers = new ArrayList<>();
