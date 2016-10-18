@@ -13,6 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of user creation.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Service
 @Scope(value = "session")
 public class UserService implements IUserService {
@@ -44,15 +50,12 @@ public class UserService implements IUserService {
 
 	}
 
-	public boolean userExists(String username) {
+	private boolean userExists(String username) {
 
 		Criterion criterion = Restrictions.eq("username", username);
 		List<Users> rec = objectsController.findAllWithRestrictions(Users.class, criterion);
-		if (rec.isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
+
+		return rec.isEmpty() ? false : true;
 
 	}
 
@@ -64,19 +67,4 @@ public class UserService implements IUserService {
 		this.objectsController = objectsController;
 	}
 
-	public static boolean hasAdminRole(Users currentUser) {
-
-		Usersauthorities checkRoleAdmin = new Usersauthorities(currentUser.getUsername(), "ROLE_ADMIN", currentUser, 1);
-
-		boolean result;
-		if (currentUser.getAuthorities().contains(checkRoleAdmin)) {
-			result = true;
-		}
-
-		else {
-			result = false;
-		}
-
-		return result;
-	}
 }
