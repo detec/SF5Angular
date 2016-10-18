@@ -10,11 +10,11 @@ public enum CarrierFrequency {
 
 	LOWER("9750"), TOP("10600"), C_RANGE("5150"), TOP_PIE("10750");
 
+	private final String value;
+
 	private CarrierFrequency(String s) {
 		value = s;
 	}
-
-	private final String value;
 
 	@Override
 	public String toString() {

@@ -4,11 +4,11 @@ public enum DVBStandards {
 
 	DVBS("DVB-S"), DVBS2("DVB-S2");
 
+	private final String value;
+
 	private DVBStandards(String s) {
 		value = s;
 	}
-
-	private final String value;
 
 	@Override
 	public String toString() {

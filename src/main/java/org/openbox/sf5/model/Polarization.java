@@ -17,13 +17,13 @@ public enum Polarization {
 
 	public static KindsOfPolarization getPolarizationKind(Polarization Pol) {
 
-		KindsOfPolarization aKindsOfPolarization = KindsOfPolarization.Linear;
+		KindsOfPolarization aKindsOfPolarization = KindsOfPolarization.LINEAR;
 
 		if (Pol.equals(H) || Pol.equals(V)) {
-			aKindsOfPolarization = KindsOfPolarization.Linear;
+			aKindsOfPolarization = KindsOfPolarization.LINEAR;
 		}
 		if (Pol.equals(R) || Pol.equals(L)) {
-			aKindsOfPolarization = KindsOfPolarization.Pie;
+			aKindsOfPolarization = KindsOfPolarization.PIE;
 		}
 
 		return aKindsOfPolarization;

@@ -1,19 +1,18 @@
 package org.openbox.sf5.model;
 
-	public enum KindsOfPolarization{
+public enum KindsOfPolarization {
 
-Linear("Linear"), Pie("Pie");
-
-	private KindsOfPolarization(String s) {
-	value = s;
-	}
+	LINEAR("Linear"), PIE("Pie");
 
 	private final String value;
+
+	private KindsOfPolarization(String s) {
+		value = s;
+	}
 
 	@Override
 	public String toString() {
 		return value;
 	}
-
 
 }

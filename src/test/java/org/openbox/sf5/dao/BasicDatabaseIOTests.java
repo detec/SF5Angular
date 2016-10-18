@@ -76,7 +76,7 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 		trans.setFEC(TypesOfFEC._23);
 		trans.setFrequency(11555);
 		trans.setPolarization(Polarization.V);
-		trans.setRangeOfDVB(RangesOfDVB.Ku);
+		trans.setRangeOfDVB(RangesOfDVB.KU);
 		trans.setSatellite(newSat);
 		trans.setSpeed(10000);
 		trans.setVersionOfTheDVB(DVBStandards.DVBS2);

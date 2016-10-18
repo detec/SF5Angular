@@ -47,7 +47,7 @@ public final class TableFiller {
 
 		List<RangesOfDVB> list = new ArrayList<>();
 		list.add(RangesOfDVB.C);
-		list.add(RangesOfDVB.Ku);
+		list.add(RangesOfDVB.KU);
 
 		TheDVBRangeValues newRecord = null;
 
@@ -65,7 +65,7 @@ public final class TableFiller {
 
 				}
 
-				if (e.equals(RangesOfDVB.Ku)) {
+				if (e.equals(RangesOfDVB.KU)) {
 					newRecord = new TheDVBRangeValues(e, 10700, 12750);
 
 				}
@@ -80,46 +80,46 @@ public final class TableFiller {
 
 		rec = session.createCriteria(ValueOfTheCarrierFrequency.class)
 				.add(Restrictions.eq(CONSTANT_TYPE_OF_CARRIER_FREQUENCY, CarrierFrequency.LOWER))
-				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.Pie)).list();
+				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.PIE)).list();
 		if (rec.isEmpty()) {
-			value = new ValueOfTheCarrierFrequency(CarrierFrequency.LOWER, KindsOfPolarization.Pie, 10700, 11699);
+			value = new ValueOfTheCarrierFrequency(CarrierFrequency.LOWER, KindsOfPolarization.PIE, 10700, 11699);
 			objectController.add(value);
 		}
 
 		rec = session.createCriteria(ValueOfTheCarrierFrequency.class)
 				.add(Restrictions.eq(CONSTANT_TYPE_OF_CARRIER_FREQUENCY, CarrierFrequency.LOWER))
-				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.Linear)).list();
+				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.LINEAR)).list();
 
 		if (rec.isEmpty()) {
-			value = new ValueOfTheCarrierFrequency(CarrierFrequency.LOWER, KindsOfPolarization.Linear, 10700, 11699);
+			value = new ValueOfTheCarrierFrequency(CarrierFrequency.LOWER, KindsOfPolarization.LINEAR, 10700, 11699);
 			objectController.add(value);
 		}
 
 		rec = session.createCriteria(ValueOfTheCarrierFrequency.class)
 				.add(Restrictions.eq(CONSTANT_TYPE_OF_CARRIER_FREQUENCY, CarrierFrequency.TOP))
-				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.Linear)).list();
+				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.LINEAR)).list();
 
 		if (rec.isEmpty()) {
-			value = new ValueOfTheCarrierFrequency(CarrierFrequency.TOP, KindsOfPolarization.Linear, 11700, 12750);
+			value = new ValueOfTheCarrierFrequency(CarrierFrequency.TOP, KindsOfPolarization.LINEAR, 11700, 12750);
 			objectController.add(value);
 		}
 
 		rec = session.createCriteria(ValueOfTheCarrierFrequency.class)
 				.add(Restrictions.eq(CONSTANT_TYPE_OF_CARRIER_FREQUENCY, CarrierFrequency.C_RANGE))
-				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.Linear)).list();
+				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.LINEAR)).list();
 
 		if (rec.isEmpty()) {
-			value = new ValueOfTheCarrierFrequency(CarrierFrequency.C_RANGE, KindsOfPolarization.Linear, 3400, 4200);
+			value = new ValueOfTheCarrierFrequency(CarrierFrequency.C_RANGE, KindsOfPolarization.LINEAR, 3400, 4200);
 			objectController.add(value);
 
 		}
 
 		rec = session.createCriteria(ValueOfTheCarrierFrequency.class)
 				.add(Restrictions.eq(CONSTANT_TYPE_OF_CARRIER_FREQUENCY, CarrierFrequency.TOP_PIE))
-				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.Pie)).list();
+				.add(Restrictions.eq(CONSTANAT_POLARIZATION, KindsOfPolarization.PIE)).list();
 
 		if (rec.isEmpty()) {
-			value = new ValueOfTheCarrierFrequency(CarrierFrequency.TOP_PIE, KindsOfPolarization.Pie, 11700, 12750);
+			value = new ValueOfTheCarrierFrequency(CarrierFrequency.TOP_PIE, KindsOfPolarization.PIE, 11700, 12750);
 			objectController.add(value);
 
 		}
