@@ -5,10 +5,43 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Entity to serialize exceptions.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public class ApiError {
 	private HttpStatus status;
 	private String message;
-	private List<String> errors = new ArrayList<>();;
+	private List<String> errors = new ArrayList<>();
+
+	/**
+	 * First option of constructor
+	 *
+	 * @param status
+	 * @param ex
+	 */
+	public ApiError(HttpStatus status, Exception ex) {
+		super();
+		this.status = status;
+		this.message = ex.getMessage();
+		fillStackTrace(ex);
+	}
+
+	/**
+	 * Overloaded constructor to send customized error messages.
+	 * 
+	 * @param status
+	 * @param ex
+	 * @param error
+	 */
+	public ApiError(HttpStatus status, Exception ex, String error) {
+		super();
+		this.status = status;
+		this.message = error;
+		fillStackTrace(ex);
+	}
 
 	public HttpStatus getStatus() {
 		return status;
@@ -32,21 +65,6 @@ public class ApiError {
 
 	public void setErrors(List<String> errors) {
 		this.errors = errors;
-	}
-
-	public ApiError(HttpStatus status, Exception ex) {
-		super();
-		this.status = status;
-		this.message = ex.getMessage();
-		fillStackTrace(ex);
-	}
-
-	// overloaded constructor to send customized error messages.
-	public ApiError(HttpStatus status, Exception ex, String error) {
-		super();
-		this.status = status;
-		this.message = error;
-		fillStackTrace(ex);
 	}
 
 	private void fillStackTrace(Exception ex) {
