@@ -1,5 +1,11 @@
 package org.openbox.sf5.model;
 
+/**
+ * Used DVB standards.
+ * 
+ * @author Andrii Duplyk
+ *
+ */
 public enum DVBStandards {
 
 	DVBS("DVB-S"), DVBS2("DVB-S2");

@@ -1,5 +1,11 @@
 package org.openbox.sf5.model;
 
+/**
+ * Polarization: linear, pie.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public enum KindsOfPolarization {
 
 	LINEAR("Linear"), PIE("Pie");
