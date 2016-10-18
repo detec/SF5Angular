@@ -22,6 +22,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+/**
+ * Settings line.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "SettingsConversion")
 @XmlRootElement
@@ -34,6 +40,66 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
+	@ManyToOne
+	@JoinColumn(name = "parent_id", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_SettingConversion"))
+	@JsonBackReference
+	@XmlIDREF
+	private Settings parent_id;
+
+	private long lineNumber;
+
+	@ManyToOne
+	@JoinColumn(name = "transponder", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_Transponder"))
+	private Transponders transponder;
+
+	@Column(name = "satindex", unique = false, nullable = true, precision = 1)
+	private long satindex;
+
+	@Column(name = "tpindex", unique = false, nullable = true, precision = 1)
+	private long tpindex;
+
+	@Column(name = "note", unique = false, nullable = true, length = 120)
+	private String note;
+
+	@Column(name = "theLineOfIntersection", unique = false, nullable = true, precision = 2)
+	private long theLineOfIntersection;
+
+	/**
+	 *
+	 * @param parent_id
+	 * @param transponder
+	 * @param satindex
+	 * @param tpindex
+	 * @param note
+	 * @param theLineOfIntersection
+	 */
+	public SettingsConversion(Settings parent_id, Transponders transponder, long satindex, long tpindex, String note,
+			long theLineOfIntersection) {
+
+		this.parent_id = parent_id;
+		this.transponder = transponder;
+		this.satindex = satindex;
+		this.tpindex = tpindex;
+		this.note = note;
+		this.theLineOfIntersection = theLineOfIntersection;
+
+	}
+
+	/**
+	 *
+	 */
+	public SettingsConversion() {
+	}
+
+	/**
+	 *
+	 * @param parent
+	 */
+	public SettingsConversion(Settings parent) {
+		this.parent_id = parent;
+
+	}
+
 	public long getId() {
 
 		return id;
@@ -43,74 +109,44 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		this.id = id;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "parent_id", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_SettingConversion"))
-	@JsonBackReference
-	@XmlIDREF
-	private Settings parent_id;
-
-	private long lineNumber;
-
-	public SettingsConversion(Settings parent_id) {
-
-		this.parent_id = parent_id;
-
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "transponder", unique = false, nullable = false, foreignKey = @ForeignKey(name = "FK_Transponder"))
-	private Transponders transponder;
-
 	public Transponders getTransponder() {
 		return transponder;
 	}
 
-	public void setTransponder(Transponders Transponder) {
-		this.transponder = Transponder;
+	public void setTransponder(Transponders transponder) {
+		this.transponder = transponder;
 	}
-
-	@Column(name = "satindex", unique = false, nullable = true, precision = 1)
-	private long satindex;
 
 	public long getSatindex() {
 		return satindex;
 	}
 
-	public void setSatindex(long Satindex) {
-		this.satindex = Satindex;
+	public void setSatindex(long satindex) {
+		this.satindex = satindex;
 	}
-
-	@Column(name = "tpindex", unique = false, nullable = true, precision = 1)
-	private long tpindex;
 
 	public long getTpindex() {
 		return tpindex;
 	}
 
-	public void setTpindex(long Tpindex) {
-		this.tpindex = Tpindex;
+	public void setTpindex(long tpindex) {
+		this.tpindex = tpindex;
 	}
-
-	@Column(name = "note", unique = false, nullable = true, length = 120)
-	private String note;
 
 	public String getNote() {
 		return note;
 	}
 
-	public void setNote(String Note) {
-		this.note = Note;
+	public void setNote(String note) {
+		this.note = note;
 	}
-
-	@Column(name = "theLineOfIntersection", unique = false, nullable = true, precision = 2)
-	private long theLineOfIntersection;
 
 	public long getTheLineOfIntersection() {
 		return theLineOfIntersection;
 	}
 
-	public void setTheLineOfIntersection(long TheLineOfIntersection) {
-		this.theLineOfIntersection = TheLineOfIntersection;
+	public void setTheLineOfIntersection(long theLineOfIntersection) {
+		this.theLineOfIntersection = theLineOfIntersection;
 	}
 
 	public long getLineNumber() {
@@ -121,24 +157,9 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		this.lineNumber = LineNumber;
 	}
 
-	public SettingsConversion(Settings parent_id, Transponders Transponder, long Satindex, long Tpindex, String Note,
-			long TheLineOfIntersection) {
-
-		this.parent_id = parent_id;
-		this.transponder = Transponder;
-		this.satindex = Satindex;
-		this.tpindex = Tpindex;
-		this.note = Note;
-		this.theLineOfIntersection = TheLineOfIntersection;
-
-	}
-
-	public SettingsConversion() {
-	}
-
 	@SuppressWarnings("unchecked")
 	protected void setObjectFieldsFrom(SettingsConversion origObj) throws IllegalAccessException {
-		Field fields[];
+		Field[] fields;
 		Class curClass = origObj.getClass();
 
 		if (!curClass.isAssignableFrom(this.getClass())) {
@@ -146,15 +167,15 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		}
 
 		// filter only SettingsConversion fields
-		List<String> SCClassList = new ArrayList<>();
+		List<String> scClassList = new ArrayList<>();
 
 		Field[] thisClassFieldsArray = SettingsConversion.class.getDeclaredFields();
 
 		List<Field> thisClassFiledList = Arrays.asList(thisClassFieldsArray);
 		thisClassFiledList.stream().forEach(t -> {
 			String fieldname = t.getName();
-			if (!fieldname.equals("serialVersionUID")) {
-				SCClassList.add(fieldname);
+			if (!"serialVersionUID".equals(fieldname)) {
+				scClassList.add(fieldname);
 			}
 		});
 
@@ -164,9 +185,9 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 
 			for (int i = 0; i < fields.length; i++) {
 
-				if (SCClassList.contains(fields[i].getName())) {
+				if (scClassList.contains(fields[i].getName())) {
 					// add only checked classes
-					// continue;
+
 					fields[i].set(this, fields[i].get(origObj));
 				}
 			}
@@ -174,11 +195,11 @@ public class SettingsConversion extends AbstractDbEntity implements Serializable
 		} while (curClass != null);
 	}
 
-	public Settings getParent_id() {
+	public Settings getParentId() {
 		return parent_id;
 	}
 
-	public void setParent_id(Settings parent_id) {
+	public void setParentId(Settings parent_id) {
 		this.parent_id = parent_id;
 	}
 
