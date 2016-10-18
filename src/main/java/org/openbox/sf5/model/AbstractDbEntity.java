@@ -4,7 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.MappedSuperclass;
 
-// This class should be used in Hibernate entities that are stored in database.
+/**
+ * This class should be used in Hibernate entities that are stored in database.
+ * 
+ * @author Andrii Duplyk
+ *
+ */
 @MappedSuperclass
 public class AbstractDbEntity implements Serializable {
 

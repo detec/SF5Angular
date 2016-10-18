@@ -31,7 +31,7 @@ public class ApiError {
 
 	/**
 	 * Overloaded constructor to send customized error messages.
-	 * 
+	 *
 	 * @param status
 	 * @param ex
 	 * @param error
@@ -68,7 +68,7 @@ public class ApiError {
 	}
 
 	private void fillStackTrace(Exception ex) {
-		StackTraceElement elements[] = ex.getStackTrace();
+		StackTraceElement[] elements = ex.getStackTrace();
 		for (int i = 0, n = elements.length; i < n; i++) {
 
 			String stackTraceLine = elements[i].getFileName() + ":" + elements[i].getLineNumber() + ">> "

@@ -72,7 +72,7 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 		DAO.saveOrUpdate(newSat);
 
 		Transponders trans = new Transponders();
-		trans.setCarrier(CarrierFrequency.Top);
+		trans.setCarrier(CarrierFrequency.TOP);
 		trans.setFEC(TypesOfFEC._23);
 		trans.setFrequency(11555);
 		trans.setPolarization(Polarization.V);
@@ -105,7 +105,7 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 		user.setPassword("1");
 		user.setusername("testuser");
 
-		List<Usersauthorities> rolesList = new ArrayList<Usersauthorities>();
+		List<Usersauthorities> rolesList = new ArrayList<>();
 
 		Usersauthorities checkRoleUser = new Usersauthorities(user.getusername(), "ROLE_USER", user, 2);
 
@@ -126,7 +126,7 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 		setting.setUser(user);
 		setting.setTheLastEntry(new java.sql.Timestamp(System.currentTimeMillis()));
 
-		List<SettingsConversion> scList = new ArrayList<SettingsConversion>();
+		List<SettingsConversion> scList = new ArrayList<>();
 
 		SettingsConversion sc1 = getNewSettingsConversionLine();
 		sc1.setLineNumber(1);
