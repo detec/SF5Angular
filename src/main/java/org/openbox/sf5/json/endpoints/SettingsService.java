@@ -2,7 +2,6 @@ package org.openbox.sf5.json.endpoints;
 
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -48,6 +47,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping(value = "${jaxrs.path}/usersettings/")
 public class SettingsService {
 
+	private static final String CONSTANT_COULDNT_GET_USER = "Couldn't get currently authenticated user!";
+
 	@Autowired
 	private SF5SecurityContext securityContext;
 
@@ -55,7 +56,7 @@ public class SettingsService {
 	private SettingsJsonizer settingsJsonizer;
 
 	@Autowired
-	public Jaxb2Marshaller springMarshaller;
+	private Jaxb2Marshaller springMarshaller;
 
 	@Value("${jaxrs.path}")
 	private String jaxRSPath;
@@ -72,11 +73,7 @@ public class SettingsService {
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
 
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-
-		if (currentUser == null) {
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		if (!currentUser.equals(setting.getUser())) {
 			// authenticated user and setting user do not coincide.
@@ -100,7 +97,7 @@ public class SettingsService {
 			headers.setLocation(ucBuilder.path("/" + jaxRSPath + "/").path("usersettings/{id}")
 					.buildAndExpand(setting.getId()).toUri());
 		} catch (Exception e) {
-
+			// swallowing.
 		}
 
 		return new ResponseEntity<>(setting, headers, returnStatus);
@@ -120,11 +117,7 @@ public class SettingsService {
 	@RequestMapping(value = "{settingId}", method = RequestMethod.DELETE)
 	ResponseEntity<Settings> deleteSetting(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException, ItemNotFoundException {
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
@@ -140,10 +133,7 @@ public class SettingsService {
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Settings>> getSettingsByUserLogin() throws NotAuthenticatedException {
 
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		List<Settings> settList = settingsJsonizer.getSettingsByUser(currentUser);
 		if (settList.isEmpty()) {
@@ -160,11 +150,8 @@ public class SettingsService {
 	ResponseEntity<List<Settings>> getSettingsByArbitraryFilter(@PathVariable("type") String fieldName,
 			@PathVariable("typeValue") String typeValue) throws NotAuthenticatedException {
 
-		List<Settings> settList = new ArrayList<>();
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		List<Settings> settList;
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		settList = settingsJsonizer.getSettingsByArbitraryFilter(fieldName, typeValue, currentUser);
 		if (settList.isEmpty()) {
@@ -179,10 +166,7 @@ public class SettingsService {
 	ResponseEntity<Settings> getSettingById(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException {
 
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
@@ -206,10 +190,7 @@ public class SettingsService {
 
 			getSettingByIdSF5(@PathVariable("settingId") long settingId) throws NotAuthenticatedException {
 
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		Users currentUser = getVerifyAuthenticatedUser();
 
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
 		if (setting == null) {
@@ -225,17 +206,8 @@ public class SettingsService {
 		// marshalling sat
 		springMarshaller.marshal(sat, new StreamResult(sw));
 
-		// return new ResponseEntity<String>(sw.toString(), HttpStatus.OK);
 		return new ResponseEntity<>(sw.toString(), HttpStatus.OK);
 
-		// Cannot fix <String>&lt;sat> and so on
-		// return sw.toString();
-
-		// uses Jackson, unfortunately
-		// return new ResponseEntity<Sat>(sat, HttpStatus.OK);
-
-		// http://stackoverflow.com/questions/26982466/spring-mvc-response-body-xml-has-extra-string-tags-why
-		// useful link
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
@@ -243,12 +215,8 @@ public class SettingsService {
 	ResponseEntity<SettingsConversion> deleteSettingLine(@PathVariable("lineId") long lineId)
 			throws NotAuthenticatedException {
 		// It is necessary because orphan removal does not work as expected.
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
 
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
+		getVerifyAuthenticatedUser();
 
 		settingsJsonizer.deleteSettingLine(lineId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -260,6 +228,17 @@ public class SettingsService {
 
 	public void setSettingsJsonizer(SettingsJsonizer settingsJsonizer) {
 		this.settingsJsonizer = settingsJsonizer;
+	}
+
+	private Users getVerifyAuthenticatedUser() throws NotAuthenticatedException {
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		if (currentUser == null) {
+
+			throw new NotAuthenticatedException(CONSTANT_COULDNT_GET_USER);
+		}
+
+		return currentUser;
+
 	}
 
 }

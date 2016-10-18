@@ -19,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+/**
+ * Transponders controller
+ * 
+ * @author Andrii Duplyk
+ *
+ */
 @RestController
 @EnableWebMvc
 @RequestMapping("${jaxrs.path}/transponders/")
@@ -27,8 +33,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 		maxRequestSize = 20971520) // 20 MB
 public class TranspondersService {
 
+	@Autowired
+	private TranspondersJsonizer transpondersJsonizer;
+
+	@Autowired
+	private DAO objectController;
+
 	@RequestMapping(method = RequestMethod.POST, headers = "content-type=multipart/form-data")
-	public ResponseEntity<Boolean> uploadTransponders(@RequestParam("file") MultipartFile file) {
+	ResponseEntity<Boolean> uploadTransponders(@RequestParam("file") MultipartFile file) {
 
 		Boolean result = new Boolean(false);
 		if (!file.isEmpty()) {
@@ -42,7 +54,7 @@ public class TranspondersService {
 	}
 
 	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Transponders>> getTranspondersByArbitraryFilter(@PathVariable("type") String fieldName,
+	ResponseEntity<List<Transponders>> getTranspondersByArbitraryFilter(@PathVariable("type") String fieldName,
 			@PathVariable("typeValue") String typeValue) {
 		List<Transponders> transList = transpondersJsonizer.getTranspondersByArbitraryFilter(fieldName, typeValue);
 		if (transList.isEmpty()) {
@@ -52,7 +64,7 @@ public class TranspondersService {
 	}
 
 	@RequestMapping(value = "filter/id/{transponderId}", method = RequestMethod.GET)
-	public ResponseEntity<Transponders> getTransponderById(@PathVariable("transponderId") long tpId) {
+	ResponseEntity<Transponders> getTransponderById(@PathVariable("transponderId") long tpId) {
 		Transponders trans = objectController.select(Transponders.class, tpId);
 		if (trans == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -63,7 +75,7 @@ public class TranspondersService {
 	}
 
 	@RequestMapping(value = "/{filter}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Transponders>> getTranspondersBySatelliteId(@PathVariable("filter") String ignore,
+	ResponseEntity<List<Transponders>> getTranspondersBySatelliteId(@PathVariable("filter") String ignore,
 			@MatrixVariable(required = true, value = "satId") long satId) {
 
 		List<Transponders> transList = transpondersJsonizer.getTranspondersBySatelliteId(satId);
@@ -74,7 +86,7 @@ public class TranspondersService {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Transponders>> getTransponders() {
+	ResponseEntity<List<Transponders>> getTransponders() {
 		List<Transponders> transList = objectController.findAll(Transponders.class);
 		if (transList.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -97,11 +109,5 @@ public class TranspondersService {
 	public void setTranspondersJsonizer(TranspondersJsonizer transpondersJsonizer) {
 		this.transpondersJsonizer = transpondersJsonizer;
 	}
-
-	@Autowired
-	private TranspondersJsonizer transpondersJsonizer;
-
-	@Autowired
-	private DAO objectController;
 
 }
