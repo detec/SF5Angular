@@ -36,7 +36,7 @@ public class UserService implements IUserService {
 
 		Usersauthorities newLine = new Usersauthorities(accountDto.getUsername(), "ROLE_USER", newUser, 1);
 		listAuthorities.add(newLine);
-		newUser.setauthorities(listAuthorities);
+		newUser.setAuthorities(listAuthorities);
 		newUser.setEnabled(true);
 		objectsController.saveOrUpdate(newUser);
 
@@ -69,7 +69,7 @@ public class UserService implements IUserService {
 		Usersauthorities checkRoleAdmin = new Usersauthorities(currentUser.getUsername(), "ROLE_ADMIN", currentUser, 1);
 
 		boolean result;
-		if (currentUser.getauthorities().contains(checkRoleAdmin)) {
+		if (currentUser.getAuthorities().contains(checkRoleAdmin)) {
 			result = true;
 		}
 

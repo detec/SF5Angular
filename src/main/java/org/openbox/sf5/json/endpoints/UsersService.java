@@ -126,7 +126,7 @@ public class UsersService {
 	}
 
 	private boolean isAdmin(Users user) {
-		return user.getauthorities().stream().filter(t -> "ROLE_ADMIN".equals(t.getAuthority())).count() > 0;
+		return user.getAuthorities().stream().filter(t -> "ROLE_ADMIN".equals(t.getAuthority())).count() > 0;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users

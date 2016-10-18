@@ -122,7 +122,7 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 			rolesList.add(checkRoleUser);
 		}
 
-		usr.setauthorities(rolesList);
+		usr.setAuthorities(rolesList);
 
 		DAO.saveOrUpdate(usr);
 

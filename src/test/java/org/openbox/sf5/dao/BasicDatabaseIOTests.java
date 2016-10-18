@@ -112,7 +112,7 @@ public class BasicDatabaseIOTests extends org.openbox.sf5.common.AbstractJsonize
 		if (!rolesList.contains(checkRoleUser)) {
 			rolesList.add(checkRoleUser);
 		}
-		user.setauthorities(rolesList);
+		user.setAuthorities(rolesList);
 
 		return user;
 	}

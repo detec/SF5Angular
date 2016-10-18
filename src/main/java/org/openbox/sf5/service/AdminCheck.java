@@ -40,7 +40,7 @@ public class AdminCheck {
 		else {
 
 			Users adminUser = adminsList.get(0);
-			List<Usersauthorities> rolesList = adminUser.getauthorities();
+			List<Usersauthorities> rolesList = adminUser.getAuthorities();
 
 			fillTables(adminUser, rolesList);
 

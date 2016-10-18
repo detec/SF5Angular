@@ -123,11 +123,11 @@ public class Users extends AbstractDbEntity implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public List<Usersauthorities> getauthorities() {
+	public List<Usersauthorities> getAuthorities() {
 		return authorities;
 	}
 
-	public void setauthorities(List<Usersauthorities> authorities) {
+	public void setAuthorities(List<Usersauthorities> authorities) {
 		this.authorities = authorities;
 	}
 
