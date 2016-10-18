@@ -9,37 +9,39 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 // http://stackoverflow.com/questions/2519432/jaxb-unmarshal-timestamp
 
+/**
+ * TimestampAdapter
+ *
+ * @author Andrii Duplyk
+ *
+ */
 public class TimestampAdapter extends XmlAdapter<String, Timestamp> {
 
 	private SimpleDateFormat dateFormat = getJsonDateFormatter();
 
+	/**
+	 * Marshalling
+	 */
 	@Override
 	public String marshal(Timestamp v) throws Exception {
 		return dateFormat.format(v);
 	}
 
+	/**
+	 * Unmarshalling
+	 */
 	@Override
 	public Timestamp unmarshal(String v) throws Exception {
 		// String might be as nanoseconds
-		// Timestamp value = new Timestamp(Long.parseLong(v));
-		// value = (value == null) ? (Timestamp) dateFormat.parse(v) :
-		// (Timestamp) dateFormat.parse(v);
-
 		Date date = dateFormat.parse(v);
-		Timestamp value = new Timestamp(date.getTime());
-		return value;
+		return new Timestamp(date.getTime());
+
 	}
 
-	public static SimpleDateFormat getJsonDateFormatter() {
+	private static SimpleDateFormat getJsonDateFormatter() {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		// Will try to use Javascript format with milliseconds.
-		// SimpleDateFormat formatter = new
-		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		// SimpleDateFormat formatter = new
-		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
 		formatter.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
-
 		return formatter;
 	}
 

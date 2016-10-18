@@ -34,7 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// @EnableWebMvc  // This annotation limits to HEAD, POST, GET
+/**
+ * Settings controller
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @RestController
 // @PreAuthorize("hasRole('ROLE_USER')")
 // Be careful not to use annotations produces, consumes - it kicks away
@@ -42,6 +47,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 @EnableWebMvc
 @RequestMapping(value = "${jaxrs.path}/usersettings/")
 public class SettingsService {
+
+	@Autowired
+	private SF5SecurityContext securityContext;
+
+	@Autowired
+	private SettingsJsonizer settingsJsonizer;
+
+	@Autowired
+	public Jaxb2Marshaller springMarshaller;
+
+	@Value("${jaxrs.path}")
+	private String jaxRSPath;
 
 	// http://websystique.com/springmvc/spring-mvc-4-restful-web-services-crud-example-resttemplate/
 
@@ -51,7 +68,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
+	ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
 
@@ -91,7 +108,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.PUT)
-	public ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
+	ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@PathVariable("settingId") long settingId,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
@@ -101,7 +118,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Settings> deleteSetting(@PathVariable("settingId") long settingId)
+	ResponseEntity<Settings> deleteSetting(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException, ItemNotFoundException {
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
 		if (currentUser == null) {
@@ -140,7 +157,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Settings>> getSettingsByArbitraryFilter(@PathVariable("type") String fieldName,
+	ResponseEntity<List<Settings>> getSettingsByArbitraryFilter(@PathVariable("type") String fieldName,
 			@PathVariable("typeValue") String typeValue) throws NotAuthenticatedException {
 
 		List<Settings> settList = new ArrayList<>();
@@ -159,7 +176,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "{settingId}", method = RequestMethod.GET)
-	public ResponseEntity<Settings> getSettingById(@PathVariable("settingId") long settingId)
+	ResponseEntity<Settings> getSettingById(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException {
 
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
@@ -182,8 +199,6 @@ public class SettingsService {
 			, produces = MediaType.TEXT_PLAIN // This removes <String> tags
 
 	)
-
-	public
 
 			ResponseEntity<String>
 
@@ -225,7 +240,7 @@ public class SettingsService {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/lines/{lineId}", method = RequestMethod.DELETE)
-	public ResponseEntity<SettingsConversion> deleteSettingLine(@PathVariable("lineId") long lineId)
+	ResponseEntity<SettingsConversion> deleteSettingLine(@PathVariable("lineId") long lineId)
 			throws NotAuthenticatedException {
 		// It is necessary because orphan removal does not work as expected.
 		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
@@ -239,12 +254,6 @@ public class SettingsService {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@Autowired
-	private SF5SecurityContext securityContext;
-
-	@Autowired
-	private SettingsJsonizer settingsJsonizer;
-
 	public SettingsJsonizer getSettingsJsonizer() {
 		return settingsJsonizer;
 	}
@@ -252,11 +261,5 @@ public class SettingsService {
 	public void setSettingsJsonizer(SettingsJsonizer settingsJsonizer) {
 		this.settingsJsonizer = settingsJsonizer;
 	}
-
-	@Autowired
-	public Jaxb2Marshaller springMarshaller;
-
-	@Value("${jaxrs.path}")
-	private String jaxRSPath;
 
 }
