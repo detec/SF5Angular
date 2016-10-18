@@ -73,20 +73,30 @@ public class Settings extends AbstractDbEntity implements Serializable {
 	@JsonManagedReference
 	private List<SettingsConversion> conversion = new ArrayList<>();
 
-	public Settings(String Name, Timestamp lastEntry, Users User, List<SettingsConversion> Conversion) {
+	/**
+	 *
+	 * @param name
+	 * @param lastEntry
+	 * @param user
+	 * @param conversion
+	 */
+	public Settings(String name, Timestamp lastEntry, Users user, List<SettingsConversion> conversion) {
 
-		this.name = Name;
+		this.name = name;
 		this.theLastEntry = lastEntry;
-		this.user = User;
-		this.conversion = Conversion;
+		this.user = user;
+		this.conversion = conversion;
 
 	}
 
+	/**
+	 *
+	 */
 	public Settings() {
 	}
 
-	public void setName(String Name) {
-		this.name = Name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
@@ -112,24 +122,24 @@ public class Settings extends AbstractDbEntity implements Serializable {
 		return theLastEntry;
 	}
 
-	public void setTheLastEntry(Timestamp TheLastEntry) {
-		this.theLastEntry = TheLastEntry;
+	public void setTheLastEntry(Timestamp theLastEntry) {
+		this.theLastEntry = theLastEntry;
 	}
 
 	public Users getUser() {
 		return user;
 	}
 
-	public void setUser(Users User) {
-		this.user = User;
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 	public List<SettingsConversion> getConversion() {
 		return conversion;
 	}
 
-	public void setConversion(List<SettingsConversion> Conversion) {
-		this.conversion = Conversion;
+	public void setConversion(List<SettingsConversion> conversion) {
+		this.conversion = conversion;
 	}
 
 }
