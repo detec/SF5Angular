@@ -19,23 +19,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+/**
+ * Users controller
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @RestController
 @EnableWebMvc
 @RequestMapping(value = "${jaxrs.path}/users/")
 public class UsersService {
 
+	private static final String CONSTANT_COULDNT_GET_USER = "Couldn't get currently authenticated user!";
+
+	@Autowired
+	private UsersJsonizer usersJsonizer;
+
+	@Autowired
+	private SF5SecurityContext securityContext;
+
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Users>> getAllUsers() throws NotAuthenticatedException {
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
+		getVerifyAuthenticatedUser();
 
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
-
-		List<Users> listOfUsers = new ArrayList<Users>();
-		listOfUsers = usersJsonizer.getAllUsers();
-		return new ResponseEntity<List<Users>>(listOfUsers, HttpStatus.OK);
+		List<Users> listOfUsers = usersJsonizer.getAllUsers();
+		return new ResponseEntity<>(listOfUsers, HttpStatus.OK);
 
 	}
 
@@ -64,14 +73,12 @@ public class UsersService {
 			throw new IllegalStateException("Error deleting user from database with id: " + userId);
 		}
 
-		return new ResponseEntity<Users>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
 	}
 
 	// https://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html
 	// We allow only for admin and enabled user.
-	// @PreAuthorize("hasRole('ROLE_ADMIN') or (#login == principal and
-	// principal.enabled)")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (#login  == authentication.name)")
 	@RequestMapping(value = "filter/username/{login}", method = RequestMethod.GET)
 	public ResponseEntity<Users> getUserByLogin(@PathVariable("login") String login) {
@@ -83,15 +90,13 @@ public class UsersService {
 		}
 
 		if (retUser == null) {
-			// return new ResponseEntity<Users>(HttpStatus.NO_CONTENT);
 			throw new IllegalArgumentException("No user found in database for login: " + login);
 		}
 
-		return new ResponseEntity<Users>(retUser, HttpStatus.OK);
+		return new ResponseEntity<>(retUser, HttpStatus.OK);
 
 	}
 
-	// @PreAuthorize("hasRole('ROLE_ADMIN')") // if new user registers -
 	// anonymous access is needed.
 	@PreAuthorize("hasRole('ROLE_ADMIN')") // only admin can save changed users
 											// with REST.
@@ -99,17 +104,9 @@ public class UsersService {
 	public ResponseEntity<Users> saveUser(@RequestBody Users user)
 			throws IllegalArgumentException, IllegalStateException {
 		// check if such user exists.
-		// Boolean result =
-		// usersJsonizer.checkIfUsernameExists(user.getusername());
-		// if (result) {
-		// // return new ResponseEntity<Long>(HttpStatus.ACCEPTED);
-		// throw new IllegalArgumentException("Not created! Username already
-		// exists.");
-		// }
 
 		// Check not to disable admin user.
-		if (user.getenabled() == false
-				&& isAdmin(user)) {
+		if (user.getenabled() == false && isAdmin(user)) {
 			throw new IllegalStateException("It is not allowed to disable user with admin role!");
 		}
 
@@ -122,15 +119,11 @@ public class UsersService {
 		catch (Exception e) {
 			throw new IllegalStateException("Error when saving user to database", e);
 		}
-		// if (statusResult.equals(HttpStatus.CONFLICT)) {
-		// return new ResponseEntity<Long>(statusResult);
-		// }
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("UserId", Long.toString(user.getId()));
-		// return new ResponseEntity<Long>(new Long(user.getId()), headers,
-		// HttpStatus.CREATED);
-		return new ResponseEntity<Users>(user, headers, statusResult);
+
+		return new ResponseEntity<>(user, headers, statusResult);
 	}
 
 	private boolean isAdmin(Users user) {
@@ -148,26 +141,20 @@ public class UsersService {
 	public ResponseEntity<Boolean> ifSuchLoginExists(@PathVariable("login") String login) {
 		Boolean result = usersJsonizer.checkIfUsernameExists(login);
 		if (!result) {
-			return new ResponseEntity<Boolean>(result, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<Boolean>(result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "currentuser", method = RequestMethod.GET)
 	public ResponseEntity<List<Users>> getCurrentlyAuthenticatedUser() throws NotAuthenticatedException {
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		Users currentUser = getVerifyAuthenticatedUser();
 
-		if (currentUser == null) {
-
-			// return new ResponseEntity<Settings>(HttpStatus.UNAUTHORIZED);
-			throw new NotAuthenticatedException("Couldn't get currently authenticated user!");
-		}
-
-		List<Users> listOfUsers = new ArrayList<Users>();
+		List<Users> listOfUsers = new ArrayList<>();
 		listOfUsers.add(currentUser);
-		return new ResponseEntity<List<Users>>(listOfUsers, HttpStatus.OK);
+		return new ResponseEntity<>(listOfUsers, HttpStatus.OK);
 
 	}
 
@@ -179,10 +166,15 @@ public class UsersService {
 		this.usersJsonizer = usersJsonizer;
 	}
 
-	@Autowired
-	private UsersJsonizer usersJsonizer;
+	private Users getVerifyAuthenticatedUser() throws NotAuthenticatedException {
+		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
+		if (currentUser == null) {
 
-	@Autowired
-	private SF5SecurityContext securityContext;
+			throw new NotAuthenticatedException(CONSTANT_COULDNT_GET_USER);
+		}
+
+		return currentUser;
+
+	}
 
 }
