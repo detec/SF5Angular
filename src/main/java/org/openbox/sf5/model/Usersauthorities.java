@@ -1,6 +1,7 @@
 package org.openbox.sf5.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,43 +19,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+/**
+ * User rights line.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Entity
 @Table(name = "Usersauthorities")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class Usersauthorities extends AbstractDbEntity implements Serializable {
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((authority == null) ? 0 : authority.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Usersauthorities other = (Usersauthorities) obj;
-		if (authority == null) {
-			if (other.authority != null) {
-				return false;
-			}
-		} else if (!authority.equals(other.authority)) {
-			return false;
-		}
-		return true;
-	}
 
 	private static final long serialVersionUID = 108703010218830663L;
 
@@ -76,6 +51,50 @@ public class Usersauthorities extends AbstractDbEntity implements Serializable {
 	@Column(name = "authority", unique = false, nullable = false, length = 50)
 	private String authority;
 
+	/**
+	 *
+	 * @param username
+	 * @param authority
+	 * @param parent
+	 * @param pLine
+	 */
+	public Usersauthorities(String username, String authority, Users parent, long pLine) {
+
+		this.username = username;
+		this.authority = authority;
+		this.parent_id = parent;
+		lineNumber = pLine;
+
+	}
+
+	/**
+	 *
+	 */
+	public Usersauthorities() {
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authority);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Usersauthorities other = (Usersauthorities) obj;
+		return Objects.equals(authority, other.authority);
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -88,8 +107,8 @@ public class Usersauthorities extends AbstractDbEntity implements Serializable {
 		return parent_id;
 	}
 
-	public void setParent_id(Users parent_id) {
-		this.parent_id = parent_id;
+	public void setParent_id(Users parent) {
+		this.parent_id = parent;
 	}
 
 	public String getUsername() {
@@ -114,18 +133,6 @@ public class Usersauthorities extends AbstractDbEntity implements Serializable {
 
 	public void setAuthority(String authority) {
 		this.authority = authority;
-	}
-
-	public Usersauthorities(String username, String authority, Users parent_id, long pLine) {
-
-		this.username = username;
-		this.authority = authority;
-		this.parent_id = parent_id;
-		lineNumber = pLine;
-
-	}
-
-	public Usersauthorities() {
 	}
 
 }

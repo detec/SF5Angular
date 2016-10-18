@@ -66,7 +66,7 @@ public class Users extends AbstractDbEntity implements Serializable {
 	/**
 	 *
 	 * @param username
-	 * @param Password
+	 * @param password
 	 * @param enabled
 	 * @param authorities
 	 */
