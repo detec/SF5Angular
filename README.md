@@ -34,7 +34,8 @@ This implementation of Openbox SF-5 settings editor provides SQL-based user auth
 
 ## REST service ##
 
-This Openbox SF-5 settings editor implementation provides RESTful API for getting entities from database with the help of Spring MVC 4. For most endpoints Jackson 2 is used, however, for SF-5 XML format, where exact XML structure is required, Spring's Jaxb2Marshaller is used. Here is the list of supported endpoints, relative to application context path:
+This Openbox SF-5 settings editor implementation provides RESTful API for getting entities from database with the help of Spring MVC 4. For most endpoints Jackson 2 is used, however, for SF-5 XML format, where exact XML structure is required, Spring's Jaxb2Marshaller is used. To view automatic Swagger.io documentation use address /swagger-ui.html.  
+Here is manual list of supported endpoints, relative to application context path:
 
 - Satellites
 	- jaxrs/satellites/ GET								- get all satellites;
@@ -65,7 +66,7 @@ This Openbox SF-5 settings editor implementation provides RESTful API for gettin
 	- jaxrs/usersettings/{settingId} DELETE 				- delete setting that belongs to authenticated user;
 	- jaxrs/usersettings/ GET								- get all user's settings, based on credentials provided;
 	- jaxrs/usersettings/filter/{type}/{typeValue} GET 		- get user's settings, filtered by arbitrary field name and field value, based on credentials provided;
-	- jaxrs/usersettings/{settingId} GET 			- get setting by its ID, based on credentials provided;
+	- jaxrs/usersettings/{settingId} GET 					- get setting by its ID, based on credentials provided;
 	- jaxrs/usersettings/{settingId}/sf5 GET				- get setting by its ID, based on credentials provided, in Openbox SF-5 XML format; only "text/plain" "Accept" HTTP header is supported.
 
 ## Maven profiles ##
@@ -91,6 +92,7 @@ Different Maven profiles are required to use different database schemes and inte
 - Hibernate ORM 5.0.7;
 - Hibernate Validator 5.2;
 - Jackson 2.5;
+- Swagger 2.6;
 - JDBC (for Spring Security only);
 - Maven 3.3 with plugins compiler, surefire, resources, war, cargo;
 - WildFly 10;
