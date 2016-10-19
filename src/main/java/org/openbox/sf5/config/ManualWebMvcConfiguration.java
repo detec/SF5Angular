@@ -23,6 +23,7 @@ import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -31,6 +32,12 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+/**
+ * Seems not to be used.
+ *
+ * @author Andrii Duplyk
+ *
+ */
 @Configuration
 @ComponentScan(basePackages = { "org.openbox.sf5.common", "org.openbox.sf5.json" })
 public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
@@ -65,11 +72,6 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		return new StandardServletMultipartResolver();
 	}
 
-	// @Override
-	// public void addInterceptors(InterceptorRegistry registry) {
-	// registry.addInterceptor(new RequestProcessingTimeInterceptor());
-	// }
-
 	// http://stackoverflow.com/questions/22267191/is-it-possible-to-extend-webmvcconfigurationsupport-and-use-webmvcautoconfigurat
 	@Override
 	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
@@ -93,47 +95,6 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 
-	/*
-	 * Configure ResourceHandlers to serve static resources like CSS/ Javascript
-	 * etc...
-	 */
-	// @Override
-	// public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	// registry.addResourceHandler("/css/**").addResourceLocations("/css/");
-	// registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-	// // For static html pages.
-	// registry.addResourceHandler("/registration/**").addResourceLocations("/html/");
-	//
-	// // let's add here index.html.
-	// registry.addResourceHandler("/index.html").addResourceLocations("index.html");
-	//
-	// }
-
-	// @Override
-	// public void configureContentNegotiation(ContentNegotiationConfigurer
-	// configurer) {
-	// configurer
-	//
-	// .favorPathExtension(false)
-	//
-	// .favorParameter(true)
-	//
-	// .parameterName("mediaType")
-	//
-	// .ignoreAcceptHeader(false)
-	//
-	// .useJaf(false)
-	//
-	// .defaultContentType(MediaType.APPLICATION_JSON)
-	//
-	// .mediaType("xml", MediaType.APPLICATION_XML)
-	//
-	// .mediaType("json", MediaType.APPLICATION_JSON)
-	//
-	// .mediaType("html", MediaType.TEXT_HTML);
-	//
-	// }
-
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		// This doesn't add any converters
@@ -146,7 +107,6 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 				.indentOutput(true);
 
 		MappingJackson2HttpMessageConverter mc = new MappingJackson2HttpMessageConverter(builder.build());
-		// mc.setObjectMapper(customObjectMapper());
 
 		MappingJackson2XmlHttpMessageConverter mcxml = new MappingJackson2XmlHttpMessageConverter(
 				Jackson2ObjectMapperBuilder.xml().build());
@@ -154,9 +114,6 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 		MarshallingHttpMessageConverter jaxbc = new MarshallingHttpMessageConverter();
 		jaxbc.setMarshaller(springMarshaller);
-
-		// boolean doesSupport = jaxbc.canWrite(Sat.class,
-		// MediaType.APPLICATION_XML);
 
 		// http://stackoverflow.com/questions/26982466/spring-mvc-response-body-xml-has-extra-string-tags-why
 
@@ -171,26 +128,13 @@ public class ManualWebMvcConfiguration extends WebMvcConfigurationSupport {
 		converters.add(jaxbc); // this doesn't work.
 		converters.add(stringConverter);
 
-		// super.configureMessageConverters(getMessageConverters());
-
-		// Jackson2ObjectMapperBuilder builder = new
-		// Jackson2ObjectMapperBuilder().indentOutput(true)
-		// .dateFormat(JsonObjectFiller.getJsonDateFormatter());
-		// converters.add(new
-		// MappingJackson2HttpMessageConverter(builder.build()));
-		// converters.add(new
-		// MappingJackson2XmlHttpMessageConverter(Jackson2ObjectMapperBuilder.xml().build()));
-
 	}
 
-	// @Override
-	// public void
-	// configureHandlerExceptionResolvers(List<HandlerExceptionResolver>
-	// exceptionResolvers) {
-	//
-	// final ExceptionHandlerExceptionResolver resolver = new
-	// ExceptionHandlerExceptionResolver();
-	// resolver.setWarnLogCategory(resolver.getClass().getName());
-	// exceptionResolvers.add(resolver);
-	// }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
+
 }

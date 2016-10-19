@@ -159,7 +159,8 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
  
 <security:http pattern="/css/**" security="none"/>
 <security:http pattern="/js/**" security="none"/>
- 
+ <!-- swagger docs -->
+ <security:http pattern="/v2/api-docs/**" security="none"/>
  
 <!-- <security:http auto-config="true" use-expressions="true" disable-url-rewriting="true"> -->
 <security:http name="LoginFormAuthentication" use-expressions="true" >
@@ -172,6 +173,8 @@ Since JAX-WS RI doesn't support digest authentication, we will use basic.
 	<security:intercept-url pattern="/registration/***" access="isAnonymous()"/>
 	<security:intercept-url pattern="/register" access="isAnonymous()"/>
  	<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+ 	
+
 
 	<security:logout logout-url="/logout" logout-success-url="/login" delete-cookies="JSESSIONID" invalidate-session="true"/>
 		 
