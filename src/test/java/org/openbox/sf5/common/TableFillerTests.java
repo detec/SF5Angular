@@ -21,9 +21,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @Component
 public class TableFillerTests extends AbstractJsonizerTest {
 
-	// @Autowired
-	// private TableFiller tf;
-
 	@Before
 	public void setUp() {
 		super.setUpAbstract();
@@ -34,19 +31,9 @@ public class TableFillerTests extends AbstractJsonizerTest {
 	@Transactional
 	public void shouldFillTablesByTableFiller() {
 
-		// executeTableFiller();
-
 		// there should be 2 records in THEDVBRANGEVALUES
 		List<TheDVBRangeValues> rangesList = DAO.findAll(TheDVBRangeValues.class);
 		assertThat(rangesList.size()).isEqualTo(2);
 	}
-
-	// public void executeTableFiller() {
-	// TableFiller tf = new TableFiller();
-	// tf.setSessionFactory(sessionFactory);
-	// tf.setObjectController(DAO);
-	// tf.init();
-	//
-	// }
 
 }

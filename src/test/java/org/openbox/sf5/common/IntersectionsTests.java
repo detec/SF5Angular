@@ -53,9 +53,6 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		tft.setUpAbstract(); // disable logging, formerly used to set up
 								// dependencies.
 
-		// TableFiller is a component that is created automatically with
-		// context.
-		// tft.executeTableFiller();
 	}
 
 	@Test
@@ -133,15 +130,6 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 		DAO.saveOrUpdate(setting);
 
 		List<Transponders> transList = DAO.findAll(Transponders.class);
-
-		// List<SettingsConversion> scList = new ArrayList<>();
-		// for (int i = 7; i < 39; i++) {
-		// // adding lines to setting
-		// SettingsConversion newLine = new SettingsConversion(setting);
-		// newLine.setLineNumber(i - 6);
-		// newLine.setTransponder(transList.get(i));
-		// scList.add(newLine);
-		// }
 
 		ConversionLinesHelper.fillTranspondersToSetting(transList, setting);
 		List<SettingsConversion> scList = setting.getConversion();
