@@ -1,7 +1,6 @@
 package org.openbox.sf5.common;
 
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
@@ -97,7 +96,7 @@ public class CookieLoginTest {
 		response = invocationBuilder.get();
 
 		String content = response.readEntity(String.class);
-		LOGGER.log(Level.INFO, content);
+		// LOGGER.log(Level.INFO, content);
 
 	}
 

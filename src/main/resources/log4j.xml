@@ -25,6 +25,12 @@
   	<priority value="trace"/>
   	<appender-ref ref="console"/>
 	</category>
+	
+	<category name="org.springframework.web.method.support.HandlerMethodReturnValueHandler" additivity="false">
+  	<priority value="trace"/>
+  	<appender-ref ref="console"/>
+	</category>	
+ 
     
 
 </log4j:configuration>
