@@ -9,6 +9,7 @@ package org.openbox.sf5.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -73,26 +74,26 @@ public class Sat {
 
 	/**
 	 * Gets the value of the satid property.
-	 * 
+	 *
 	 * <p>
 	 * This accessor method returns a reference to the live list, not a
 	 * snapshot. Therefore any modification you make to the returned list will
 	 * be present inside the JAXB object. This is why there is not a
 	 * <CODE>set</CODE> method for the satid property.
-	 * 
+	 *
 	 * <p>
 	 * For example, to add a new item, do as follows:
-	 * 
+	 *
 	 * <pre>
 	 * getSatid().add(newItem);
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
 	 * {@link Sat.Satid }
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public List<Sat.Satid> getSatid() {
 		if (satid == null) {
@@ -101,14 +102,34 @@ public class Sat {
 		return this.satid;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(satid);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Sat other = (Sat) obj;
+		return Objects.equals(satid, other.satid);
+	}
+
 	/**
 	 * <p>
 	 * Java class for anonymous complex type.
-	 * 
+	 *
 	 * <p>
 	 * The following schema fragment specifies the expected content contained
 	 * within this class.
-	 * 
+	 *
 	 * <pre>
 	 * &lt;complexType>
 	 *   &lt;complexContent>
@@ -135,8 +156,8 @@ public class Sat {
 	 *   &lt;/complexContent>
 	 * &lt;/complexType>
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlType(name = "", propOrder = { "tp" })
@@ -148,26 +169,26 @@ public class Sat {
 
 		/**
 		 * Gets the value of the tp property.
-		 * 
+		 *
 		 * <p>
 		 * This accessor method returns a reference to the live list, not a
 		 * snapshot. Therefore any modification you make to the returned list
 		 * will be present inside the JAXB object. This is why there is not a
 		 * <CODE>set</CODE> method for the tp property.
-		 * 
+		 *
 		 * <p>
 		 * For example, to add a new item, do as follows:
-		 * 
+		 *
 		 * <pre>
 		 * getTp().add(newItem);
 		 * </pre>
-		 * 
-		 * 
+		 *
+		 *
 		 * <p>
 		 * Objects of the following type(s) are allowed in the list
 		 * {@link Sat.Satid.Tp }
-		 * 
-		 * 
+		 *
+		 *
 		 */
 		public List<Sat.Satid.Tp> getTp() {
 			if (tp == null) {
@@ -178,9 +199,9 @@ public class Sat {
 
 		/**
 		 * Gets the value of the index property.
-		 * 
+		 *
 		 * @return possible object is {@link String }
-		 * 
+		 *
 		 */
 		public String getIndex() {
 			return index;
@@ -188,23 +209,43 @@ public class Sat {
 
 		/**
 		 * Sets the value of the index property.
-		 * 
+		 *
 		 * @param value
 		 *            allowed object is {@link String }
-		 * 
+		 *
 		 */
 		public void setIndex(String value) {
 			this.index = value;
 		}
 
+		@Override
+		public int hashCode() {
+			return Objects.hash(index, tp);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			Satid other = (Satid) obj;
+			return Objects.equals(index, other.index) && Objects.equals(tp, other.tp);
+		}
+
 		/**
 		 * <p>
 		 * Java class for anonymous complex type.
-		 * 
+		 *
 		 * <p>
 		 * The following schema fragment specifies the expected content
 		 * contained within this class.
-		 * 
+		 *
 		 * <pre>
 		 * &lt;complexType>
 		 *   &lt;complexContent>
@@ -220,8 +261,8 @@ public class Sat {
 		 *   &lt;/complexContent>
 		 * &lt;/complexType>
 		 * </pre>
-		 * 
-		 * 
+		 *
+		 *
 		 */
 		@XmlAccessorType(XmlAccessType.FIELD)
 		@XmlType(name = "", propOrder = { "lnbFreq", "freq", "symbol", "polar" })
@@ -240,9 +281,9 @@ public class Sat {
 
 			/**
 			 * Gets the value of the lnbFreq property.
-			 * 
+			 *
 			 * @return possible object is {@link String }
-			 * 
+			 *
 			 */
 			public String getLnbFreq() {
 				return lnbFreq;
@@ -250,10 +291,10 @@ public class Sat {
 
 			/**
 			 * Sets the value of the lnbFreq property.
-			 * 
+			 *
 			 * @param value
 			 *            allowed object is {@link String }
-			 * 
+			 *
 			 */
 			public void setLnbFreq(String value) {
 				this.lnbFreq = value;
@@ -261,7 +302,7 @@ public class Sat {
 
 			/**
 			 * Gets the value of the freq property.
-			 * 
+			 *
 			 */
 			public int getFreq() {
 				return freq;
@@ -269,7 +310,7 @@ public class Sat {
 
 			/**
 			 * Sets the value of the freq property.
-			 * 
+			 *
 			 */
 			public void setFreq(int value) {
 				this.freq = value;
@@ -277,7 +318,7 @@ public class Sat {
 
 			/**
 			 * Gets the value of the symbol property.
-			 * 
+			 *
 			 */
 			public int getSymbol() {
 				return symbol;
@@ -285,7 +326,7 @@ public class Sat {
 
 			/**
 			 * Sets the value of the symbol property.
-			 * 
+			 *
 			 */
 			public void setSymbol(int value) {
 				this.symbol = value;
@@ -293,7 +334,7 @@ public class Sat {
 
 			/**
 			 * Gets the value of the polar property.
-			 * 
+			 *
 			 */
 			public int getPolar() {
 				return polar;
@@ -301,7 +342,7 @@ public class Sat {
 
 			/**
 			 * Sets the value of the polar property.
-			 * 
+			 *
 			 */
 			public void setPolar(int value) {
 				this.polar = value;
@@ -309,9 +350,9 @@ public class Sat {
 
 			/**
 			 * Gets the value of the index property.
-			 * 
+			 *
 			 * @return possible object is {@link String }
-			 * 
+			 *
 			 */
 			public String getIndex() {
 				return index;
@@ -319,13 +360,36 @@ public class Sat {
 
 			/**
 			 * Sets the value of the index property.
-			 * 
+			 *
 			 * @param value
 			 *            allowed object is {@link String }
-			 * 
+			 *
 			 */
 			public void setIndex(String value) {
 				this.index = value;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(freq, index, lnbFreq, polar, symbol);
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj) {
+					return true;
+				}
+				if (obj == null) {
+					return false;
+				}
+				if (getClass() != obj.getClass()) {
+					return false;
+				}
+				Tp other = (Tp) obj;
+
+				return Objects.equals(freq, other.freq) && Objects.equals(index, other.index)
+						&& Objects.equals(lnbFreq, other.lnbFreq) && Objects.equals(polar, other.polar)
+						&& Objects.equals(symbol, other.symbol);
 			}
 
 		}

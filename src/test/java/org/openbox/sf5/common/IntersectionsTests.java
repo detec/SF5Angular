@@ -134,17 +134,18 @@ public class IntersectionsTests extends AbstractJsonizerTest {
 
 		List<Transponders> transList = DAO.findAll(Transponders.class);
 
-		List<SettingsConversion> scList = new ArrayList<>();
-		for (int i = 7; i < 39; i++) {
-			// adding lines to setting
-			SettingsConversion newLine = new SettingsConversion(setting);
-			newLine.setLineNumber(i - 6);
-			newLine.setTransponder(transList.get(i));
-			scList.add(newLine);
-		}
+		// List<SettingsConversion> scList = new ArrayList<>();
+		// for (int i = 7; i < 39; i++) {
+		// // adding lines to setting
+		// SettingsConversion newLine = new SettingsConversion(setting);
+		// newLine.setLineNumber(i - 6);
+		// newLine.setTransponder(transList.get(i));
+		// scList.add(newLine);
+		// }
 
-		// Intersections intersections = new Intersections();
-		// intersections.setSessionFactory(sessionFactory);
+		ConversionLinesHelper.fillTranspondersToSetting(transList, setting);
+		List<SettingsConversion> scList = setting.getConversion();
+
 		// if something is wrong - test will fail.
 		int rows = intersections.checkIntersection(scList, setting);
 
