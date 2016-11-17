@@ -17,6 +17,8 @@
   		<resteasy.version>3.0.14.Final</resteasy.version>
   		<moxy.version>2.6.2</moxy.version>
   		<springfox.swagger.version>2.6.0</springfox.swagger.version>
+  		<slf4j.version>1.7.21</slf4j.version>
+  		<log4j.version>1.2.17</log4j.version>
 	</properties>  
  
 <build>
@@ -615,6 +617,25 @@
 	    <artifactId>springfox-swagger-ui</artifactId>
 	    <version>${springfox.swagger.version}</version>
 	</dependency>
+	
+        <!-- Logging  -->
+
+
+     <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${slf4j.version}</version>
+     </dependency>
+     <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-log4j12</artifactId>
+         <version>${slf4j.version}</version>
+     </dependency>
+     <dependency>
+         <groupId>log4j</groupId>
+         <artifactId>log4j</artifactId>
+         <version>${log4j.version}</version>
+     </dependency>
 	
 			
 </dependencies> 
