@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openbox.sf5.json.endpoints.AbstractServiceTest;
 
 public class SendTransponderFilesJSONIT extends AbstractServiceTest {
@@ -27,8 +29,9 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		serviceTarget = commonTarget.path(servicePath);
 	}
 
-	// @Test // As for now we cannot cope with programmatic form login
-	// authentication.
+	// As for now we cannot cope with programmatic form login authentication.
+	@Ignore
+	@Test
 	public void shouldSendFileJsonEndpoint() throws URISyntaxException, IOException {
 		Stream<Path> transponderFilesPathes = IntersectionsTests.getTransponderFilesStreamPath();
 

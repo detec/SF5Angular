@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="org-openbox-sf5">
+        <level value="DEBUG"/>
+        <level value="SEVERE"/>
+    </logger>
+
+    <root>
+        <priority value ="WARN" />
+        <appender-ref ref="console" />
+    </root>
+    
+    <!-- This will help when debugging "400 Bad Request" errors -->
+	<category name="org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod" additivity="false">
+  	<priority value="trace"/>
+  	<appender-ref ref="console"/>
+	</category>
+    
+
+</log4j:configuration>
