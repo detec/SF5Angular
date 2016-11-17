@@ -1,6 +1,7 @@
 package org.openbox.sf5.common;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
@@ -72,7 +73,7 @@ public class CookieLoginTest {
 	private void authenticateWithCookies(boolean forAdmin) {
 		client = createAdminClient();
 
-		serviceTarget = client.target(appLocation).path("login");
+		serviceTarget = client.target(appLocation).path("login.jsp");
 		Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.TEXT_HTML);
 
 		Response response = invocationBuilder.get();
@@ -92,11 +93,12 @@ public class CookieLoginTest {
 				serverCookie.getVersion());
 
 		// should get introduction page
-		invocationBuilder = client.target(appLocation).request(MediaType.TEXT_HTML).cookie(clientCookie);
+		invocationBuilder = client.target(appLocation).path("index.html").request(MediaType.TEXT_HTML)
+				.cookie(clientCookie);
 		response = invocationBuilder.get();
 
 		String content = response.readEntity(String.class);
-		// LOGGER.log(Level.INFO, content);
+		LOGGER.log(Level.INFO, content);
 
 	}
 

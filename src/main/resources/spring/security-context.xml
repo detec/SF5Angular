@@ -15,49 +15,9 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context.xsd">
  
- <!-- ========================= RESOURCE DEFINITIONS ========================= -->
-
-<!-- application.properties are for Eclipse - file contains dev properties 
-It is in root context
--->
-<context:property-placeholder location="classpath:application.properties" system-properties-mode="OVERRIDE"/>
-
-<!-- digestFilter and digestEntryPoint have been verified with the official docs -->
-<bean id="digestFilter" class=
-	"org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
-	<property name="userDetailsService" ref="JDBCUserService"/>
-	<property name="authenticationEntryPoint" ref="digestEntryPoint"/>
-
-</bean>
-
-<bean id="digestEntryPoint" class=
-	"org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
-	<property name="realmName" value="Custom Realm Name"/>
-	<property name="key" value="acegi"/>
-	<property name="nonceValiditySeconds" value="60"/>
-</bean>
-
-<bean id="expressionHandler" 
-	class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"/>
 
 
-<!-- http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#basic-processing-filter -->
 
-<bean id="basicAuthenticationEntryPoint"
-	class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
-	<property name="realmName" value="SF-5 Realm"/>
-</bean>
-
-
-<!-- http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html -->
-<bean id="basicAuthenticationFilter"
-	class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
-<!-- 	<property name="authenticationManager" ref="authenticationManager"/>
-	<property name="authenticationEntryPoint" ref="basicAuthenticationEntryPoint"/> -->
-		<constructor-arg ref="authenticationManager"/>
-		<constructor-arg ref="basicAuthenticationEntryPoint"/>
-	<property name="credentialsCharset" value="UTF-8"/>
-</bean>
 
 <!-- http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#el-access -->
 
@@ -67,6 +27,11 @@ It is in root context
 We do not have to load MVC servlet config file
 It used in sf5-servlet.xml
 -->
+
+
+<bean id="expressionHandler" 
+	class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"/>
+	
 <security:global-method-security pre-post-annotations="enabled" >
 	 <security:expression-handler ref="expressionHandler"/>
 </security:global-method-security>
@@ -105,57 +70,7 @@ Ant paths are the default strategy.    -->
 
 <!-- <security:debug/> -->
 
-<!-- http://stackoverflow.com/questions/18722471/when-to-use-double-star-in-glob-syntax-within-java -->
-<!-- Two asterisks, **, works like * but crosses directory boundaries. This syntax is generally used for matching complete paths. 
 
-So when specifying patterns in action-based frameworks we should use only ** 
-
--->
-
-<!-- REST security -->
-<!-- Be careful to use ** in pattern!!! -->
-
-<!-- <security:http pattern="/${jaxrs.path}/**" name="DigetsAuthentication" create-session="stateless" entry-point-ref="digestEntryPoint" >
-
-    	<security:csrf disabled="true"/>
-        <security:custom-filter ref="digestFilter" before="FORM_LOGIN_FILTER" />
-        
-        <security:intercept-url pattern="${jaxrs.path}/satellites/*" access="isAnonymous()"/>
-        <security:intercept-url pattern="${jaxrs.path}/transponders/*" access="isAnonymous()"/>
-        <security:intercept-url pattern="${jaxrs.path}/users/*" access="isAnonymous()"/>
-        <security:intercept-url pattern="${jaxrs.path}/usersettings/*" access="hasRole('ROLE_USER')"/>
-        
-</security:http>  -->
- 
- 
- <!-- We have to open at least something to do test upload -->
-<!--  <security:http pattern="/${jaxrs.path}/**" security="none"/> -->
- 
-<!-- http://stackoverflow.com/questions/2952196/learning-ant-path-style
-Ant-style path patterns matching in spring-framework
-•? matches one character
-•* matches zero or more characters
-•** matches zero or more 'directories' in a path
-
-
- --> 
-<!-- 		entry-point-ref="digestEntryPoint"  
-
-Since JAX-WS RI doesn't support digest authentication, we will use basic.
---> 
-<!-- Exception for JAX-WS --> 
-
-<!-- <security:http pattern="/OpenboxSF5Service*" name="JAXWSBasicAuthentication" create-session="stateless"
-		entry-point-ref="basicAuthenticationEntryPoint"
-		use-expressions="true"
-		request-matcher="ant">
-		
-		<security:http-basic />
-		
-    	We do not need sessions in stateless REST API
-    	<security:csrf disabled="true"/>
-   	 
- </security:http> -->
  
 <security:http pattern="/css/**" security="none"/>
 <security:http pattern="/js/**" security="none"/>
