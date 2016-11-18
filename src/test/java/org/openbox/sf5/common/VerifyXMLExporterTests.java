@@ -79,6 +79,10 @@ public class VerifyXMLExporterTests extends AbstractJsonizerTest {
 		// trying to compare resolved Sats.
 		assertEquals(retrievedSat, sat);
 
+		// assertThat(retrievedSat).isEqualTo(sat);
+
+		// assertThat(retrievedSat.equals(sat)).isTrue();
+
 		// content = content.replace("\r\n\r\n", "\r\n"); // it adds
 		// // superfluous
 		// // \r\n

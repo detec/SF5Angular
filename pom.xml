@@ -451,7 +451,8 @@
     	<groupId>org.springframework.security</groupId>
     	<artifactId>spring-security-taglibs</artifactId>
     	<version>${spring.security.version}</version>
-	</dependency>	
+	</dependency>
+		
 	<!-- Work with JSP - for login -->
 	<dependency>
 		<groupId>javax.servlet</groupId>
@@ -494,7 +495,13 @@
 	<dependency>
 		<groupId>org.hibernate</groupId>
 		<artifactId>hibernate-validator</artifactId>
-		<version>5.2.3.Final</version>
+		<version>5.3.2.Final</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.glassfish.web</groupId>
+	    <artifactId>javax.el</artifactId>
+	    <version>2.2.6</version>
 	</dependency>
 	
 	
