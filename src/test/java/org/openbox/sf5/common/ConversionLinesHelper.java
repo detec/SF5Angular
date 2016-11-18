@@ -27,8 +27,18 @@ public class ConversionLinesHelper {
 	public static void fillTranspondersToSetting(List<Transponders> newTransList, Settings setting) {
 
 		// sorting transponders by satellite and speed.
-		newTransList.sort(Comparator.comparing(chain(Transponders::getSatellite, Satellites::getId))
-				.thenComparing(Transponders::getSpeed));
+		// newTransList.sort(Comparator.comparing(chain(Transponders::getSatellite,
+		// Satellites::getId))
+		// .thenComparing(Transponders::getSpeed));
+
+		Comparator<Transponders> compareTransponders = Comparator
+				.comparing(chain(Transponders::getSatellite, Satellites::getId));
+
+		// Consumer<Transponders> sat = (Consumer<Transponders>)
+		// Transponders::getSatellite;
+		// sat.Compose();
+
+		newTransList.sort(compareTransponders);
 
 		newTransList.stream().limit(32).forEachOrdered(t -> fillTpLine(newTransList, setting, t));
 
