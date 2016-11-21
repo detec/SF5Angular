@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -13,8 +14,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.junit.Before;
 import org.junit.Test;
 import org.openbox.sf5.json.endpoints.AbstractServiceTest;
@@ -25,7 +24,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 public class SendTransponderFilesJSONIT extends AbstractServiceTest {
@@ -45,16 +46,38 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 				.path(jsonPath);
 		serviceTarget = commonTarget.path(servicePath);
 
-		final String url = "http://codeflex.co:8080/rest/Management/login";
-
 		serviceTarget = client.target(appLocation).path("login");
 		URI loginUri = serviceTarget.getUri();
 
-		RestTemplate template = new RestTemplate();
-		Credentials cred = new UsernamePasswordCredentials(testUsername, testUserPassword);
+		RestTemplate template = new RestTemplate(new SimpleClientHttpRequestFactory() {
 
-		HttpEntity<Credentials> request = new HttpEntity<>(cred);
+			@Override
+			protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
+				super.prepareConnection(connection, httpMethod);
+				connection.setInstanceFollowRedirects(true);
+			}
+		});
+		// Credentials cred = new UsernamePasswordCredentials(testUsername,
+		// testUserPassword);
+		//
+		// HttpEntity<Credentials> request = new HttpEntity<>(cred);
+
+		// Form form = new Form();
+		// form.param("username", testUsername);
+		// form.param("password", testUserPassword);
+		// HttpEntity<Form> request = new HttpEntity<>(form);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+		form.add("username", testUsername);
+		form.add("password", testUserPassword);
+		HttpEntity<Object> request = new HttpEntity<>(form, headers);
+
 		HttpEntity<String> response = template.exchange(loginUri, HttpMethod.POST, request, String.class);
+
+		// System.out.println(response.getBody());
 
 		response.getHeaders();
 		cookies = response.getHeaders().get("Set-Cookie");
@@ -104,7 +127,7 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 
 		HttpHeaders headers = new HttpHeaders();
 
-		headers.set("Cookie", cookies.stream().collect(Collectors.joining(";")));
+		headers.set("Cookie", cookies.stream().limit(1).collect(Collectors.joining(";")));
 
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
