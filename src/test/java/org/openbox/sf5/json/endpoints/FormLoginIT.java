@@ -16,6 +16,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class FormLoginIT extends AbstractServiceTest {
 
@@ -24,12 +26,13 @@ public class FormLoginIT extends AbstractServiceTest {
 	@Before
 	public void setUp() {
 		// setUpAbstractTestUser();
-		client = createTestUserClient();
+		// client = createTestUserClient();
 		commonTarget = client.target(appLocation);
 		serviceTarget = commonTarget.path(servicePath);
 	}
 
-	// @Test
+	@Ignore
+	@Test
 	public void shouldAuthenticateFormLogin() {
 
 		Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.TEXT_HTML);
@@ -37,7 +40,7 @@ public class FormLoginIT extends AbstractServiceTest {
 		// Here we should accept cookie.
 		Response response = invocationBuilder.get();
 		Map<String, NewCookie> cookies = response.getCookies();
-		cookie = cookies.get("JSESSIONID");
+		serverCookie = cookies.get("JSESSIONID");
 
 		// System.out.println("Name " + cookie.getName());
 		// System.out.println("Path " + cookie.getPath());
@@ -47,7 +50,7 @@ public class FormLoginIT extends AbstractServiceTest {
 		// System.out.println("Max age in secs " + cookie.getMaxAge());
 
 		assertEquals(Status.OK.getStatusCode(), response.getStatus());
-		assertThat(cookie).isNotNull();
+		assertThat(serverCookie).isNotNull();
 
 		// http://stackoverflow.com/questions/2136119/using-the-jersey-client-to-do-a-post-operation
 		Form form = new Form();
@@ -61,7 +64,7 @@ public class FormLoginIT extends AbstractServiceTest {
 		// MediaType.APPLICATION_FORM_URLENCODED),
 		// String.class);
 
-		NewCookie cleanedCookie = new NewCookie(cookie.getName(), cookie.getValue());
+		NewCookie cleanedCookie = new NewCookie(serverCookie.getName(), serverCookie.getValue());
 
 		CacheControl cachControl = new CacheControl();
 		cachControl.setNoCache(true);

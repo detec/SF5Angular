@@ -92,7 +92,11 @@ public class CookieLoginTest {
 		Map<String, NewCookie> cookies = response.getCookies();
 		serverCookie = cookies.get(cookieName);
 
-		// Cookie clientCookie = serverCookie.toCookie();
+		if (serverCookie == null) {
+			LOGGER.log(Level.INFO, "Server cookie was not returned!");
+
+			return;
+		}
 
 		Cookie clientCookie = new Cookie(cookieName, serverCookie.getValue(), serverCookie.getPath(), domain,
 				serverCookie.getVersion());
