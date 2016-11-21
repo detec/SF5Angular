@@ -328,14 +328,6 @@
             <activeByDefault>false</activeByDefault>
         </activation>
 		<properties>
-<!--             <db.jdbcUrl>jdbc:mysql://localhost:3306/sf5backbonedev</db.jdbcUrl> -->
-<!--  			<db.jdbcUrl>jdbc:mysql://localhost:3306/sf5backbone_test</db.jdbcUrl>
-           	<db.driver>com.mysql.jdbc.Driver</db.driver>
-           	<db.user>root</db.user>
-           	<db.password>123456</db.password>
-           	<db.dialect>MySQL5InnoDBDialect</db.dialect>
-  			<rp.build.warname>SF5Backbone-test</rp.build.warname>
-  			<db.hbm2ddl>update</db.hbm2ddl> -->
   			<property.placeholder>dev</property.placeholder>
   		</properties>
 	</profile>
@@ -345,13 +337,6 @@
             	<activeByDefault>true</activeByDefault>
         	</activation>
         	<properties>
-<!--         		<db.jdbcUrl>jdbc:mysql://localhost:3306/sf5backbonedev</db.jdbcUrl>
-           		<db.driver>com.mysql.jdbc.Driver</db.driver>
-           		<db.user>root</db.user>
-           		<db.password>123456</db.password>
-        		<rp.build.warname></rp.build.warname>
-        		<db.dialect>MySQL5InnoDBDialect</db.dialect>
-        		<db.hbm2ddl>update</db.hbm2ddl> -->
         		<property.placeholder>openshift</property.placeholder>
         	</properties>
          <build>
