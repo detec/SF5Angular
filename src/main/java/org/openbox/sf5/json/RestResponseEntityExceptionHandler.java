@@ -12,6 +12,7 @@ import org.openbox.sf5.json.exceptions.UsersDoNotCoincideException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +34,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
 	public RestResponseEntityExceptionHandler() {
 		log = Logger.getLogger(getClass().getSimpleName());
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		String error = "No handler found for " + ex.getMessage() + " " + request.getContextPath();
+
+		return constructSerializedException(ex, HttpStatus.BAD_REQUEST, error);
 	}
 
 	// In Spring 4.2.6 only with Exception argument method is found and called.
@@ -123,7 +133,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
 	/**
 	 * Other exceptions, 500 code.
-	 * 
+	 *
 	 * @param ex
 	 * @param request
 	 * @return

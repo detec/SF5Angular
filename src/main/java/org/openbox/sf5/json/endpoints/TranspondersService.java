@@ -3,6 +3,7 @@ package org.openbox.sf5.json.endpoints;
 import java.util.List;
 
 import javax.servlet.annotation.MultipartConfig;
+import javax.ws.rs.core.MediaType;
 
 import org.openbox.sf5.dao.DAO;
 import org.openbox.sf5.json.service.TranspondersJsonizer;
@@ -21,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * Transponders controller
- * 
+ *
  * @author Andrii Duplyk
  *
  */
@@ -39,7 +40,11 @@ public class TranspondersService {
 	@Autowired
 	private DAO objectController;
 
-	@RequestMapping(method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+	@RequestMapping(method = RequestMethod.POST
+
+	// , headers = "content-type=multipart/form-data"
+
+			, consumes = MediaType.MULTIPART_FORM_DATA)
 	ResponseEntity<Boolean> uploadTransponders(@RequestParam("file") MultipartFile file) {
 
 		Boolean result = new Boolean(false);
