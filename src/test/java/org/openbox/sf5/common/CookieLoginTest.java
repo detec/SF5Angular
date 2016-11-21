@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -71,9 +73,12 @@ public class CookieLoginTest {
 	}
 
 	private void authenticateWithCookies(boolean forAdmin) {
-		client = createAdminClient();
+		// client = createAdminClient();
 
-		serviceTarget = client.target(appLocation).path("login.jsp");
+		ClientFactory clientFactory = new ClientFactory();
+		client = clientFactory.create();
+
+		serviceTarget = client.target(appLocation).path("login");
 		Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.TEXT_HTML);
 
 		Response response = invocationBuilder.get();
@@ -100,6 +105,27 @@ public class CookieLoginTest {
 		String content = response.readEntity(String.class);
 		LOGGER.log(Level.INFO, content);
 
+	}
+
+	class ClientFactory {
+		public Client create() {
+
+			ClientConfig config = new ClientConfig();
+			{
+
+				config.register(JacksonJaxbXMLProvider.class).register(JacksonFeature.class)
+						.register(MultiPartFeature.class).register(LoggingFeature.class);
+			}
+
+			ApacheConnectorProvider provider = new ApacheConnectorProvider();
+			{
+				config.connectorProvider(new ApacheConnectorProvider());
+			}
+
+			Client client = ClientBuilder.newClient(config);
+
+			return client;
+		}
 	}
 
 }
