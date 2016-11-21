@@ -1,11 +1,11 @@
 package org.openbox.sf5.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 import javax.ws.rs.client.Entity;
@@ -13,7 +13,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.Before;
@@ -37,29 +36,39 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		Stream<Path> transponderFilesPathes = IntersectionsTests.getTransponderFilesStreamPath();
 
 		MediaType contentType1 = MediaType.MULTIPART_FORM_DATA_TYPE;
-		final MediaType contentType = Boundary.addBoundary(contentType1); // import
+		// final MediaType contentType = Boundary.addBoundary(contentType1); //
+		// import
 		// org.glassfish.jersey.media.multipart.Boundary;
 
-		transponderFilesPathes.forEach(t -> {
+		transponderFilesPathes.forEach(t -> sendFile(t, contentType1));
+	}
 
-			FileDataBodyPart filePart = new FileDataBodyPart("file", t.toFile());
+	private void sendFile(Path t, MediaType contentType) {
+		FileDataBodyPart filePart = new FileDataBodyPart("file", t.toFile());
 
-			@SuppressWarnings("resource")
-			final FormDataMultiPart multipart = (FormDataMultiPart) new FormDataMultiPart().field("foo", "bar")
-					.bodyPart(filePart);
+		@SuppressWarnings("resource")
+		final FormDataMultiPart multipart = (FormDataMultiPart) new FormDataMultiPart().field("foo", "bar")
+				.bodyPart(filePart);
 
-			Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.APPLICATION_JSON);
+		Invocation.Builder invocationBuilder = serviceTarget.request(MediaType.APPLICATION_JSON);
 
-			Response responsePost = invocationBuilder.cookie(clientCookie).post(Entity.entity(multipart, contentType));
+		Response responsePost = invocationBuilder.cookie(clientCookie).post(Entity.entity(multipart, contentType));
 
-			// .post(Entity.entity(filePart, filePart.getMediaType()));
+		// .post(Entity.entity(filePart, filePart.getMediaType()));
 
-			assertEquals(200, responsePost.getStatus());
+		// assertEquals(200, responsePost.getStatus());
 
-			Boolean result = responsePost.readEntity(Boolean.class);
+		// Boolean result = responsePost.readEntity(Boolean.class);
+		String textResponse = responsePost.readEntity(String.class);
+
+		Boolean result;
+		try {
+			result = mapper.readValue(textResponse, Boolean.class);
 			assertThat(result.booleanValue()).isTrue();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "Could not read boolean result", e);
+		}
 
-		});
 	}
 
 }

@@ -45,13 +45,11 @@ public abstract class AbstractServiceTest {
 
 	public static Cookie clientCookie;
 
-	public CustomObjectMapper mapper;
+	public CustomObjectMapper mapper = new CustomObjectMapper();
 
 	public XmlMapper xmlMapper;
 
 	public static Client client;
-
-	// public ObjectMapper mapper = new ObjectMapper();
 
 	public WebTarget commonTarget;
 
