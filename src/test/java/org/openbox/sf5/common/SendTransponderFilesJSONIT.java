@@ -47,12 +47,14 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 
 		commonTarget = client.target(appLocation)
 
-				// .path(property.getProperty("context.path"))
+				.path(property.getProperty("context.path"))
 
 				.path(jsonPath);
 		serviceTarget = commonTarget.path(servicePath);
 
-		WebTarget loginTarget = client.target(appLocation).path("login");
+		WebTarget loginTarget = client.target(appLocation).path(property.getProperty("context.path"))
+
+				.path("login");
 		URI loginUri = loginTarget.getUri();
 
 		// final HttpComponentsClientHttpRequestFactory factory = new
@@ -97,11 +99,13 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		factory.setHttpClient(httpClient);
 		restTemplate.setRequestFactory(factory);
 
-		headers = getCookiesHeaders();
-		HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
-
-		response = restTemplate.exchange(appLocation + "index.html", HttpMethod.GET, requestEntity, String.class);
-		String body = response.getBody();
+		// headers = getCookiesHeaders();
+		// HttpEntity<String> requestEntity = new HttpEntity<>("parameters",
+		// headers);
+		//
+		// response = restTemplate.exchange(appLocation + "index.html",
+		// HttpMethod.GET, requestEntity, String.class);
+		// String body = response.getBody();
 
 	}
 
