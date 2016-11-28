@@ -89,7 +89,6 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 
 		// response.getHeaders();
 		cookies = response.getHeaders().get("Set-Cookie");
-		// cookies = response.getHeaders().get("Cookie");
 
 		int a = 1;
 
