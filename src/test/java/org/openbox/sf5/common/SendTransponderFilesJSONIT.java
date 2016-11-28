@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -14,6 +13,11 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.ws.rs.client.WebTarget;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.openbox.sf5.json.endpoints.AbstractServiceTest;
@@ -24,7 +28,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +38,8 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 	private static final String servicePath = "transponders/";
 
 	private List<String> cookies;
+
+	private RestTemplate restTemplate = new RestTemplate();
 
 	@Before
 	public void setUp() {
@@ -46,17 +52,17 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 				.path(jsonPath);
 		serviceTarget = commonTarget.path(servicePath);
 
-		serviceTarget = client.target(appLocation).path("login");
-		URI loginUri = serviceTarget.getUri();
+		WebTarget loginTarget = client.target(appLocation).path("login");
+		URI loginUri = loginTarget.getUri();
 
-		RestTemplate template = new RestTemplate(new SimpleClientHttpRequestFactory() {
+		// final HttpComponentsClientHttpRequestFactory factory = new
+		// HttpComponentsClientHttpRequestFactory();
+		// final HttpClient httpClient =
+		// HttpClientBuilder.create().setRedirectStrategy(new
+		// LaxRedirectStrategy()).build();
+		// factory.setHttpClient(httpClient);
+		// restTemplate.setRequestFactory(factory);
 
-			@Override
-			protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
-				super.prepareConnection(connection, httpMethod);
-				connection.setInstanceFollowRedirects(true);
-			}
-		});
 		// Credentials cred = new UsernamePasswordCredentials(testUsername,
 		// testUserPassword);
 		//
@@ -75,15 +81,27 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		form.add("password", testUserPassword);
 		HttpEntity<Object> request = new HttpEntity<>(form, headers);
 
-		HttpEntity<String> response = template.exchange(loginUri, HttpMethod.POST, request, String.class);
+		HttpEntity<String> response = restTemplate.exchange(loginUri, HttpMethod.POST, request, String.class);
 
 		// System.out.println(response.getBody());
 
-		response.getHeaders();
+		// response.getHeaders();
 		cookies = response.getHeaders().get("Set-Cookie");
+		// cookies = response.getHeaders().get("Cookie");
 
 		int a = 1;
-		// String set_cookie = HttpHeaders.COOKIE;
+
+		// we need to follow redirect to validate session.
+		final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+		final HttpClient httpClient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
+		factory.setHttpClient(httpClient);
+		restTemplate.setRequestFactory(factory);
+
+		headers = getCookiesHeaders();
+		HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
+
+		response = restTemplate.exchange(appLocation + "index.html", HttpMethod.GET, requestEntity, String.class);
+		String body = response.getBody();
 
 	}
 
@@ -119,15 +137,13 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		//
 		// assertEquals(200, responsePost.getStatus());
 
-		RestTemplate restTemplate = new RestTemplate();
+		// RestTemplate restTemplate = new RestTemplate();
 
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
 		map.add("file", new FileSystemResource(t.toFile()));
 
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.set("Cookie", cookies.stream().limit(1).collect(Collectors.joining(";")));
+		HttpHeaders headers = getCookiesHeaders();
 
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -156,6 +172,14 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 			LOGGER.log(Level.SEVERE, "Could not read boolean result", e);
 		}
 
+	}
+
+	private HttpHeaders getCookiesHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Cookie", cookies.stream().limit(1).collect(Collectors.joining(";")));
+
+		return headers;
 	}
 
 }
