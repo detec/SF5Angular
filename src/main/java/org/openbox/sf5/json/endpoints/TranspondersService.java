@@ -68,7 +68,7 @@ public class TranspondersService {
 		return new ResponseEntity<>(transList, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "{transponderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/filter/id/{transponderId}", method = RequestMethod.GET)
 	ResponseEntity<Transponders> getTransponderById(@PathVariable("transponderId") long tpId) {
 		Transponders trans = objectController.select(Transponders.class, tpId);
 		if (trans == null) {
