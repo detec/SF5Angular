@@ -147,7 +147,7 @@ public abstract class AbstractServiceTest {
 	private static void authenticateWithCookies() {
 		// client = createAdminClient();
 
-		boolean forAdmin = false;
+		boolean forAdmin = true;
 
 		client = createClient();
 

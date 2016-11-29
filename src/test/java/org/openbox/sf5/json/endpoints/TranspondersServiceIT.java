@@ -45,7 +45,7 @@ public class TranspondersServiceIT extends AbstractServiceTest {
 
 		Response response = null;
 
-		Invocation.Builder invocationBuilder = serviceTarget.path("filter").path("Speed").path("27500")
+		Invocation.Builder invocationBuilder = serviceTarget.path("filter").path("speed").path("27500")
 				.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
 		response = invocationBuilder.get();
 
@@ -65,8 +65,6 @@ public class TranspondersServiceIT extends AbstractServiceTest {
 		transponderId = readTrans.getId();
 
 		invocationBuilder = serviceTarget
-
-				// .path("filter").path("id")
 
 				.path(String.valueOf(transponderId)).request(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON);
@@ -91,13 +89,8 @@ public class TranspondersServiceIT extends AbstractServiceTest {
 		SatellitesServiceIT satTest = new SatellitesServiceIT();
 		satTest.setUp();
 
-		Invocation.Builder invocationBuilder = serviceTarget
-
-				// .path("filter")
-
-				.path("satId")
-
-				.path(String.valueOf(satTest.getSatelliteId()))
+		Invocation.Builder invocationBuilder = serviceTarget.path("filter")
+				.matrixParam("satId", satTest.getSatelliteId())
 
 				.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
 		response = invocationBuilder.get();

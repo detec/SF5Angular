@@ -79,8 +79,8 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
 		MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-		form.add("username", testUsername);
-		form.add("password", testUserPassword);
+		form.add("username", "admin");
+		form.add("password", "1");
 		HttpEntity<Object> request = new HttpEntity<>(form, headers);
 
 		HttpEntity<String> response = restTemplate.exchange(loginUri, HttpMethod.POST, request, String.class);
@@ -98,13 +98,14 @@ public class SendTransponderFilesJSONIT extends AbstractServiceTest {
 		factory.setHttpClient(httpClient);
 		restTemplate.setRequestFactory(factory);
 
-		// headers = getCookiesHeaders();
-		// HttpEntity<String> requestEntity = new HttpEntity<>("parameters",
-		// headers);
-		//
-		// response = restTemplate.exchange(appLocation + "index.html",
-		// HttpMethod.GET, requestEntity, String.class);
-		// String body = response.getBody();
+		headers = getCookiesHeaders();
+		HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
+
+		URI indexUri = client.target(appLocation).path(property.getProperty("context.path")).path("index.html")
+				.getUri();
+
+		response = restTemplate.exchange(indexUri, HttpMethod.GET, requestEntity, String.class);
+		String body = response.getBody();
 
 	}
 

@@ -178,8 +178,9 @@
   		<db.user>sa</db.user>
   		<db.password></db.password>
         <db.dialect>H2Dialect</db.dialect>
-        <db.hbm2ddl>update</db.hbm2ddl> 
-  		<rp.build.warname>SF5Backbone-test</rp.build.warname>
+        <db.hbm2ddl>update</db.hbm2ddl>
+        <deploy.context>/</deploy.context> 
+  		<rp.build.warname>ROOT</rp.build.warname>
   		<property.placeholder>test</property.placeholder>
   	</properties>
   	
