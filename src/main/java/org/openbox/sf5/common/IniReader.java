@@ -1,13 +1,14 @@
 package org.openbox.sf5.common;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,18 +71,14 @@ public class IniReader {
 	 */
 	public void readMultiPartFile(MultipartFile file) throws IOException {
 
-		// create a temp file
-		File temp = File.createTempFile("transponders", ".xml");
-		String absolutePath = temp.getAbsolutePath();
+        // create a temp file
+        File temp = File.createTempFile("transponders", ".xml");
+        Path path = Paths.get(temp.getAbsolutePath());
+        Files.write(path, file.getBytes());
 
-		byte[] bytes = file.getBytes();
-		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(absolutePath)));
-		stream.write(bytes);
-		stream.close();
-
-		// calling reader class
-		setFilePath(absolutePath);
-		readData(); // doing import
+        // calling reader class
+        setFilePath(path.toString());
+        readData(); // doing import
 	}
 
 	/**
@@ -90,87 +87,80 @@ public class IniReader {
 	 * @throws IOException
 	 */
 	public void readData() throws IOException {
-		// Open the file
+        // Open the file
 
-		FileReader fileReader = new FileReader(filePath);
-		BufferedReader br = new BufferedReader(fileReader);
+        Iterator<String> linesIterator = Files.readAllLines(Paths.get(filePath)).iterator();
+        String strLine;
 
-		String strLine;
+        // (\d{1,3})=(\d{5}),(H|V|L|R),(\d{4,5}),(\d{2,3}),(DVB-S|S2),(QPSK|8PSK)(\sACM)?
 
-		// (\d{1,3})=(\d{5}),(H|V|L|R),(\d{4,5}),(\d{2,3}),(DVB-S|S2),(QPSK|8PSK)(\sACM)?
+        // Read File Line By Line
+        while (linesIterator.hasNext()) {
+            strLine = linesIterator.next();
+            if ("[SATTYPE]".equals(strLine)) {
+                readSatData(linesIterator);
+            }
 
-		// Read File Line By Line
-		while ((strLine = br.readLine()) != null) {
+            if ("[DVB]".equals(strLine)) {
+                readTransponderData(linesIterator);
+            }
 
-			if ("[SATTYPE]".equals(strLine)) {
-				readSatData(br);
-			}
-
-			if ("[DVB]".equals(strLine)) {
-				readTransponderData(br);
-			}
-
-		}
-
-		fileReader.close();
-		br.close();
-
-		result = true;
-
+        }
+        result = true;
 	}
 
-	private void readSatData(BufferedReader br) throws IOException {
+    private void readSatData(Iterator<String> linesIterator) throws IOException {
 
-		br.readLine(); // 1=0130
-		String satline = br.readLine();
+        linesIterator.next(); // 1=0130
+        String satline = linesIterator.next();
 
-		String satName = satline.substring(2); // 2 characters
+        String satName = satline.substring(2); // 2 characters
 
-		String hql = "select id from Satellites where name = :name";
+        String hql = "select id from Satellites where name = :name";
 
-		Session session = objectController.openSession();
+        Session session = objectController.openSession();
 
-		Query query = session.createQuery(hql);
-		query.setParameter("name", satName);
-		@SuppressWarnings("unchecked")
-		ArrayList<Long> rs = (ArrayList<Long>) query.list();
+        Query query = session.createQuery(hql);
+        query.setParameter("name", satName);
+        @SuppressWarnings("unchecked")
+        ArrayList<Long> rs = (ArrayList<Long>) query.list();
 
-		if (rs.isEmpty()) {
-			// no satellite found
-			sat = new Satellites(satName);
+        if (rs.isEmpty()) {
+            // no satellite found
+            sat = new Satellites(satName);
 
-			// saving satellite
-			objectController.saveOrUpdate(sat);
-		} else {
-			// get sat
-			sat = objectController.select(Satellites.class, rs.get(0));
-		}
+            // saving satellite
+            objectController.saveOrUpdate(sat);
+        } else {
+            // get sat
+            sat = objectController.select(Satellites.class, rs.get(0));
+        }
 
-		session.close();
-	}
+        session.close();
+    }
 
-	private void readTransponderData(BufferedReader br) throws IOException {
+    private void readTransponderData(Iterator<String> linesIterator) throws IOException {
 
-		// replace with Java core
+        // replace with Java core
 
-		String transCountString = br.readLine().substring(2);
+        String transCountString = linesIterator.next().substring(2);
 
-		int transCount = Integer.parseInt(transCountString);
+        int transCount = Integer.parseInt(transCountString);
 
-		pattern = Pattern.compile(REGEX);
+        pattern = Pattern.compile(REGEX);
 
-		for (int i = 1; i <= transCount; i++) {
-			String transDataString = br.readLine();
+        for (int i = 1; i <= transCount; i++) {
+            String transDataString = linesIterator.next();
 
-			// Initialize
+            // Initialize
 
-			matcher = pattern.matcher(transDataString);
+            matcher = pattern.matcher(transDataString);
 
-			while (matcher.find()) {
-				processTransponedrMatch();
-			}
-		}
-	}
+            while (matcher.find()) {
+                processTransponedrMatch();
+            }
+        }
+    }
 
 	private void processTransponedrMatch() {
 
@@ -276,23 +266,13 @@ public class IniReader {
 
 	}
 
-	private DVBStandards resolveDVBStandard() {
-		DVBStandards dvbStandard = null;
-		String standard = matcher.group(6);
-		if ("DVB-S".equals(standard)) {
-			dvbStandard = DVBStandards.DVBS;
-		}
-
-		if ("S2".equals(standard)) {
-			dvbStandard = DVBStandards.DVBS2;
-		}
-
-		return dvbStandard;
-	}
+    private DVBStandards resolveDVBStandard() {
+        Map<String, DVBStandards> dvbMap = DVBStandards.getConversionMap();
+        String standard = matcher.group(6);
+        return dvbMap.get(standard);
+    }
 
 	private CarrierFrequency resolveCarrierFrequency(Session session, Long frequency, Polarization aPolarization) {
-		CarrierFrequency carrierEnum = null;
-
 		// get carrier frequency
 		Properties params = new Properties();
 		params.put("enumClass", CarrierFrequency.class.getName());
@@ -317,13 +297,7 @@ public class IniReader {
 
 				.setResultTransformer(Transformers.aliasToBean(ValueOfTheCarrierFrequency.class)).list();
 
-		if (!carrierList.isEmpty()) {
-			carrierEnum = carrierList.get(0).getTypeOfCarrierFrequency();
-		} else {
-			return carrierEnum;
-		}
-		return carrierEnum;
-
+        return carrierList.stream().findAny().map(ValueOfTheCarrierFrequency::getTypeOfCarrierFrequency).orElse(null);
 	}
 
 	private void updateTransponderData(Transponders selectedTrans, CarrierFrequency carrierEnum, TypesOfFEC fec,
