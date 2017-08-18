@@ -3,7 +3,6 @@ package org.openbox.sf5.common;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
@@ -93,6 +92,20 @@ public class JsonObjectFiller {
 		return job;
 	}
 
+    /**
+     * Returns verified field for its name in given class
+     *
+     * @param type
+     *            - class with field
+     * @param fieldName
+     *            - field name case-ignored
+     * @return
+     */
+    public static <T extends AbstractDbEntity> Field getEntityField(Class<T> type, String fieldName) {
+        return Arrays.asList(type.getDeclaredFields()).stream().filter(t -> t.getName().equalsIgnoreCase(fieldName))
+                .findAny().orElse(null);
+    }
+
 	/**
 	 * This method returns class from the field name
 	 *
@@ -100,25 +113,11 @@ public class JsonObjectFiller {
 	 * @param fieldName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends AbstractDbEntity> Class<?> getFieldClass(Class<T> type, String fieldName) {
-		Field[] fields;
-		fields = type.getDeclaredFields();
-
-		List<Field> fieldList = Arrays.asList(fields);
-		Class<T> clazz = null;
-		List<Class<T>> classList = new ArrayList<>();
-
-		// find field with the given name and return its class
-		fieldList.stream().filter(t -> t.getName().equals(fieldName))
-				.forEach(t -> classList.add((Class<T>) t.getType()));
-
-		if (classList.size() == 1) {
-			clazz = classList.get(0);
-		}
-
-		return clazz;
-	}
+    public static <T extends AbstractDbEntity> Class<?> getFieldClass(Class<T> type, String fieldName) {
+        // find field with the given name and return its class
+        return Arrays.asList(type.getDeclaredFields()).stream().filter(t -> t.getName().equalsIgnoreCase(fieldName))
+                .map(Field::getType).findAny().orElse(null);
+    }
 
 	private static <T> JsonArray getJsonArray(List<T> objList) {
 		JsonArrayBuilder arrayOfObjects = Json.createArrayBuilder();

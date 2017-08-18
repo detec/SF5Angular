@@ -1,8 +1,10 @@
 package org.openbox.sf5.service;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -27,12 +29,16 @@ public class CriterionService {
 	private DAO objectController;
 
 	/**
-	 *
-	 * @param type
-	 * @param fieldName
-	 * @param typeValue
-	 * @return
-	 */
+     * Returns ready to use criterion
+     *
+     * @param type
+     *            - class
+     * @param fieldName
+     *            fieldname
+     * @param typeValue
+     *            - value of field
+     * @return
+     */
 	public <T extends AbstractDbEntity> Criterion getCriterionByClassFieldAndStringValue(Class<T> type,
 			String fieldName, String typeValue) {
 		Criterion criterion = null;
@@ -44,7 +50,10 @@ public class CriterionService {
 		// 4. Filed is entity class, retrieved from database. Then we select
 		// object by id, that came as typeValue.
 
-		Class<?> fieldClazz = JsonObjectFiller.getFieldClass(type, fieldName);
+        Field field = JsonObjectFiller.getEntityField(type, fieldName);
+        fieldName = Optional.ofNullable(field).map(Field::getName).orElse(fieldName);
+        Class<?> fieldClazz = Optional.ofNullable(field).map(Field::getType).orElse(null);
+
 		// check if this field has some class, not null
 		if (fieldClazz == null) {
 			// Return empty criterion
@@ -85,31 +94,18 @@ public class CriterionService {
 	}
 
 	/**
-	 *
-	 * @param login
-	 * @param type
-	 * @return
-	 */
-	public <T extends AbstractDbEntity> Criterion getUserCriterion(String login, Class<T> type) {
-		// Find out user id.
-		SimpleExpression criterion;
-		Criterion userCriterion;
-
-		criterion = Restrictions.eq("username", login);
-		List<Users> usersList = objectController.findAllWithRestrictions(Users.class, criterion);
-
-		if (usersList.isEmpty()) {
-			return criterion;
-		}
-
-		String userIdToString = Long.toString(usersList.get(0).getId());
-
-		// Let's filter by userId and settings id
-		userCriterion = getCriterionByClassFieldAndStringValue(type, "User", userIdToString);
-
-		return userCriterion;
-
-	}
+     * Constructs user criterion
+     * 
+     * @param login
+     * @param type
+     * @return
+     */
+    public <T extends AbstractDbEntity> Criterion getUserCriterion(String login, Class<T> type) {
+        SimpleExpression criterion = Restrictions.eq("username", login);
+        return objectController.findAllWithRestrictions(Users.class, criterion).stream().findAny().map(Users::getId)
+                .map(Long::new).map(Object::toString)
+                .map(idStr -> getCriterionByClassFieldAndStringValue(type, "User", idStr)).orElse(criterion);
+    }
 
 	@SuppressWarnings("rawtypes")
 	private static List<Enum> enum2list(Class<? extends Enum> cls) {
