@@ -3,6 +3,7 @@ package org.openbox.sf5.json.endpoints;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.transform.stream.StreamResult;
@@ -24,8 +25,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,9 +44,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  */
 @RestController
-// @PreAuthorize("hasRole('ROLE_USER')")
-// Be careful not to use annotations produces, consumes - it kicks away
-// requests.
 @EnableWebMvc
 @RequestMapping(value = "${jaxrs.path}/usersettings/")
 public class SettingsService {
@@ -68,7 +69,7 @@ public class SettingsService {
 	// it should be empty or produces = "application/json".
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(method = { RequestMethod.POST })
+    @PostMapping
 	ResponseEntity<Settings> createSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
 			throws NotAuthenticatedException, UsersDoNotCoincideException, SQLException {
@@ -104,7 +105,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "{settingId}", method = RequestMethod.PUT)
+    @PutMapping("{settingId}")
 	ResponseEntity<Settings> putSetting(@RequestBody Settings setting, UriComponentsBuilder ucBuilder,
 			@PathVariable("settingId") long settingId,
 			@MatrixVariable(required = false, value = "calculateIntersection") boolean calculateIntersection)
@@ -114,16 +115,14 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "{settingId}", method = RequestMethod.DELETE)
+    @DeleteMapping("{settingId}")
 	ResponseEntity<Settings> deleteSetting(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException, ItemNotFoundException {
 		Users currentUser = getVerifyAuthenticatedUser();
 
-		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
-		if (setting == null) {
-			throw new ItemNotFoundException(
-					"Unable to delete. Setting with id " + settingId + " not found for user " + currentUser);
-		}
+        Optional.ofNullable(settingsJsonizer.getSettingById(settingId, currentUser))
+                .orElseThrow(() -> new ItemNotFoundException(String.join("", "Unable to delete. Setting with id ",
+                        Long.toString(settingId), " not found for user ", currentUser.getUsername())));
 
 		settingsJsonizer.deleteSetting(settingId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -136,14 +135,9 @@ public class SettingsService {
 		Users currentUser = getVerifyAuthenticatedUser();
 
 		List<Settings> settList = settingsJsonizer.getSettingsByUser(currentUser);
-		if (settList.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(settList, HttpStatus.OK);
-
+        return settList.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(settList, HttpStatus.OK);
 	}
-
-	// http://community.hpe.com/t5/Software-Developers/A-Comprehensive-Example-of-a-Spring-MVC-Application-Part-3/ba-p/6135449
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = "application/json")
@@ -154,11 +148,8 @@ public class SettingsService {
 		Users currentUser = getVerifyAuthenticatedUser();
 
 		settList = settingsJsonizer.getSettingsByArbitraryFilter(fieldName, typeValue, currentUser);
-		if (settList.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(settList, HttpStatus.OK);
-
+        return settList.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(settList, HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
