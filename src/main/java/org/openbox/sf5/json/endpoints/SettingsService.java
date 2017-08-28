@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,12 +62,6 @@ public class SettingsService {
 
 	@Value("${jaxrs.path}")
 	private String jaxRSPath;
-
-	// http://websystique.com/springmvc/spring-mvc-4-restful-web-services-crud-example-resttemplate/
-
-	// !!!!!! Be careful with annotations in RequestMapping Consumes, Produces
-	// !!! For ResponseEntity<List<T>>
-	// it should be empty or produces = "application/json".
 
 	@PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
@@ -129,7 +124,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @GetMapping
 	public ResponseEntity<List<Settings>> getSettingsByUserLogin() throws NotAuthenticatedException {
 
 		Users currentUser = getVerifyAuthenticatedUser();
@@ -140,7 +135,7 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "filter/{type}/{typeValue}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping("filter/{type}/{typeValue}")
 	ResponseEntity<List<Settings>> getSettingsByArbitraryFilter(@PathVariable("type") String fieldName,
 			@PathVariable("typeValue") String typeValue) throws NotAuthenticatedException {
 
@@ -153,19 +148,14 @@ public class SettingsService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "{settingId}", method = RequestMethod.GET)
+    @GetMapping("{settingId}")
 	ResponseEntity<Settings> getSettingById(@PathVariable("settingId") long settingId)
 			throws NotAuthenticatedException {
 
 		Users currentUser = getVerifyAuthenticatedUser();
-
 		Settings setting = settingsJsonizer.getSettingById(settingId, currentUser);
-		if (setting == null) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-
-		return new ResponseEntity<>(setting, HttpStatus.OK);
-
+        return setting == null ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(setting, HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
@@ -222,14 +212,7 @@ public class SettingsService {
 	}
 
 	private Users getVerifyAuthenticatedUser() throws NotAuthenticatedException {
-		Users currentUser = securityContext.getCurrentlyAuthenticatedUser();
-		if (currentUser == null) {
-
-			throw new NotAuthenticatedException(CONSTANT_COULDNT_GET_USER);
-		}
-
-		return currentUser;
-
+        return Optional.ofNullable(securityContext.getCurrentlyAuthenticatedUser())
+                .orElseThrow(() -> new NotAuthenticatedException(CONSTANT_COULDNT_GET_USER));
 	}
-
 }
