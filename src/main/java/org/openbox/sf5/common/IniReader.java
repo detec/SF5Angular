@@ -71,14 +71,14 @@ public class IniReader {
 	 */
 	public void readMultiPartFile(MultipartFile file) throws IOException {
 
-        // create a temp file
-        File temp = File.createTempFile("transponders", ".xml");
+		// create a temp file
+		File temp = File.createTempFile("transponders", ".xml");
         Path path = Paths.get(temp.getAbsolutePath());
         Files.write(path, file.getBytes());
 
-        // calling reader class
+		// calling reader class
         setFilePath(path.toString());
-        readData(); // doing import
+		readData(); // doing import
 	}
 
 	/**
@@ -87,26 +87,27 @@ public class IniReader {
 	 * @throws IOException
 	 */
 	public void readData() throws IOException {
-        // Open the file
+		// Open the file
 
         Iterator<String> linesIterator = Files.readAllLines(Paths.get(filePath)).iterator();
-        String strLine;
+		String strLine;
 
-        // (\d{1,3})=(\d{5}),(H|V|L|R),(\d{4,5}),(\d{2,3}),(DVB-S|S2),(QPSK|8PSK)(\sACM)?
+		// (\d{1,3})=(\d{5}),(H|V|L|R),(\d{4,5}),(\d{2,3}),(DVB-S|S2),(QPSK|8PSK)(\sACM)?
 
-        // Read File Line By Line
+		// Read File Line By Line
         while (linesIterator.hasNext()) {
             strLine = linesIterator.next();
-            if ("[SATTYPE]".equals(strLine)) {
+			if ("[SATTYPE]".equals(strLine)) {
                 readSatData(linesIterator);
-            }
+			}
 
-            if ("[DVB]".equals(strLine)) {
+			if ("[DVB]".equals(strLine)) {
                 readTransponderData(linesIterator);
-            }
+			}
 
-        }
-        result = true;
+		}
+		result = true;
+
 	}
 
     private void readSatData(Iterator<String> linesIterator) throws IOException {
@@ -114,53 +115,53 @@ public class IniReader {
         linesIterator.next(); // 1=0130
         String satline = linesIterator.next();
 
-        String satName = satline.substring(2); // 2 characters
+		String satName = satline.substring(2); // 2 characters
 
-        String hql = "select id from Satellites where name = :name";
+		String hql = "select id from Satellites where name = :name";
 
-        Session session = objectController.openSession();
+		Session session = objectController.openSession();
 
-        Query query = session.createQuery(hql);
-        query.setParameter("name", satName);
-        @SuppressWarnings("unchecked")
-        ArrayList<Long> rs = (ArrayList<Long>) query.list();
+		Query query = session.createQuery(hql);
+		query.setParameter("name", satName);
+		@SuppressWarnings("unchecked")
+		ArrayList<Long> rs = (ArrayList<Long>) query.list();
 
-        if (rs.isEmpty()) {
-            // no satellite found
-            sat = new Satellites(satName);
+		if (rs.isEmpty()) {
+			// no satellite found
+			sat = new Satellites(satName);
 
-            // saving satellite
-            objectController.saveOrUpdate(sat);
-        } else {
-            // get sat
-            sat = objectController.select(Satellites.class, rs.get(0));
-        }
+			// saving satellite
+			objectController.saveOrUpdate(sat);
+		} else {
+			// get sat
+			sat = objectController.select(Satellites.class, rs.get(0));
+		}
 
-        session.close();
-    }
+		session.close();
+	}
 
     private void readTransponderData(Iterator<String> linesIterator) throws IOException {
 
-        // replace with Java core
+		// replace with Java core
 
         String transCountString = linesIterator.next().substring(2);
 
-        int transCount = Integer.parseInt(transCountString);
+		int transCount = Integer.parseInt(transCountString);
 
-        pattern = Pattern.compile(REGEX);
+		pattern = Pattern.compile(REGEX);
 
-        for (int i = 1; i <= transCount; i++) {
+		for (int i = 1; i <= transCount; i++) {
             String transDataString = linesIterator.next();
 
-            // Initialize
+			// Initialize
 
-            matcher = pattern.matcher(transDataString);
+			matcher = pattern.matcher(transDataString);
 
-            while (matcher.find()) {
-                processTransponedrMatch();
-            }
-        }
-    }
+			while (matcher.find()) {
+				processTransponedrMatch();
+			}
+		}
+	}
 
 	private void processTransponedrMatch() {
 
@@ -203,7 +204,7 @@ public class IniReader {
 
 		// let's check if such frequency already exists on the given
 		// satellite
-		List<Object> transIdList = getListOfTranspondersWithSameFrequency(session, frequency);
+        List<Long> transIdList = getListOfTranspondersWithSameFrequency(session, frequency);
 
 		if (transIdList.isEmpty()) {
 			objectController.saveOrUpdate(newTrans);
@@ -226,11 +227,11 @@ public class IniReader {
 
 	}
 
-	private List<Object> getListOfTranspondersWithSameFrequency(Session session, Long frequency) {
+    private List<Long> getListOfTranspondersWithSameFrequency(Session session, Long frequency) {
 
 		String sqltext = "Select id FROM Transponders where frequency = :Frequency and satellite = :satelliteId";
 
-		List<Object> transIdList;
+        List<Long> transIdList;
 		transIdList = session.createSQLQuery(sqltext).addScalar("id", StandardBasicTypes.LONG)
 
 				.setParameter(FREQUENCY_CONSTANT, frequency)
@@ -245,10 +246,10 @@ public class IniReader {
 	private RangesOfDVB resolveTheDVBRangeValue(Session session, Long frequency) {
 		Properties params = new Properties();
 		params.put("enumClass", RangesOfDVB.class.getName());
-		params.put("type", "12"); /*
-									 * type 12 instructs to use the String
-									 * representation of enum value
-									 */
+        // params.put("type", "12");
+        /*
+         * type 12 instructs to use the String representation of enum value
+         */
 		Type myEnumType = new TypeLocatorImpl(new TypeResolver()).custom(EnumType.class, params);
 
 		String sqltext = "SELECT rangeOfDVB FROM TheDVBRangeValues where :Frequency between lowerThreshold and upperThreshold";
@@ -260,20 +261,20 @@ public class IniReader {
         return rangeList.stream().findAny().map(TheDVBRangeValues::getRangeOfDVB).orElse(null);
 	}
 
-    private DVBStandards resolveDVBStandard() {
+	private DVBStandards resolveDVBStandard() {
         Map<String, DVBStandards> dvbMap = DVBStandards.getConversionMap();
-        String standard = matcher.group(6);
+		String standard = matcher.group(6);
         return dvbMap.get(standard);
-    }
+	}
 
 	private CarrierFrequency resolveCarrierFrequency(Session session, Long frequency, Polarization aPolarization) {
 		// get carrier frequency
 		Properties params = new Properties();
 		params.put("enumClass", CarrierFrequency.class.getName());
-		params.put("type", "12"); /*
-									 * type 12 instructs to use the String
-									 * representation of enum value
-									 */
+        // params.put("type", "12");
+        /*
+         * type 12 instructs to use the String representation of enum value
+         */
 		Type myEnumType = new TypeLocatorImpl(new TypeResolver()).custom(EnumType.class, params);
 
 		String sqltext = "SELECT typeOfCarrierFrequency FROM ValueOfTheCarrierFrequency "
