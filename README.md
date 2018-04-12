@@ -94,8 +94,8 @@ Different Maven profiles are required to use different database schemes and inte
 - Jackson 2.5;
 - Swagger 2.6;
 - JDBC (for Spring Security only);
-- Maven 3.3 with plugins compiler, surefire, resources, war, cargo;
-- WildFly 10;
+- Maven 3.5 with plugins compiler, surefire, resources, war, cargo;
+- WildFly 11;
 - Java 8.
 
 The project can be built either with Maven (3.3 or higher) or Eclipse (4.5 or higher).
